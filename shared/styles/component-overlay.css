@@ -1,0 +1,425 @@
+/* Component Overlay Styles */
+
+/* ─── Label Pills ─────────────────────────────────────────────────────────── */
+
+/* Default subtle state (hidden until overlay is active) */
+.component-label {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: #dbeafe; /* Light blue background */
+    color: #1e40af; /* Dark blue text */
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Custom (non-Luna) component labels — red variant */
+.component-label.component-label-custom {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* Composite scaffolding labels — gray variant
+   (opt-in via data-scaffold; marks structural HTML that disappears into a
+    higher-order Ember component like <SchemaTable>) */
+.component-label.component-label-scaffold {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+/* Show labels when overlay is active */
+.component-overlay-active .component-label {
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* ─── Element Outlines (subtle, overlay active) ───────────────────────────── */
+
+/* Outline only elements that actually got labeled — silenced elements
+   (e.g. non-Luna data-component descendants of a scaffold) render with
+   no outline so the composite root is the only visible pill.
+
+   Do NOT force `position: relative` here — that would clobber `fixed` /
+   `absolute` ancestors (e.g. .luna-modal, .luna-drawer). The JS
+   ensurePositioned() helper applies `position: relative` inline only
+   when the computed position is `static`, which is the correct
+   targeted behavior. */
+.component-overlay-active [data-component-type="luna"] {
+    outline: 1px solid rgba(37, 99, 235, 0.15);
+    outline-offset: 2px;
+    transition: outline 0.15s ease;
+}
+
+.component-overlay-active [data-component-type="custom"] {
+    outline: 1px solid rgba(220, 38, 38, 0.15);
+    outline-offset: 2px;
+    transition: outline 0.15s ease;
+}
+
+.component-overlay-active [data-component-type="scaffold"] {
+    outline: 1px solid rgba(107, 114, 128, 0.2);
+    outline-offset: 2px;
+    transition: outline 0.15s ease;
+}
+
+/* ─── Label Hover State ───────────────────────────────────────────────────── */
+
+/* Hover on the pill itself — make it pop */
+.component-label.component-label-hover {
+    background-color: rgba(37, 99, 235, 0.9);
+    color: white;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    z-index: 1002;
+}
+
+.component-label.component-label-custom.component-label-hover {
+    background-color: rgba(220, 38, 38, 0.9);
+    color: white;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+.component-label.component-label-scaffold.component-label-hover {
+    background-color: rgba(75, 85, 99, 0.9);
+    color: white;
+    box-shadow: 0 2px 8px rgba(75, 85, 99, 0.3);
+}
+
+/* ─── Element Highlight (when label is hovered) ──────────────────────────── */
+
+.component-overlay-active .component-el-highlight {
+    outline: 2px solid rgba(37, 99, 235, 0.4) !important;
+    background-color: rgba(37, 99, 235, 0.04);
+}
+
+.component-overlay-active [data-component-type="custom"].component-el-highlight {
+    outline-color: rgba(220, 38, 38, 0.4) !important;
+    background-color: rgba(220, 38, 38, 0.04);
+}
+
+.component-overlay-active [data-component-type="scaffold"].component-el-highlight {
+    outline-color: rgba(75, 85, 99, 0.4) !important;
+    background-color: rgba(75, 85, 99, 0.04);
+}
+
+/* ─── Category Visibility Toggles ─────────────────────────────────────────── */
+
+.co-hide-luna [data-component-type="luna"] > .component-label {
+    display: none;
+}
+.co-hide-luna [data-component-type="luna"] {
+    outline: none !important;
+}
+
+.co-hide-custom [data-component-type="custom"] > .component-label {
+    display: none;
+}
+.co-hide-custom [data-component-type="custom"] {
+    outline: none !important;
+}
+
+.co-hide-scaffold [data-component-type="scaffold"] > .component-label {
+    display: none;
+}
+.co-hide-scaffold [data-component-type="scaffold"] {
+    outline: none !important;
+}
+
+/* ─── Legend Panel ─────────────────────────────────────────────────────────── */
+
+.co-legend {
+    position: fixed;
+    top: 64px;
+    left: 72px;
+    z-index: 10000;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+    padding: 0.75rem 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    min-width: 200px;
+    animation: co-legend-in 0.2s ease;
+}
+
+@keyframes co-legend-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.co-legend-title {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.co-legend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    color: #374151;
+    user-select: none;
+}
+
+.co-legend-row:hover {
+    color: #111827;
+}
+
+.co-legend-row input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+    accent-color: #2563eb;
+}
+
+.co-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.co-legend-dot-luna {
+    background-color: #3b82f6;
+}
+
+.co-legend-dot-custom {
+    background-color: #ef4444;
+}
+
+.co-legend-dot-scaffold {
+    background-color: #9ca3af;
+}
+
+.co-legend-label {
+    flex: 1;
+}
+
+.co-legend-count {
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: #6b7280;
+    min-width: 1.5rem;
+    text-align: right;
+}
+
+.co-legend-shortcut {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #f3f4f6;
+    font-size: 0.6875rem;
+    color: #9ca3af;
+}
+
+.co-legend-shortcut kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.3rem;
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #374151;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+/* ─── Inspect Popup ───────────────────────────────────────────────────────── */
+
+.co-inspect {
+    position: fixed;
+    z-index: 10001;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 0.75rem 1rem;
+    width: 300px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: 0.8125rem;
+    color: #374151;
+    animation: co-inspect-in 0.15s ease;
+}
+
+@keyframes co-inspect-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.co-inspect-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.625rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.co-inspect-badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.co-inspect-luna {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.co-inspect-custom {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.co-inspect-scaffold {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+.co-inspect-name {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: #111827;
+}
+
+.co-inspect-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.2rem 0;
+    font-size: 0.75rem;
+}
+
+.co-inspect-key {
+    color: #9ca3af;
+    min-width: 5rem;
+    flex-shrink: 0;
+}
+
+.co-inspect-row code {
+    background: #f3f4f6;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.6875rem;
+    color: #374151;
+    word-break: break-all;
+}
+
+.co-inspect-link {
+    display: block;
+    margin-top: 0.625rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #f3f4f6;
+    color: #2563eb;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.co-inspect-link:hover {
+    text-decoration: underline;
+}
+
+.co-inspect-hint {
+    margin-top: 0.625rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #f3f4f6;
+    font-size: 0.6875rem;
+    color: #9ca3af;
+}
+
+.co-inspect-hint code {
+    background: #f3f4f6;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.6875rem;
+    color: #374151;
+}
+
+/* ─── Avatar Dropdown ─────────────────────────────────────────────────────── */
+
+.avatar-dropdown {
+    position: relative;
+    z-index: 100;
+}
+
+.avatar-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    min-width: 200px;
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, transform 0.2s ease-in-out;
+    padding: 0.25rem;
+}
+
+.avatar-dropdown-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.avatar-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: #374151;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.15s;
+}
+
+.avatar-dropdown-item:hover {
+    background-color: #f3f4f6;
+}
+
+.avatar-dropdown-item.active {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+.avatar-dropdown-item-icon {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-dropdown-divider {
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 0.25rem 0;
+}

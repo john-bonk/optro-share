@@ -1,0 +1,430 @@
+<!--
+    ============================================================
+    PARTIAL: Standard SchemaTable
+    ============================================================
+    Drop this block into any page where you need a standard
+    SchemaTable (e.g. a detail page "Related records" section, a
+    drawer side panel, a modal body, a dashboard card expansion).
+
+    For a dedicated full-page list view, use the HPLV template
+    (`shared/templates/list-view.html`) instead — HPLV is the
+    default for stand-alone list pages.
+
+    REQUIREMENTS (the page must already include these):
+      - shared/styles/layout.css       — base Luna styles, badges, icons
+      - shared/assets/icons/luna-icons.js — for icon rendering
+      - shared/scripts/component-overlay.js — for overlay labels
+
+    USAGE:
+      1. Copy this entire file (HTML + script) into your page.
+      2. At the top of the script, customize:
+           - columnDefs     (field keys, labels, types)
+           - badgeMappings  (value → luna-badge class per column)
+           - rows           (sample data matching columnDefs keys)
+           - data-table-name on the root (unique per table on page)
+           - data-schema-model / data-schema-template for Ember hints
+      3. The script's IDs use the prefix `st-` by default. If you
+         place MULTIPLE schema tables on one page, rename all `st-*`
+         IDs (and the JS references) with a unique prefix per table.
+      4. The Saved Views bar is commented out by default — uncomment
+         the .st-views-bar block to show it (production renders this
+         as the <:views> yield block).
+
+    TRANSLATION TARGET:
+      Component: <SchemaTable @tableName=... @newAesthetic=true>
+      Service:   SchemaTableService.fromTemplate() or .fromCustomTemplate()
+      Engine:    SchemaTableEngine (columns, pagination, filtering,
+                 sorting, selection, editing, views)
+
+      Header yield blocks:
+        <:left-header>   → filter/search controls (left zone)
+        <:right-header>  → column toggle + export menu (right zone)
+        <:views>         → saved views tablist
+        <:bulk-actions>  → yielded inside <SchemaTablePagination>
+
+      Test ID hooks (data-qid-*) match production attribute names.
+
+    See `.claude/skills/prototype-creation/page-patterns.md` for the
+    section → Ember mapping.
+    ============================================================
+-->
+<div class="SchemaTable"
+     data-table-name="example_table"
+     data-has-header-blocks="true"
+     data-new-aesthetic="true"
+     data-schema-model="record"
+     data-schema-template="DATATABLE_EXAMPLE"
+     data-component="Table"
+     data-scaffold="SchemaTable">
+
+    <div class="st-table-wrapper">
+
+        <!-- ====================================================
+             SAVED VIEWS BAR (optional — uncomment to show)
+             Maps to: <:views> yield block inside <SchemaTable>
+             ==================================================== -->
+        <!--
+        <div class="st-views-bar luna-tablist" data-component="Tablist" data-qid-schema-table-views>
+            <button class="luna-tab active" data-component="Tab">All</button>
+            <button class="luna-tab" data-component="Tab">View 1</button>
+            <button class="luna-tab" data-component="Tab">View 2</button>
+            <button class="luna-tab" data-component="Tab" style="color: #94a3b8;">
+                <span class="luna-icon" data-icon="add" data-size="xs" data-component="Icon"></span>
+                Save View
+            </button>
+        </div>
+        -->
+
+        <!-- ====================================================
+             HEADER BAR — left-header + right-header zones
+             Maps to: <:left-header> / <:right-header> yield blocks
+             ==================================================== -->
+        <div class="st-header-bar" data-component="XStack">
+            <div class="left-header" data-qid-schema-table-left-header>
+                <input type="text"
+                       class="luna-input"
+                       data-size="sm"
+                       id="st-search"
+                       placeholder="Search..."
+                       oninput="handleSearch()"
+                       data-component="Input">
+                <button class="luna-btn gray" data-size="sm" data-component="Button" data-qid-schema-table-add-filter>
+                    <span class="luna-icon" data-icon="filter" data-component="Icon"></span>
+                    Add Filter
+                </button>
+                <div class="st-active-filters" id="st-active-filters" data-qid-schema-table-active-filters></div>
+            </div>
+            <div class="right-header" data-qid-schema-table-right-header>
+                <button class="luna-btn-icon ghost" data-size="sm" title="Manage columns" data-component="Icon Button" data-qid-column-manager-select-column>
+                    <span class="luna-icon" data-icon="layout-split" data-component="Icon"></span>
+                </button>
+                <button class="luna-btn-icon ghost" data-size="sm" title="More actions" data-component="Icon Button" data-qid-schema-table-export-menu>
+                    <span class="luna-icon" data-icon="more-horizontal" data-component="Icon"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ====================================================
+             TABLE
+             Each <th> has:
+               - data-qid-table-column-header="<key>"  (production test hook)
+               - data-schema-key="model:attribute"     (Ember translation hint)
+               - style="min-width: <token>rem"         (CellWidth token — see below)
+             Each <tr> has data-qid-datatable-row and data-selected
+             Each <td> has data-qid-datatable-cell="<key>"
+
+             ----------------------------------------------------------
+             HORIZONTAL OVERFLOW & COLUMN SIZING
+             ----------------------------------------------------------
+             The <table> is wrapped in <div class="st-table-scroll">,
+             which has `overflow-x: auto`. Combined with
+             `.st-table tbody { min-width: fit-content }` (in layout.css),
+             this means when the viewport narrows, columns hold their
+             `min-width` and the wrapper scrolls horizontally instead of
+             compressing text into many wrapped lines. This is the same
+             mechanism production SchemaTable uses.
+
+             Set each <th>'s `min-width` using the Luna **CellWidth
+             tokens** (ref: auditboard-frontend/libraries/schema-table/
+             package/src/const.ts:10-17):
+
+               xs   = 3.75rem   (60px)   — icon-only / checkbox
+               sm   = 7.5rem    (120px)  — short text, dates
+               md   = 10rem     (160px)  — DEFAULT — status, tags, names
+               lg   = 13.75rem  (220px)  — long names, titles
+               xl   = 18.75rem  (300px)  — descriptions, short paragraphs
+               2xl  = 25rem     (400px)  — multi-line text
+
+             Opt a column into single-line truncation with ellipsis by
+             adding `class="cell-truncate"` to the <th> AND each matching
+             <td>, plus an explicit `max-width` on the <th>. Useful for
+             description columns where you want ellipsis on narrow
+             viewports rather than growing the table further.
+             ==================================================== -->
+        <div class="st-table-scroll">
+            <table class="st-table"
+                   data-qid-datatable="example_table"
+                   data-component="Table">
+                <thead>
+                    <tr>
+                        <th class="st-checkbox-cell">
+                            <label class="luna-checkbox" data-size="sm" data-component="Checkbox">
+                                <input type="checkbox" id="st-select-all" data-qid-datatable-checkbox onchange="toggleSelectAll(this)">
+                            </label>
+                        </th>
+                        <th data-qid-table-column-header="name" data-schema-key="record:name" onclick="setSort('name')" style="min-width: 13.75rem;"><!-- lg -->
+                            Name <span class="luna-icon sort-icon" data-icon="arrow-up-down" data-size="xs" data-component="Icon"></span>
+                        </th>
+                        <th data-qid-table-column-header="description" data-schema-key="record:description" onclick="setSort('description')" style="min-width: 18.75rem; max-width: 32rem;" class="cell-truncate"><!-- xl, truncate -->
+                            Description <span class="luna-icon sort-icon" data-icon="arrow-up-down" data-size="xs" data-component="Icon"></span>
+                        </th>
+                        <th data-qid-table-column-header="status" data-schema-key="record:status" onclick="setSort('status')" style="min-width: 10rem;"><!-- md -->
+                            Status <span class="luna-icon sort-icon" data-icon="arrow-up-down" data-size="xs" data-component="Icon"></span>
+                        </th>
+                        <th data-qid-table-column-header="updatedAt" data-schema-key="record:updatedAt" onclick="setSort('updatedAt')" style="min-width: 7.5rem;"><!-- sm -->
+                            Last Updated <span class="luna-icon sort-icon" data-icon="arrow-up-down" data-size="xs" data-component="Icon"></span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="st-table-body">
+                    <!-- Rows rendered by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ====================================================
+             FOOTER — selection summary + pagination
+             Maps to: <SchemaTablePagination> with <:bulk-actions>
+                       yield block shown when rows are selected.
+             ==================================================== -->
+        <div class="st-table-footer" data-qid-datatable-pagination>
+            <div class="st-selection-summary" id="st-selection-summary" data-qid-schema-table-selection-summary>
+                <span class="luna-icon selection-icon" data-icon="return" data-component="Icon"></span>
+                <span class="st-bulk-count" id="st-bulk-count" data-qid-datatable-pagination-update-text>0 selected</span>
+                <button class="luna-btn gray" data-size="sm" data-component="Button" data-qid-select-all>Select All Records</button>
+                <button class="luna-btn gray" data-size="sm" data-component="Button" onclick="clearSelection()" data-qid-clear-selection>Deselect all</button>
+                <div class="st-footer-divider"></div>
+                <!-- <:bulk-actions> yield: customize these per prototype -->
+                <div class="st-bulk-actions" data-component="XStack">
+                    <button class="luna-btn gray" data-size="sm" data-component="Button">Edit</button>
+                    <button class="luna-btn gray" data-size="sm" data-component="Button">Assign</button>
+                    <button class="luna-btn danger" data-size="sm" data-component="Button">Delete</button>
+                </div>
+            </div>
+            <div class="st-rows-per-page">
+                <span>Rows per page</span>
+                <select class="luna-select" data-size="sm" id="st-rows-select" onchange="handleRowsChange()" data-component="Select" data-qid-datatable-pagination-select-limit>
+                    <option value="25">25</option>
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+            <div class="st-pagination">
+                <span class="st-pagination-range" id="st-pagination-range" data-qid-datatable-pagination-details>0 of 0</span>
+                <button class="luna-btn gray" data-size="xs" id="st-prev" onclick="prevPage()" disabled data-component="Button" data-qid-datatable-pagination-previous>
+                    <span class="luna-icon" data-icon="chevron-left" data-size="xs" data-component="Icon"></span>
+                </button>
+                <button class="luna-btn gray" data-size="xs" id="st-next" onclick="nextPage()" disabled data-component="Button" data-qid-datatable-pagination-next>
+                    <span class="luna-icon" data-icon="chevron-right" data-size="xs" data-component="Icon"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==================================================================
+// SCHEMA TABLE PARTIAL — JavaScript (customize the config section only)
+//
+// Provides working search, sort, pagination, and row selection.
+// In production Ember, SchemaTableEngine + sub-systems handle all of this.
+// ==================================================================
+
+// ---- CONFIGURATION (customize per prototype) ----
+const columnDefs = [
+    { key: 'name',        label: 'Name',         type: 'link' },
+    { key: 'description', label: 'Description',  type: 'text' },
+    { key: 'status',      label: 'Status',       type: 'badge' },
+    { key: 'updatedAt',   label: 'Last Updated', type: 'date' },
+];
+
+const badgeMappings = {
+    status: {
+        'Active':      'luna-badge green weak',
+        'In Progress': 'luna-badge blue normal',
+        'Pending':     'luna-badge yellow weak',
+        'Draft':       'luna-badge gray weak',
+        'Closed':      'luna-badge gray weak',
+    },
+};
+
+const rows = [
+    { id: 1, name: 'Record one',   description: 'Short description here', status: 'Active',      updatedAt: '2024-03-15' },
+    { id: 2, name: 'Record two',   description: 'Short description here', status: 'In Progress', updatedAt: '2024-03-12' },
+    { id: 3, name: 'Record three', description: 'Short description here', status: 'Pending',     updatedAt: '2024-03-10' },
+];
+
+// ---- STATE ----
+let searchQuery = '';
+let sortKey = null;
+let sortDir = 'asc';
+let pageIndex = 0;
+let rowsPerPage = 50;
+let selectedIds = new Set();
+
+// ---- FILTERING & SORTING ----
+function getFilteredRows() {
+    let filtered = rows;
+    if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        filtered = filtered.filter(r =>
+            columnDefs.some(col => {
+                const val = r[col.key];
+                return val && String(val).toLowerCase().includes(q);
+            })
+        );
+    }
+    if (sortKey) {
+        filtered = [...filtered].sort((a, b) => {
+            const aVal = a[sortKey] ?? '';
+            const bVal = b[sortKey] ?? '';
+            const cmp = String(aVal).localeCompare(String(bVal), undefined, { numeric: true });
+            return sortDir === 'asc' ? cmp : -cmp;
+        });
+    }
+    return filtered;
+}
+
+// ---- RENDERING ----
+function renderTable() {
+    const filtered = getFilteredRows();
+    const start = pageIndex * rowsPerPage;
+    const pageItems = filtered.slice(start, start + rowsPerPage);
+    const tbody = document.getElementById('st-table-body');
+
+    tbody.innerHTML = pageItems.map(row => `
+        <tr data-qid-datatable-row="${row.id}" data-selected="${selectedIds.has(row.id)}">
+            <td class="st-checkbox-cell">
+                <label class="luna-checkbox" data-size="sm" data-component="Checkbox">
+                    <input type="checkbox"
+                           ${selectedIds.has(row.id) ? 'checked' : ''}
+                           onchange="toggleRowSelect(${row.id}, this)">
+                </label>
+            </td>
+            ${columnDefs.map(col => renderCell(row, col)).join('')}
+        </tr>
+    `).join('');
+
+    const end = Math.min(start + rowsPerPage, filtered.length);
+    document.getElementById('st-pagination-range').textContent =
+        filtered.length === 0 ? '0 of 0' : `${start + 1}-${end} of ${filtered.length}`;
+    document.getElementById('st-prev').disabled = pageIndex === 0;
+    document.getElementById('st-next').disabled = end >= filtered.length;
+
+    if (typeof window.renderLunaIcons === 'function') {
+        window.renderLunaIcons(tbody);
+    }
+    updateSelectionSummary();
+}
+
+function renderCell(row, col) {
+    const val = row[col.key];
+    // Columns that opt into nowrap + ellipsis truncation. The matching
+    // <th> must also carry `class="cell-truncate"` and a `max-width`.
+    const truncateKeys = new Set(['description']);
+    const truncCls = truncateKeys.has(col.key) ? ' cell-truncate' : '';
+    if (val == null || val === '') {
+        return `<td class="cell-muted${truncCls}" data-qid-datatable-cell="${col.key}">&mdash;</td>`;
+    }
+    switch (col.type) {
+        case 'link':
+            return `<td class="${truncCls.trim()}" data-qid-datatable-cell="${col.key}"><span class="cell-link">${val}</span></td>`;
+        case 'badge':
+            const cls = (badgeMappings[col.key] && badgeMappings[col.key][val]) || 'luna-badge gray weak';
+            return `<td class="${truncCls.trim()}" data-qid-datatable-cell="${col.key}"><span class="${cls}" data-component="Badge">${val}</span></td>`;
+        case 'date':
+            return `<td class="cell-date${truncCls}" data-qid-datatable-cell="${col.key}">${formatDate(val)}</td>`;
+        default:
+            return `<td class="${truncCls.trim()}" data-qid-datatable-cell="${col.key}" ${truncateKeys.has(col.key) ? `title="${String(val).replace(/"/g, '&quot;')}"` : ''}>${val}</td>`;
+    }
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// ---- SEARCH ----
+function handleSearch() {
+    searchQuery = document.getElementById('st-search').value.trim();
+    pageIndex = 0;
+    renderTable();
+}
+
+// ---- SORTING ----
+function setSort(key) {
+    if (sortKey === key) {
+        sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortKey = key;
+        sortDir = 'asc';
+    }
+    pageIndex = 0;
+    renderTable();
+
+    function swapSortIcon(icon, name) {
+        icon.setAttribute('data-icon', name);
+        icon.innerHTML = '';
+        if (typeof window.renderLunaIcons === 'function') {
+            window.renderLunaIcons(icon.parentElement);
+        }
+    }
+    document.querySelectorAll('.st-table thead th').forEach(th => {
+        th.classList.remove('sorted');
+        const icon = th.querySelector('.sort-icon');
+        if (icon) swapSortIcon(icon, 'arrow-up-down');
+    });
+    const activeTh = document.querySelector(`[data-qid-table-column-header="${key}"]`);
+    if (activeTh) {
+        activeTh.classList.add('sorted');
+        const icon = activeTh.querySelector('.sort-icon');
+        if (icon) swapSortIcon(icon, sortDir === 'asc' ? 'arrow-up' : 'arrow-down');
+    }
+}
+
+// ---- PAGINATION ----
+function handleRowsChange() {
+    rowsPerPage = parseInt(document.getElementById('st-rows-select').value);
+    pageIndex = 0;
+    renderTable();
+}
+function prevPage() { if (pageIndex > 0) { pageIndex--; renderTable(); } }
+function nextPage() {
+    const filtered = getFilteredRows();
+    if ((pageIndex + 1) * rowsPerPage < filtered.length) { pageIndex++; renderTable(); }
+}
+
+// ---- SELECTION ----
+function toggleSelectAll(checkbox) {
+    const filtered = getFilteredRows();
+    const start = pageIndex * rowsPerPage;
+    const pageItems = filtered.slice(start, start + rowsPerPage);
+    if (checkbox.checked) pageItems.forEach(r => selectedIds.add(r.id));
+    else pageItems.forEach(r => selectedIds.delete(r.id));
+    renderTable();
+}
+
+function toggleRowSelect(id, checkbox) {
+    if (checkbox.checked) selectedIds.add(id);
+    else selectedIds.delete(id);
+    updateSelectionSummary();
+    const row = document.querySelector(`[data-qid-datatable-row="${id}"]`);
+    if (row) row.setAttribute('data-selected', checkbox.checked);
+    const filtered = getFilteredRows();
+    const start = pageIndex * rowsPerPage;
+    const pageItems = filtered.slice(start, start + rowsPerPage);
+    const allSelected = pageItems.every(r => selectedIds.has(r.id));
+    document.getElementById('st-select-all').checked = allSelected;
+}
+
+function clearSelection() {
+    selectedIds.clear();
+    document.getElementById('st-select-all').checked = false;
+    renderTable();
+}
+
+function updateSelectionSummary() {
+    const summary = document.getElementById('st-selection-summary');
+    const count = document.getElementById('st-bulk-count');
+    if (selectedIds.size > 0) {
+        summary.classList.add('visible');
+        count.textContent = `${selectedIds.size} selected`;
+    } else {
+        summary.classList.remove('visible');
+    }
+}
+
+// ---- INIT ----
+document.addEventListener('DOMContentLoaded', () => { renderTable(); });
+</script>

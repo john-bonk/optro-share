@@ -1,0 +1,5207 @@
+/* Shared Layout Styles for Optro Prototypes */
+/* This file contains all the navigation, header, and layout styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #ffffff;
+    color: #1f2937;
+    height: 100vh;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 3.5rem 17rem 1fr;
+    grid-template-rows: 3.125rem 1fr;
+    grid-template-areas:
+        "left-nav top-header top-header"
+        "left-nav sidebar content";
+    position: relative;
+    gap: 0;
+    row-gap: 0;
+}
+
+/* Left Navigation Bar (Icons) - Dark gray900 */
+.left-nav {
+    grid-area: left-nav;
+    background-color: #0f172a; /* --luna\\gray900 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem 0.5rem 0.75rem 0.5rem;
+    gap: 0;
+    position: relative;
+    overflow: visible;
+    z-index: 100; /* Ensure tooltips appear above sidebar */
+}
+
+/* Optro Logo (non-clickable) */
+.nav-logo {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    flex-shrink: 0;
+}
+
+.nav-logo svg {
+    width: 28px;
+    height: 28px;
+}
+
+/* Top Icons Container (scrollable if needed) */
+.nav-icons-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+    flex: 1;
+    overflow: visible;
+    width: 100%;
+    padding: 0.25rem 0;
+}
+
+/* Bottom Icons Container (fixed at bottom) */
+.nav-icons-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    overflow: visible;
+}
+
+.nav-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8; /* --luna\\gray400 - matches SVG fill */
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.nav-icon svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.nav-icon svg path,
+.nav-icon svg g path {
+    fill: currentColor;
+    transition: fill 0.15s ease;
+}
+
+.nav-icon:hover {
+    background-color: #1e3a5f;
+    color: #ffffff;
+}
+
+.nav-icon.active {
+    background-color: #355F85;
+    color: #ffffff;
+}
+
+/* Tooltip Styles */
+.nav-icon[data-tooltip] {
+    position: relative;
+}
+
+.nav-icon[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 0.75rem);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.5rem 0.875rem;
+    background-color: #1e293b;
+    color: #ffffff;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    border-radius: 6px;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: tooltipFadeIn 0.15s ease-out;
+    letter-spacing: 0.01em;
+}
+
+.nav-icon[data-tooltip]:hover::before {
+    content: '';
+    position: absolute;
+    left: calc(100% + 0.375rem);
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: #1e293b;
+    z-index: 1001;
+    pointer-events: none;
+    animation: tooltipFadeIn 0.15s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-4px) translateY(-50%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) translateY(-50%);
+    }
+}
+
+/* Top Header - Dark blue */
+.top-header {
+    grid-area: top-header;
+    background-color: #0f172a; /* --luna\\gray900 - dark blue like left nav */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    color: white;
+    height: 3.125rem;
+    position: relative;
+    z-index: 1;
+    overflow: visible;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 100%;
+}
+
+.header-left .header-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    cursor: pointer;
+    opacity: 0.9;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #475569;
+    border-radius: 4px 4px 0 0;
+    font-size: 0.875rem;
+    transition: opacity 0.1s;
+    position: relative;
+    padding: 0.375rem;
+    padding-bottom: calc(0.375rem + 0.5rem);
+    box-sizing: content-box;
+    align-self: flex-end;
+    margin-bottom: 0;
+}
+
+.header-left .header-icon:hover {
+    opacity: 1;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-right .header-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    opacity: 0.9;
+    color: white;
+}
+
+.header-right .header-icon:hover {
+    opacity: 1;
+}
+
+/* Header Icon Tooltip Styles */
+.header-icon[data-tooltip] {
+    position: relative;
+}
+
+.header-icon[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem 0.875rem;
+    background-color: #1e293b;
+    color: #ffffff;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    border-radius: 6px;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: headerTooltipFadeIn 0.15s ease-out;
+    letter-spacing: 0.01em;
+}
+
+.header-icon[data-tooltip]:hover::before {
+    content: '';
+    position: absolute;
+    top: calc(100% + 0.125rem);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: #1e293b;
+    z-index: 1001;
+    pointer-events: none;
+    animation: headerTooltipFadeIn 0.15s ease-out;
+}
+
+@keyframes headerTooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.header-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: background-color 0.15s;
+}
+
+.header-avatar:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Header Avatar Tooltip */
+.header-avatar[data-tooltip] {
+    position: relative;
+    cursor: pointer;
+}
+
+.header-avatar[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem 0.875rem;
+    background-color: #1e293b;
+    color: #ffffff;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    border-radius: 6px;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: headerTooltipFadeIn 0.15s ease-out;
+    letter-spacing: 0.01em;
+}
+
+.header-avatar[data-tooltip]:hover::before {
+    content: '';
+    position: absolute;
+    top: calc(100% + 0.125rem);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: #1e293b;
+    z-index: 1001;
+    pointer-events: none;
+    animation: headerTooltipFadeIn 0.15s ease-out;
+}
+
+.avatar-dropdown {
+    position: relative;
+    font-weight: 600;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+/* Sidebar */
+.sidebar {
+    grid-area: sidebar;
+    background-color: #ffffff;
+    border-right: 3px solid #F1F5F9;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.sidebar-header {
+    padding: 1.25rem 1rem 1rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b; /* --luna\\gray800 */
+    letter-spacing: 0.01em;
+}
+
+.sidebar-section {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-section:first-of-type {
+    margin-top: 0.25rem;
+}
+
+.sidebar-section-title {
+    padding: 0.75rem 1rem 0.5rem 1rem;
+    font-size: 0.6875rem; /* 11px */
+    font-weight: 600;
+    color: #64748b; /* --luna\\gray500 */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.sidebar-item {
+    padding: 0.5rem 1rem;
+    color: #1e293b; /* --luna\\gray800 */
+    text-decoration: none;
+    display: block;
+    font-size: 0.875rem;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.1s;
+}
+
+.sidebar-item:hover {
+    background-color: #f3fafb; /* --luna\\teal50 */
+    color: #1e293b;
+}
+
+.sidebar-item.active {
+    background-color: #f3fafb; /* --luna\\teal50 */
+    color: #0e5371; /* --luna\\teal600 */
+    border-left-color: #0e5371; /* --luna\\teal600 */
+    font-weight: 500;
+}
+
+/* Main Content */
+.content {
+    grid-area: content;
+    overflow-y: auto;
+    background-color: #ffffff;
+    position: relative;
+    z-index: 0;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.content-header {
+    background-color: #ffffff;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #e2e8f0; /* --luna\\gray200 */
+}
+
+.content-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #0f172a; /* --luna\\gray900 */
+    margin-bottom: 1rem;
+}
+
+.content-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.search-bar {
+    flex: 1;
+    max-width: 20rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #cbd5e1; /* --luna\\gray300 */
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.search-bar:focus {
+    outline: none;
+    border-color: #266c92; /* --luna\\teal500 */
+    box-shadow: 0 0 0 3px rgba(38, 108, 146, 0.1);
+}
+
+.btn-filter {
+    padding: 0.5rem 1rem;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1; /* --luna\\gray300 */
+    border-radius: 6px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    color: #1e293b;
+}
+
+.btn-filter:hover {
+    background-color: #f8fafc;
+}
+
+/* Table Styles */
+.table-container {
+    padding: 1.5rem 2rem;
+}
+
+.table-header {
+    background-color: #ffffff;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.table-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.table-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.table-search-bar {
+    flex: 1;
+    max-width: 20rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.table-search-bar:focus {
+    outline: none;
+    border-color: #266c92;
+    box-shadow: 0 0 0 3px rgba(38, 108, 146, 0.1);
+}
+
+.table-btn-filter {
+    padding: 0.5rem 1rem;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    color: #1e293b;
+}
+
+.table-btn-filter:hover {
+    background-color: #f8fafc;
+}
+
+.table-wrapper {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    justify-content: flex-end;
+}
+
+.btn-manage-columns {
+    padding: 0.375rem 0.75rem;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    color: #1e293b;
+}
+
+.btn-manage-columns:hover {
+    background-color: #f8fafc;
+}
+
+.table-dots {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #64748b;
+}
+
+.table-dots:hover {
+    color: #1e293b;
+}
+
+/* ================================================
+   LUNA BADGE SYSTEM
+
+   Usage: <span class="luna-badge {color} {weight}">{Label}</span>
+
+   Colors: gray | blue | red | orange | yellow | green | purple | teal
+   Weights: weak (default) | normal | strong | xstrong
+   Sizes: data-size="sm|md|lg" (default: md)
+   Variants: data-variant="rounded|round" (default: rounded)
+     rounded — pill-shaped (default)
+     round   — circular, for 1-2 digit counts
+
+   Semantic color guide (from Luna docs):
+     gray   — Inactive, Draft, Disabled, Neutral
+     blue   — New, Scheduled, In Review, Updated
+     red    — Error, Critical, Failed, Overdue
+     orange — High severity, Warning (strong)
+     yellow — Warning, Pending, Caution, Attention
+     green  — Success, Complete, Active, Approved
+     purple — AI/Suggested, High Confidence
+     teal   — Primary brand actions
+
+   Ember translation:
+     <span class="luna-badge gray weak" data-size="md">
+     → <Badge @color="gray" @weight="weak" @size="md">
+   ================================================ */
+
+.luna-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 99px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    padding: 0.175rem 0.5rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Size: sm — smaller text, tighter padding */
+.luna-badge[data-size="sm"] {
+    font-size: 0.625rem;
+    padding: 0.125rem 0.375rem;
+}
+
+/* Size: md — default (styles above) */
+
+/* Size: lg — larger text, looser padding */
+.luna-badge[data-size="lg"] {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.625rem;
+}
+
+/* Variant: round — circular badge for counts */
+.luna-badge[data-variant="round"] {
+    border-radius: 50%;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+    padding: 0.125rem;
+    text-align: center;
+}
+
+/* ---- gray ---- */
+.luna-badge.gray.weak    { background: #e3eaf1; color: #343d55; }
+.luna-badge.gray.normal  { background: transparent; border-color: #3b4a5c; color: #3b4a5c; }
+.luna-badge.gray.strong  { background: #64748b; color: #ffffff; }
+.luna-badge.gray.xstrong { background: #334155; color: #ffffff; }
+
+/* ---- blue ---- */
+.luna-badge.blue.weak    { background: #dbeaff; color: #0e48a1; }
+.luna-badge.blue.normal  { background: transparent; border-color: #1f5dd8; color: #1f5dd8; }
+.luna-badge.blue.strong  { background: #3172e3; color: #ffffff; }
+.luna-badge.blue.xstrong { background: #0e48a1; color: #ffffff; }
+
+/* ---- red ---- */
+.luna-badge.red.weak    { background: #ffe0e0; color: #ba2a2a; }
+.luna-badge.red.normal  { background: transparent; border-color: #db3535; color: #db3535; }
+.luna-badge.red.strong  { background: #db3535; color: #ffffff; }
+.luna-badge.red.xstrong { background: #8c1c1c; color: #ffffff; }
+
+/* ---- orange ---- */
+.luna-badge.orange.weak    { background: #ffeacf; color: #a84100; }
+.luna-badge.orange.normal  { background: transparent; border-color: #cc4e00; color: #cc4e00; }
+.luna-badge.orange.strong  { background: #ea6706; color: #ffffff; }
+.luna-badge.orange.xstrong { background: #a84100; color: #ffffff; }
+
+/* ---- yellow ---- */
+.luna-badge.yellow.weak    { background: #fef9c3; color: #8d5112; }
+.luna-badge.yellow.normal  { background: transparent; border-color: #e4b913; color: #bf8207; }
+.luna-badge.yellow.strong  { background: #bf8207; color: #ffffff; }
+.luna-badge.yellow.xstrong { background: #8d5112; color: #ffffff; }
+
+/* ---- green ---- */
+.luna-badge.green.weak    { background: #c6fdd9; color: #26603b; }
+.luna-badge.green.normal  { background: transparent; border-color: #36844a; color: #36844a; }
+.luna-badge.green.strong  { background: #36844a; color: #ffffff; }
+.luna-badge.green.xstrong { background: #1b4a2c; color: #ffffff; }
+
+/* ---- purple ---- */
+.luna-badge.purple.weak    { background: #e5ddfa; color: #4518a8; }
+.luna-badge.purple.normal  { background: transparent; border-color: #6931e3; color: #6931e3; }
+.luna-badge.purple.strong  { background: #6931e3; color: #ffffff; }
+.luna-badge.purple.xstrong { background: #341180; color: #ffffff; }
+
+/* ---- teal ---- */
+.luna-badge.teal.weak    { background: #e3f0f2; color: #0e5371; }
+.luna-badge.teal.normal  { background: transparent; border-color: #266c92; color: #266c92; }
+.luna-badge.teal.strong  { background: #266c92; color: #ffffff; }
+.luna-badge.teal.xstrong { background: #0c3f5c; color: #ffffff; }
+
+/* Legacy aliases — kept for backward compatibility with older prototypes */
+.badge { display: inline-flex; align-items: center; border-radius: 99px; font-size: 0.6875rem; font-weight: 600; padding: 0.175rem 0.5rem; white-space: nowrap; }
+.badge-active     { background: #c6fdd9; color: #26603b; }   /* green weak */
+.badge-inactive   { background: #e3eaf1; color: #343d55; }   /* gray weak */
+.badge-critical   { background: #ffe0e0; color: #ba2a2a; }   /* red weak */
+.badge-high       { background: #ffeacf; color: #a84100; }   /* orange weak */
+.badge-medium     { background: #fef9c3; color: #8d5112; }   /* yellow weak */
+.badge-low        { background: #c6fdd9; color: #26603b; }   /* green weak */
+.badge-requested  { background: #fef9c3; color: #8d5112; }   /* yellow weak — pending */
+.badge-approved   { background: #c6fdd9; color: #26603b; }   /* green weak */
+.badge-expired    { background: #ffe0e0; color: #ba2a2a; }   /* red weak */
+.badge-completed  { background: #c6fdd9; color: #26603b; }   /* green weak */
+.badge-pending    { background: #fef9c3; color: #8d5112; }   /* yellow weak */
+.badge-todo       { background: #fef9c3; color: #8d5112; }   /* yellow weak */
+
+/* Link Styles */
+.link {
+    color: #3172e3; /* --luna\\blue500 */
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.empty {
+    color: #828ca3; /* --luna\\gray400 */
+    font-style: italic;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #f8fafc; /* --luna\\gray50 */
+    border-bottom: 2px solid #e2e8f0; /* --luna\\gray200 */
+}
+
+/* ================================================
+   LUNA TABLIST COMPONENT
+
+   Usage:
+     <div class="luna-tablist" data-component="Tablist">
+         <button class="luna-tab active">Tab Label</button>
+         <button class="luna-tab">Tab Label</button>
+     </div>
+
+   Sizes: data-size="sm|md|lg" (default: md)
+     sm — 2.25rem height, 0.875rem (font-200)
+     md — 2.5rem height, 0.875rem (font-200)
+     lg — 2.75rem height, 1rem (font-300)
+
+   Active state: Add class "active" to the selected tab.
+
+   Ember translation:
+     <div class="luna-tablist" data-size="sm">
+     → <Tablist @options={{tabOptions}} @value={{activeTab}} @size="sm" @onChange={{fn ...}} />
+     Tab option: { value: 'tab1', label: 'Tab Label' }
+   ================================================ */
+
+.luna-tablist {
+    display: flex;
+    gap: 1.25rem;
+    border-bottom: 1px solid #e2e8f0; /* --luna\gray200 */
+}
+
+.luna-tab {
+    display: flex;
+    align-items: center;
+    height: 2.5rem;
+    padding: 0;
+    font-size: 0.875rem; /* --luna-font-size-200 */
+    font-weight: 500;
+    font-family: inherit;
+    color: #0f172a; /* --luna\gray900 */
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.15s;
+}
+
+.luna-tab:hover {
+    border-bottom-color: #e2e8f0; /* --luna\gray200 */
+}
+
+.luna-tab.active {
+    color: #266c92; /* --luna\teal500 */
+    border-bottom-color: #266c92;
+}
+
+/* Size variants */
+.luna-tablist[data-size="sm"] .luna-tab {
+    height: 2.25rem;
+}
+
+.luna-tablist[data-size="lg"] .luna-tab {
+    font-size: 1rem; /* --luna-font-size-300 */
+    height: 2.75rem;
+}
+
+.luna-tablist-panel {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 1.5rem;
+    width: 100%;
+}
+
+.luna-tablist-panel-text {
+    font-size: 0.875rem;
+    color: #1e293b;
+}
+
+/* ================================================
+   LUNA ACCORDION COMPONENT
+
+   Usage:
+     <div class="luna-accordion" data-variant="primary" data-component="Accordion">
+         <div class="luna-accordion-header" onclick="this.parentElement.classList.toggle('expanded')">
+             <span class="luna-icon luna-accordion-toggle" data-icon="chevron-right" data-component="Icon"></span>
+             <span class="luna-accordion-title">Section Title</span>
+             <span class="luna-accordion-decorations">
+                 <span class="luna-badge gray strong" data-variant="round">0</span>
+             </span>
+         </div>
+         <div class="luna-accordion-panel">Panel content...</div>
+     </div>
+
+   Variants: data-variant="primary|underline|white|text" (required)
+     primary   — gray bg, teal accent when expanded
+     underline — bottom border only, minimal
+     white     — white bg with border
+     text      — no background, no border
+   States: Add class "expanded" to .luna-accordion to show panel.
+
+   Ember translation:
+     <div class="luna-accordion" data-variant="primary">
+     → <Accordion @variant="primary">
+       <:title>Section Title</:title>
+       <:decorations><Badge>0</Badge></:decorations>
+       <:panel>Panel content</:panel>
+     </Accordion>
+   ================================================ */
+
+.luna-accordion {
+    border-radius: 4px; /* --luna-radius-sm */
+    overflow: hidden;
+}
+
+.luna-accordion-header {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0 0.75rem 0 0;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.875rem; /* --luna-font-size-200 */
+    color: #0f172a; /* --luna-gray-900 */
+    transition: background 0.15s, border-color 0.15s;
+}
+
+/* Variant: primary (default visual) */
+.luna-accordion[data-variant="primary"] .luna-accordion-header {
+    background: #f8fafc; /* --luna-gray-50 */
+    border: 1px solid #e2e8f0; /* --luna-gray-200 */
+    border-radius: 4px;
+}
+
+.luna-accordion[data-variant="primary"] .luna-accordion-header:hover {
+    background: #f1f5f9;
+}
+
+.luna-accordion[data-variant="primary"].expanded .luna-accordion-header {
+    background: #f3fafb; /* --luna-teal-50 */
+    border-color: #e3f0f2; /* --luna-teal-100 */
+    color: #0b2b48; /* --luna-teal-800 */
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-left: 0.25rem solid #0e5371; /* --luna-teal-600 accent */
+}
+
+.luna-accordion[data-variant="primary"] .luna-accordion-panel {
+    border: 1px solid #e3f0f2; /* --luna-teal-100 */
+    border-top: none;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+/* Variant: underline */
+.luna-accordion[data-variant="underline"] .luna-accordion-header {
+    background: transparent;
+    border-bottom: 1px solid #e2e8f0;
+    border-radius: 0;
+}
+
+.luna-accordion[data-variant="underline"] .luna-accordion-header:hover {
+    background: #f8fafc;
+}
+
+.luna-accordion[data-variant="underline"].expanded .luna-accordion-header {
+    border-bottom-color: #266c92;
+}
+
+/* Variant: white */
+.luna-accordion[data-variant="white"] .luna-accordion-header {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+}
+
+.luna-accordion[data-variant="white"] .luna-accordion-header:hover {
+    background: #f8fafc;
+}
+
+.luna-accordion[data-variant="white"].expanded .luna-accordion-header {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.luna-accordion[data-variant="white"] .luna-accordion-panel {
+    border: 1px solid #e2e8f0;
+    border-top: none;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+/* Variant: text */
+.luna-accordion[data-variant="text"] .luna-accordion-header {
+    background: transparent;
+}
+
+.luna-accordion[data-variant="text"] .luna-accordion-header:hover {
+    background: #f8fafc;
+}
+
+/* Fallback for no variant specified (matches primary) */
+.luna-accordion:not([data-variant]) .luna-accordion-header {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+}
+
+.luna-accordion:not([data-variant]) .luna-accordion-header:hover {
+    background: #f1f5f9;
+}
+
+.luna-accordion:not([data-variant]).expanded .luna-accordion-header {
+    background: #f3fafb;
+    border-color: #e3f0f2;
+    color: #0b2b48;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-left: 0.25rem solid #0e5371;
+}
+
+.luna-accordion:not([data-variant]) .luna-accordion-panel {
+    border: 1px solid #e3f0f2;
+    border-top: none;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+/* Shared sub-elements */
+.luna-accordion-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: inherit;
+    transition: transform 0.1s;
+    padding-left: 0.25rem;
+}
+
+.luna-accordion.expanded .luna-accordion-toggle {
+    transform: rotate(90deg);
+}
+
+.luna-accordion-title {
+    flex: 1;
+}
+
+.luna-accordion-decorations {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.luna-accordion-panel {
+    display: none;
+    padding: 1rem;
+    font-size: 0.875rem;
+    background: #ffffff;
+}
+
+.luna-accordion.expanded .luna-accordion-panel {
+    display: block;
+}
+
+/* Legacy alias: .rounded → use data-variant="round" instead */
+.luna-badge.rounded {
+    border-radius: 50%;
+    min-width: 1.5rem;
+    text-align: center;
+}
+
+/* ================================================
+   LUNA AVATAR COMPONENT
+
+   Usage:
+     <div class="luna-avatar" data-component="Avatar">JK</div>
+     <div class="luna-avatar" data-size="md" data-bg-color="#3b82f6">AB</div>
+     <div class="luna-avatar" data-size="lg" data-status="success">
+         <img src="avatar.jpg" alt="Jane Kim">
+     </div>
+
+   Sizes: data-size="sm|md|lg" (default: sm)
+     sm — 24px
+     md — 32px
+     lg — 40px
+   Background: data-bg-color="<any CSS color>" or use .blue .green etc. shortcuts
+   Status: data-status="success|error" (deprecated in Luna — indicator dot)
+
+   Ember translation:
+     <div class="luna-avatar" data-size="md" data-bg-color="#3b82f6">
+     → <Avatar @size="md" @bgColor="#3b82f6" @initials="AB">
+   ================================================ */
+
+.luna-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.625rem;
+    background: #3b82f6;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.luna-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Size: sm — 24px (default) */
+
+/* Size: md — 32px */
+.luna-avatar[data-size="md"] {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+}
+
+/* Size: lg — 40px */
+.luna-avatar[data-size="lg"] {
+    width: 40px;
+    height: 40px;
+    font-size: 0.875rem;
+}
+
+/* Color shortcuts */
+.luna-avatar.blue { background: #3b82f6; }
+.luna-avatar.green { background: #10b981; }
+.luna-avatar.red { background: #ef4444; }
+.luna-avatar.purple { background: #8b5cf6; }
+.luna-avatar.gray { background: #6b7280; }
+.luna-avatar.teal { background: #266c92; }
+.luna-avatar.orange { background: #f97316; }
+
+/* Status indicator */
+.luna-avatar[data-status]::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+.luna-avatar[data-status="success"]::after { background: #16a34a; }
+.luna-avatar[data-status="error"]::after { background: #dc2626; }
+
+/* ================================================
+   LUNA AVATAR LIST COMPONENT
+
+   Usage:
+     <div class="luna-avatar-list" data-component="AvatarList">
+         <div class="luna-avatar">JK</div>
+         <div class="luna-avatar">AB</div>
+         <span class="luna-avatar-list-overflow">+3</span>
+     </div>
+
+   Ember translation:
+     → <AvatarList @users={{users}} @maxCount={{3}}>
+   ================================================ */
+
+.luna-avatar-list {
+    display: flex;
+    align-items: center;
+}
+
+.luna-avatar-list .luna-avatar + .luna-avatar {
+    margin-left: -0.5rem;
+    border: 2px solid white;
+}
+
+.luna-avatar-list-overflow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #475569;
+    font-size: 0.625rem;
+    font-weight: 600;
+    margin-left: -0.5rem;
+    border: 2px solid white;
+}
+
+/* ================================================
+   LUNA BANNER COMPONENT
+
+   Usage:
+     <div class="luna-banner" data-component="Banner">
+         <div class="luna-banner-heading">Title</div>
+         <div class="luna-banner-description">Description text.</div>
+         <div class="luna-banner-body">Optional extended content.</div>
+         <div class="luna-banner-actions">
+             <button class="luna-btn">Action</button>
+         </div>
+     </div>
+
+   Layout: data-stacked="false" → floats actions right (default: stacked/true)
+   Dismissable: add a close icon button if onClose behavior is needed
+
+   Note: Ember Banner has no @color/@variant arg. It uses a single
+   informational blue style. For color-coded messages, use Notice instead.
+   The .blue/.yellow/.red/.green classes below are prototype helpers only.
+
+   Ember translation:
+     <div class="luna-banner">
+     → <Banner @heading="Title" @description="Description">
+       <:actions><Button>Action</Button></:actions>
+     </Banner>
+   ================================================ */
+
+.luna-banner {
+    border-radius: 6px;
+    padding: 1rem;
+    width: 100%;
+    font-size: 0.875rem;
+    background: #dbeaff;
+    border: 1px solid #93c5fd;
+    color: #0e48a1;
+}
+
+/* Prototype color helpers (not in Ember — use Notice for color variants) */
+.luna-banner.blue {
+    background: #dbeaff;
+    border-color: #93c5fd;
+    color: #0e48a1;
+}
+
+.luna-banner.yellow {
+    background: #fef9c3;
+    border-color: #fde047;
+    color: #8d5112;
+}
+
+.luna-banner.red {
+    background: #ffe0e0;
+    border-color: #fca5a5;
+    color: #ba2a2a;
+}
+
+.luna-banner.green {
+    background: #c6fdd9;
+    border-color: #86efac;
+    color: #26603b;
+}
+
+.luna-banner-heading {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.luna-banner-description {
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.luna-banner-body {
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.luna-banner-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+/* Non-stacked layout: actions float right */
+.luna-banner[data-stacked="false"] {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.luna-banner[data-stacked="false"] .luna-banner-actions {
+    margin-left: auto;
+    margin-top: 0;
+    flex-shrink: 0;
+}
+
+/* ================================================
+   LUNA BUTTON COMPONENT
+
+   Usage:
+     <button class="luna-btn" data-component="Button">Default (white)</button>
+     <button class="luna-btn blue" data-component="Button">Blue</button>
+     <button class="luna-btn red" data-component="Button">Red</button>
+     <button class="luna-btn gray" data-component="Button">Gray</button>
+     <button class="luna-btn orange" data-component="Button">Orange</button>
+     <button class="luna-btn green" data-component="Button">Green</button>
+     <button class="luna-btn transparent" data-component="Button">Transparent</button>
+
+   Variants: .blue .red .gray .orange .green .transparent (default: white)
+   Sizes: data-size="xs|sm|md|lg" (default: md)
+   States: .active .errored :disabled
+   Width: data-width="full"
+
+   Ember translation:
+     <button class="luna-btn blue" data-size="sm">  →  <Button @variant="blue" @size="sm">
+   ================================================ */
+
+.luna-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    height: 1.75rem;
+    padding: 0 0.5rem;
+    border: 1px solid #cbd5e1; /* --luna\gray300 */
+    border-radius: 0.25rem; /* --luna\radius-sm = 4px */
+    background: #ffffff;
+    font-size: 0.8125rem; /* --luna\font-150 = 13px */
+    font-family: inherit;
+    font-weight: 500;
+    color: #0f172a; /* --luna\gray900 */
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+}
+
+.luna-btn:hover {
+    background: #f8fafc; /* --luna\gray50 */
+}
+
+.luna-btn:focus-visible {
+    box-shadow: 0 0 0 0.125rem #ffffff, 0 0 0 4px #266c92;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    z-index: 1;
+}
+
+/* Variant: blue (primary action) */
+.luna-btn.blue {
+    background: #266c92; /* --luna\teal500 */
+    color: #ffffff;
+    border-color: #266c92;
+}
+.luna-btn.blue:hover {
+    background: #0e5371; /* --luna\teal600 */
+    border-color: #0e5371;
+}
+
+/* Variant: red (destructive) */
+.luna-btn.red {
+    background: #db3535; /* --luna\red500 */
+    color: #ffffff;
+    border-color: #db3535;
+}
+.luna-btn.red:hover {
+    background: #ba2a2a; /* --luna\red600 */
+    border-color: #ba2a2a;
+}
+
+/* Variant: orange (warning) */
+.luna-btn.orange {
+    background: #cc4e00; /* --luna\orange500 */
+    color: #ffffff;
+    border-color: #cc4e00;
+}
+.luna-btn.orange:hover {
+    background: #a84100; /* --luna\orange600 */
+    border-color: #a84100;
+}
+
+/* Variant: green (success/confirm) */
+.luna-btn.green {
+    background: #36844a; /* --luna\green500 */
+    color: #ffffff;
+    border-color: #36844a;
+}
+.luna-btn.green:hover {
+    background: #26603b; /* --luna\green600 */
+    border-color: #26603b;
+}
+
+/* Variant: gray (tertiary) */
+.luna-btn.gray {
+    background: #f1f5f9; /* --luna\gray100 */
+    color: #0f172a;
+    border-color: transparent;
+}
+.luna-btn.gray:hover {
+    background: #e2e8f0; /* --luna\gray200 */
+}
+
+/* Variant: transparent (minimal) */
+.luna-btn.transparent {
+    background: transparent;
+    color: #0f172a;
+    border-color: transparent;
+}
+.luna-btn.transparent:hover {
+    background: hsla(210, 98%, 20%, 0.03); /* --luna\gray-a-50 */
+}
+
+/* Size: xs — 20px height, 11px font */
+.luna-btn[data-size="xs"] {
+    height: 1.25rem;
+    padding: 0 0.375rem;
+    font-size: 0.6875rem;
+}
+
+/* Size: sm — 24px height, 12px font */
+.luna-btn[data-size="sm"] {
+    height: 1.5rem;
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* Size: md — 28px height, 13px font (default) */
+/* (default styles above) */
+
+/* Size: lg — 32px height, 13px font */
+.luna-btn[data-size="lg"] {
+    height: 2rem;
+    padding: 0 0.625rem;
+}
+
+/* Full width */
+.luna-btn[data-width="full"] {
+    width: 100%;
+}
+
+/* Align left (useful with full width) */
+.luna-btn[data-align="left"] {
+    justify-content: flex-start;
+}
+
+/* Active state (toggled on) */
+.luna-btn.active {
+    z-index: 1;
+}
+
+/* Errored state */
+.luna-btn.errored {
+    box-shadow: 0 0 0 0.125rem #ffffff, 0 0 0 4px #db3535;
+}
+
+/* Disabled state */
+.luna-btn:disabled {
+    background: #e2e8f0; /* --luna\gray200 */
+    color: #828ca3; /* --luna\gray400 */
+    border: 0;
+    cursor: default;
+    pointer-events: none;
+}
+.luna-btn:disabled svg {
+    color: #828ca3;
+}
+
+/* Loading state */
+.luna-btn[data-loading] {
+    pointer-events: none;
+    opacity: 0.7;
+    position: relative;
+}
+
+.luna-btn[data-loading]::after {
+    content: '';
+    width: 0.75rem;
+    height: 0.75rem;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: luna-spin 0.6s linear infinite;
+    margin-left: 0.25rem;
+}
+
+/* Icon sizing inside buttons */
+.luna-btn .luna-icon {
+    width: 0.625rem;
+    height: 0.625rem;
+}
+.luna-btn[data-size="xs"] .luna-icon {
+    width: 0.625rem;
+    height: 0.625rem;
+}
+
+/* Legacy variant aliases (map old names to new for existing prototypes) */
+.luna-btn.primary {
+    background: #266c92;
+    color: #ffffff;
+    border-color: #266c92;
+}
+.luna-btn.primary:hover {
+    background: #0e5371;
+    border-color: #0e5371;
+}
+.luna-btn.danger {
+    background: #db3535;
+    color: #ffffff;
+    border-color: #db3535;
+}
+.luna-btn.danger:hover {
+    background: #ba2a2a;
+    border-color: #ba2a2a;
+}
+.luna-btn.secondary {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: transparent;
+}
+.luna-btn.secondary:hover {
+    background: #e2e8f0;
+}
+
+/* ================================================
+   LUNA ICON BUTTON COMPONENT
+
+   Usage:
+     <button class="luna-btn-icon" data-tooltip="Edit" data-component="IconButton">
+         <span class="luna-icon" data-icon="edit" data-component="Icon"></span>
+     </button>
+     <button class="luna-btn-icon transparent" data-tooltip="More options">
+         <span class="luna-icon" data-icon="ellipsis-v"></span>
+     </button>
+
+   Variants: (default: white) | .transparent | .gray | .blue | .red | .orange | .green
+   Sizes: data-size="xs|sm|md|lg" (default: md)
+   Note: data-tooltip is required (= aria-label in Ember)
+
+   Ember translation:
+     <button class="luna-btn-icon transparent" data-tooltip="Edit" data-size="sm">
+     → <IconButton @icon="edit" @tooltip="Edit" @variant="transparent" @size="sm">
+   ================================================ */
+
+.luna-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid #cbd5e1; /* --luna\gray300 */
+    border-radius: 0.25rem; /* --luna\radius-sm = 4px */
+    background: #ffffff;
+    color: #64748b; /* --luna\gray500 */
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.luna-btn-icon:hover {
+    background: #f8fafc; /* --luna\gray50 */
+    color: #0f172a; /* --luna\gray900 */
+}
+
+.luna-btn-icon:focus-visible {
+    box-shadow: 0 0 0 0.125rem #ffffff, 0 0 0 4px #266c92;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    z-index: 1;
+}
+
+.luna-btn-icon .luna-icon {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+
+/* Size variants */
+.luna-btn-icon[data-size="xs"] { width: 1.25rem; height: 1.25rem; }
+.luna-btn-icon[data-size="sm"] { width: 1.5rem; height: 1.5rem; }
+.luna-btn-icon[data-size="lg"] { width: 2rem; height: 2rem; }
+
+/* Variant: transparent */
+.luna-btn-icon.transparent {
+    background: transparent;
+    border-color: transparent;
+}
+.luna-btn-icon.transparent:hover {
+    background: hsla(210, 98%, 20%, 0.03);
+}
+
+/* Variant: gray */
+.luna-btn-icon.gray {
+    background: #f1f5f9;
+    border-color: transparent;
+}
+.luna-btn-icon.gray:hover {
+    background: #e2e8f0;
+}
+
+/* Variant: blue */
+.luna-btn-icon.blue {
+    background: #266c92;
+    border-color: #266c92;
+    color: #ffffff;
+}
+.luna-btn-icon.blue:hover {
+    background: #0e5371;
+    border-color: #0e5371;
+}
+
+/* Variant: red */
+.luna-btn-icon.red {
+    background: #db3535;
+    border-color: #db3535;
+    color: #ffffff;
+}
+.luna-btn-icon.red:hover {
+    background: #ba2a2a;
+    border-color: #ba2a2a;
+}
+
+/* Variant: orange */
+.luna-btn-icon.orange {
+    background: #cc4e00;
+    border-color: #cc4e00;
+    color: #ffffff;
+}
+.luna-btn-icon.orange:hover {
+    background: #a84100;
+    border-color: #a84100;
+}
+
+/* Variant: green */
+.luna-btn-icon.green {
+    background: #36844a;
+    border-color: #36844a;
+    color: #ffffff;
+}
+.luna-btn-icon.green:hover {
+    background: #26603b;
+    border-color: #26603b;
+}
+
+/* States */
+.luna-btn-icon:disabled {
+    background: #e2e8f0;
+    color: #828ca3;
+    border: 0;
+    cursor: default;
+    pointer-events: none;
+}
+
+.luna-btn-icon.active {
+    z-index: 1;
+}
+
+.luna-btn-icon[data-loading] {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* Legacy alias: .ghost → use .transparent instead */
+.luna-btn-icon.ghost {
+    background: transparent;
+    border-color: transparent;
+}
+.luna-btn-icon.ghost:hover {
+    background: hsla(210, 98%, 20%, 0.03);
+}
+
+/* ================================================
+   LUNA BUTTON WITH MENU COMPONENT
+
+   Usage:
+     <button class="luna-btn-with-menu" data-component="ButtonWithMenu">
+         Label <span class="luna-icon" data-icon="chevron-down" data-component="Icon"></span>
+     </button>
+
+   Ember translation:
+     <button class="luna-btn-with-menu">  →  <ButtonWithMenu>
+   ================================================ */
+
+.luna-btn-with-menu {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    height: 1.75rem;
+    padding: 0 0.5rem;
+    border: 1px solid #cbd5e1; /* --luna\gray300 */
+    border-radius: 0.25rem; /* --luna\radius-sm = 4px */
+    background: #ffffff;
+    font-size: 0.8125rem;
+    font-family: inherit;
+    font-weight: 500;
+    color: #0f172a; /* --luna\gray900 */
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+.luna-btn-with-menu:hover {
+    background: #f8fafc; /* --luna\gray50 */
+}
+
+.luna-btn-with-menu .luna-icon {
+    width: 0.625rem;
+    height: 0.625rem;
+    color: #94a3b8; /* --luna\gray400 */
+}
+
+/* Legacy support for old caret pattern */
+.luna-btn-caret {
+    font-size: 0.625rem;
+    margin-left: 0.25rem;
+    color: #94a3b8;
+}
+
+/* ================================================
+   LUNA CALENDAR COMPONENT
+
+   Usage:
+     <div class="luna-calendar" data-component="Calendar">
+         <div class="luna-calendar-header">
+             <button class="luna-calendar-nav"><span class="luna-icon" data-icon="chevron-left" data-component="Icon"></span></button>
+             <span class="luna-calendar-title">April 2026</span>
+             <button class="luna-calendar-nav"><span class="luna-icon" data-icon="chevron-right" data-component="Icon"></span></button>
+         </div>
+         <div class="luna-calendar-grid">
+             <span class="luna-calendar-day-label">Su</span>...
+             <span class="luna-calendar-day">1</span>
+             <span class="luna-calendar-day selected">14</span>
+             <span class="luna-calendar-day outside">30</span>
+         </div>
+     </div>
+   ================================================ */
+
+.luna-calendar {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 1rem;
+    width: 280px;
+    background: #ffffff;
+}
+
+.luna-calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.luna-calendar-nav {
+    cursor: pointer;
+    color: #64748b;
+    padding: 0.25rem;
+    background: none;
+    border: none;
+}
+
+.luna-calendar-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.luna-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.25rem;
+    text-align: center;
+}
+
+.luna-calendar-day-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    padding: 0.375rem;
+}
+
+.luna-calendar-day {
+    padding: 0.375rem;
+    font-size: 0.8125rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.luna-calendar-day:hover {
+    background: #f1f5f9;
+}
+
+.luna-calendar-day.selected {
+    background: #266c92;
+    color: white;
+}
+
+.luna-calendar-day.outside {
+    opacity: 0.4;
+}
+
+/* ================================================
+   LUNA CHECKBOX COMPONENT
+
+   Usage:
+     <label class="luna-checkbox" data-component="Checkbox">
+         <input type="checkbox"> Label text
+     </label>
+     <label class="luna-checkbox" data-size="lg">
+         <input type="checkbox" checked> Large checkbox
+     </label>
+
+   Sizes: data-size="sm|md|lg" (default: md)
+   States: checked, indeterminate (mixed), disabled
+   Note: For mixed/indeterminate state, set via JS: el.indeterminate = true
+
+   Ember translation:
+     <label class="luna-checkbox" data-size="lg">
+     → <Checkbox @size="lg" @value={{true}} @onChange={{fn ...}} />
+   ================================================ */
+
+.luna-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.luna-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #266c92;
+    flex-shrink: 0;
+}
+
+/* Size: sm */
+.luna-checkbox[data-size="sm"] { font-size: 0.8125rem; }
+.luna-checkbox[data-size="sm"] input[type="checkbox"] { width: 14px; height: 14px; }
+
+/* Size: lg */
+.luna-checkbox[data-size="lg"] { font-size: 1rem; }
+.luna-checkbox[data-size="lg"] input[type="checkbox"] { width: 20px; height: 20px; }
+
+/* Disabled */
+.luna-checkbox:has(input:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ================================================
+   LUNA CODE COMPONENT
+
+   Usage:
+     <pre class="luna-code">const x = 42;</pre>
+   ================================================ */
+
+.luna-code {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 1rem;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 0.8125rem;
+    overflow-x: auto;
+    color: #1e293b;
+}
+
+/* ================================================
+   LUNA DEFINITION LIST COMPONENT
+
+   Usage:
+     <dl class="luna-definition-list" data-component="DefinitionList">
+         <dt>Label</dt>
+         <dd>Value</dd>
+     </dl>
+
+   Sizes: data-size="sm|md" (default: md)
+   Note: only allows dt/dd children
+
+   Ember translation:
+     <dl class="luna-definition-list" data-size="sm">
+     → <DefinitionList @size="sm">
+   ================================================ */
+
+.luna-definition-list {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1.5rem;
+    font-size: 0.875rem;
+}
+
+.luna-definition-list dt {
+    font-weight: 500;
+    color: #64748b;
+}
+
+.luna-definition-list dd {
+    color: #1e293b;
+}
+
+/* Size: sm */
+.luna-definition-list[data-size="sm"] {
+    gap: 0.375rem 1rem;
+    font-size: 0.8125rem;
+}
+
+/* ================================================
+   LUNA DIVIDER COMPONENT
+
+   Usage:
+     <hr class="luna-divider" data-component="Divider">
+     <hr class="luna-divider" data-spacing="lg">
+
+   Spacing: data-spacing="none|xs|sm|md|lg|xl" (default: md)
+   Tag: can be <hr> or <div> (use <div> for non-semantic separators)
+   Note: becomes vertical automatically when inside .luna-xstack
+
+   Ember translation:
+     <hr class="luna-divider" data-spacing="lg">
+     → <Divider @spacing="lg" />
+   ================================================ */
+
+.luna-divider {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 1rem 0;
+}
+
+/* Spacing variants */
+.luna-divider[data-spacing="none"] { margin: 0; }
+.luna-divider[data-spacing="xs"]   { margin: 0.25rem 0; }
+.luna-divider[data-spacing="sm"]   { margin: 0.5rem 0; }
+.luna-divider[data-spacing="md"]   { margin: 1rem 0; }
+.luna-divider[data-spacing="lg"]   { margin: 1.5rem 0; }
+.luna-divider[data-spacing="xl"]   { margin: 2rem 0; }
+
+/* Vertical divider inside XStack */
+.luna-xstack > .luna-divider {
+    border-top: none;
+    border-left: 1px solid #e2e8f0;
+    margin: 0;
+    align-self: stretch;
+    width: 0;
+}
+
+/* ================================================
+   LUNA EMPTY STATE COMPONENT
+
+   Usage:
+     <div class="luna-empty-state" data-component="EmptyState">
+         <div class="luna-empty-state-icon"><span class="luna-icon" data-icon="inbox" data-component="Icon"></span></div>
+         <div class="luna-empty-state-heading">No items found</div>
+         <div class="luna-empty-state-description">Try adjusting your filters.</div>
+         <div class="luna-empty-state-primary-actions">
+             <button class="luna-btn blue">Create New</button>
+         </div>
+         <div class="luna-empty-state-secondary-actions">
+             <a class="luna-link">Learn more</a>
+         </div>
+     </div>
+
+   Blocks: heading, description, primary-actions, secondary-actions
+   Required: @heading and @description
+
+   Ember translation:
+     → <EmptyState @heading="No items" @description="Try adjusting.">
+       <:primary-actions><Button @variant="blue">Create</Button></:primary-actions>
+       <:secondary-actions><Link>Learn more</Link></:secondary-actions>
+     </EmptyState>
+   ================================================ */
+
+.luna-empty-state {
+    text-align: center;
+    padding: 2rem;
+}
+
+.luna-empty-state-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 1rem;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 1.25rem;
+}
+
+.luna-empty-state-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+}
+
+.luna-empty-state-description {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 1.5rem;
+}
+
+.luna-empty-state-primary-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.luna-empty-state-secondary-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* ================================================
+   LUNA EVENT LIST COMPONENT
+
+   Usage:
+     <div class="luna-event-list" data-component="EventList">
+         <div class="luna-event-list-item" data-event-type="success" data-component="EventListItem">
+             <span class="luna-event-icon"></span>
+             <div class="luna-event-content">
+                 <div class="luna-event-title">Event title</div>
+                 <div class="luna-event-badge"><span class="luna-badge green weak">Badge</span></div>
+                 <div class="luna-event-meta">2 hours ago</div>
+             </div>
+         </div>
+     </div>
+
+   Event types: data-event-type="broadcast|success|error|info|warning" (default: broadcast)
+   Clickable: add href attribute or onclick for clickable items
+
+   Ember translation:
+     <div class="luna-event-list-item" data-event-type="success">
+     → <EventListItem @eventType="success">
+       <:title>Event title</:title>
+       <:badge><Badge>Label</Badge></:badge>
+       <:meta>2 hours ago</:meta>
+     </EventListItem>
+   ================================================ */
+
+.luna-event-list {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.luna-event-list-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.luna-event-list-item:last-child {
+    border-bottom: none;
+}
+
+/* Event type icon indicator */
+.luna-event-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 0.375rem;
+    background: #64748b;
+}
+
+.luna-event-list-item[data-event-type="broadcast"] .luna-event-icon { background: #64748b; }
+.luna-event-list-item[data-event-type="success"] .luna-event-icon   { background: #16a34a; }
+.luna-event-list-item[data-event-type="error"] .luna-event-icon     { background: #dc2626; }
+.luna-event-list-item[data-event-type="info"] .luna-event-icon      { background: #1f5dd8; }
+.luna-event-list-item[data-event-type="warning"] .luna-event-icon   { background: #f59e0b; }
+
+/* Legacy dot classes (deprecated — use data-event-type) */
+.luna-event-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.luna-event-dot.red { background: #ef4444; }
+.luna-event-dot.green { background: #10b981; }
+.luna-event-dot.yellow { background: #eab308; }
+
+.luna-event-content {
+    flex: 1;
+}
+
+.luna-event-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.luna-event-badge {
+    display: inline-flex;
+    margin-top: 0.25rem;
+}
+
+.luna-event-meta {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+}
+
+/* ================================================
+   LUNA FIELD COMPONENT
+
+   Usage:
+     <div class="luna-field" data-component="Field">
+         <label class="luna-label">Field Label</label>
+         <input class="luna-input" type="text">
+     </div>
+
+     <!-- Horizontal layout -->
+     <div class="luna-field" data-variant="horizontal" data-component="Field">
+         <label class="luna-label">Label</label>
+         <span>Value</span>
+     </div>
+
+     <!-- Required field -->
+     <div class="luna-field" data-required data-component="Field">
+         <label class="luna-label">Required <span class="luna-field-required">*</span></label>
+         <input class="luna-input" type="text">
+     </div>
+
+   Variants: data-variant="vertical|horizontal" (default: vertical)
+   Required: data-required (shows red asterisk)
+   Description: .luna-field-description (helper text below input)
+   Instructions: .luna-field-instructions (instructions below input)
+
+   Ember translation:
+     <div class="luna-field" data-variant="horizontal" data-required>
+     → <Field @variant="horizontal" @required={{true}}>
+       <:label>Field Label</:label>
+       <:input as |id|><LunaInput @id={{id}} /></:input>
+     </Field>
+   ================================================ */
+
+.luna-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.luna-field-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.luna-field-required {
+    color: #db3535;
+}
+
+.luna-field-description {
+    font-size: 0.75rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.luna-field-instructions {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    line-height: 1.4;
+}
+
+/* Variant: horizontal */
+.luna-field[data-variant="horizontal"] {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 1.5rem;
+}
+
+.luna-field[data-variant="horizontal"] .luna-label,
+.luna-field[data-variant="horizontal"] .luna-field-label {
+    min-width: 10rem;
+    flex-shrink: 0;
+    text-transform: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+/* Legacy class alias (deprecated — use data-variant="horizontal") */
+.luna-field-horizontal {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 1.5rem;
+}
+
+.luna-field-horizontal .luna-field-label {
+    min-width: 10rem;
+    flex-shrink: 0;
+    text-transform: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+/* ================================================
+   LUNA FORM COMPONENT
+
+   Usage:
+     <form class="luna-form" data-component="Form">
+         <div class="luna-field">...</div>
+         <div class="luna-field">...</div>
+     </form>
+   ================================================ */
+
+.luna-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* ================================================
+   LUNA FRAME COMPONENT
+
+   Usage:
+     <div class="luna-frame" data-component="Frame">Content</div>
+     <div class="luna-frame" data-highlight="top-blue" data-padding="md" data-radius="md">
+         Highlighted frame
+     </div>
+
+   Border: data-border="false" to remove border (default: true)
+   Highlight: data-highlight="<position>-<color>"
+     Positions: top | left
+     Colors: gray | red | green | blue | orange
+   Padding: data-padding="none|xs|sm|md|lg|xl|2xl" (default: none)
+   Radius: data-radius="sm|md|lg" (default: sm)
+
+   Ember translation:
+     <div class="luna-frame" data-highlight="left-green" data-padding="md">
+     → <Frame @highlight="left-green" @padding="md">
+   ================================================ */
+
+.luna-frame {
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    position: relative;
+}
+
+/* Border: false */
+.luna-frame[data-border="false"] { border: none; }
+
+/* Radius variants */
+.luna-frame[data-radius="sm"] { border-radius: 4px; }
+.luna-frame[data-radius="md"] { border-radius: 6px; }
+.luna-frame[data-radius="lg"] { border-radius: 8px; }
+
+/* Padding variants */
+.luna-frame[data-padding="none"] { padding: 0; }
+.luna-frame[data-padding="xs"]   { padding: 0.25rem; }
+.luna-frame[data-padding="sm"]   { padding: 0.5rem; }
+.luna-frame[data-padding="md"]   { padding: 1rem; }
+.luna-frame[data-padding="lg"]   { padding: 1.5rem; }
+.luna-frame[data-padding="xl"]   { padding: 2rem; }
+.luna-frame[data-padding="2xl"]  { padding: 3rem; }
+
+/* Highlight: top stripe */
+.luna-frame[data-highlight^="top-"] { border-top-width: 3px; }
+.luna-frame[data-highlight="top-gray"]   { border-top-color: #64748b; }
+.luna-frame[data-highlight="top-red"]    { border-top-color: #db3535; }
+.luna-frame[data-highlight="top-green"]  { border-top-color: #36844a; }
+.luna-frame[data-highlight="top-blue"]   { border-top-color: #1f5dd8; }
+.luna-frame[data-highlight="top-orange"] { border-top-color: #cc4e00; }
+
+/* Highlight: left stripe */
+.luna-frame[data-highlight^="left-"] { border-left-width: 3px; }
+.luna-frame[data-highlight="left-gray"]   { border-left-color: #64748b; }
+.luna-frame[data-highlight="left-red"]    { border-left-color: #db3535; }
+.luna-frame[data-highlight="left-green"]  { border-left-color: #36844a; }
+.luna-frame[data-highlight="left-blue"]   { border-left-color: #1f5dd8; }
+.luna-frame[data-highlight="left-orange"] { border-left-color: #cc4e00; }
+
+/* Legacy class alias */
+.luna-frame.error {
+    border-color: #fca5a5;
+    background: #fef2f2;
+}
+
+.luna-frame.error .luna-frame-text {
+    color: #ef4444;
+    font-size: 0.875rem;
+}
+
+/* ================================================
+   LUNA HEADING COMPONENT
+
+   Usage:
+     <h2 class="luna-heading" data-font="400" data-component="Heading">Title</h2>
+     <h3 class="luna-heading" data-font="300" data-weight="normal">Subtitle</h3>
+
+   Font scale: data-font="25|50|100|150|200|300|400|450|500|600"
+   Weights: data-weight="weak|normal|medium|strong" (default: strong)
+   Alignment: data-align="left|right|center" (default: left)
+   Truncate: data-truncate (single line with ellipsis)
+
+   Ember translation:
+     <h2 class="luna-heading" data-font="400" data-weight="strong">
+     → <Heading @font="400" @level={{2}} @weight="strong">
+   ================================================ */
+
+.luna-heading {
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.3;
+}
+
+/* Font scale */
+.luna-heading[data-font="25"]  { font-size: 0.625rem; }
+.luna-heading[data-font="50"]  { font-size: 0.6875rem; }
+.luna-heading[data-font="100"] { font-size: 0.75rem; }
+.luna-heading[data-font="150"] { font-size: 0.8125rem; }
+.luna-heading[data-font="200"] { font-size: 0.875rem; }
+.luna-heading[data-font="300"] { font-size: 1rem; }
+.luna-heading[data-font="400"] { font-size: 1.25rem; }
+.luna-heading[data-font="450"] { font-size: 1.375rem; }
+.luna-heading[data-font="500"] { font-size: 1.5rem; }
+.luna-heading[data-font="600"] { font-size: 2rem; }
+
+/* Legacy data-size support (deprecated — use data-font) */
+.luna-heading[data-size="100"] { font-size: 0.75rem; }
+.luna-heading[data-size="200"] { font-size: 0.875rem; }
+.luna-heading[data-size="300"] { font-size: 1rem; }
+.luna-heading[data-size="400"] { font-size: 1.25rem; }
+.luna-heading[data-size="500"] { font-size: 1.5rem; }
+
+/* Weight variants */
+.luna-heading[data-weight="weak"]   { font-weight: 400; }
+.luna-heading[data-weight="normal"] { font-weight: 500; }
+.luna-heading[data-weight="medium"] { font-weight: 500; }
+.luna-heading[data-weight="strong"] { font-weight: 600; }
+
+/* Alignment */
+.luna-heading[data-align="center"] { text-align: center; }
+.luna-heading[data-align="right"]  { text-align: right; }
+
+/* Truncation */
+.luna-heading[data-truncate] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ================================================
+   LUNA HELP COMPONENT
+
+   Usage:
+     <span class="luna-help" data-component="Help">
+         <span class="luna-icon" data-icon="circle-question" data-component="Icon"></span>
+     </span>
+   ================================================ */
+
+.luna-help {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748b;
+    cursor: help;
+}
+
+.luna-help:hover {
+    color: #334155;
+}
+
+.luna-help-label {
+    font-size: 0.875rem;
+    color: #1e293b;
+}
+
+.luna-help-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6875rem;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+/* ================================================
+   LUNA ICON COMPONENT
+
+   Usage:
+     <span class="luna-icon" data-icon="star" data-component="Icon"></span>
+
+   The data-icon attribute is auto-rendered by luna-icons.js, which
+   replaces the element's contents with the corresponding SVG from
+   the LUNA_ICONS registry. Optional attributes:
+     data-size="xs|sm|md|lg|xl"
+     data-color="green|red|blue|..."  (appended with -500 in Ember)
+   ================================================ */
+
+.luna-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+}
+
+/* ================================================
+   LUNA ILLUSTRATION COMPONENT
+
+   Usage:
+     <div class="luna-illustration" data-component="Illustration">
+         <img src="..." alt="...">
+     </div>
+   ================================================ */
+
+.luna-illustration {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.luna-illustration-circle {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.luna-illustration-circle i {
+    font-size: 1.5rem;
+    color: #266c92;
+}
+
+.luna-illustration-label {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+/* ================================================
+   LUNA INPUT COMPONENT
+
+   Usage:
+     <input class="luna-input" type="text" placeholder="Enter value..." data-component="Input">
+     <input class="luna-input" data-size="lg" data-variant="transparent">
+
+   Sizes: data-size="xs|sm|md|lg" (default: md)
+   Variants: data-variant="default|transparent" (default: default)
+
+   Ember translation:
+     <input class="luna-input" data-size="lg" data-variant="transparent">
+     → <LunaInput @size="lg" @variant="transparent" />
+   ================================================ */
+
+.luna-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: #1e293b;
+    background: #ffffff;
+    transition: border-color 0.15s;
+    height: 1.75rem;
+}
+
+.luna-input:focus {
+    outline: none;
+    border-color: #266c92;
+    box-shadow: 0 0 0 2px rgba(38, 108, 146, 0.15);
+}
+
+.luna-input::placeholder {
+    color: #94a3b8;
+}
+
+.luna-input:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* Size variants */
+.luna-input[data-size="xs"] { height: 1.25rem; font-size: 0.6875rem; padding: 0 0.375rem; }
+.luna-input[data-size="sm"] { height: 1.5rem; font-size: 0.75rem; padding: 0 0.5rem; }
+.luna-input[data-size="md"] { height: 1.75rem; font-size: 0.875rem; }
+.luna-input[data-size="lg"] { height: 2rem; font-size: 0.875rem; }
+
+/* Variant: transparent */
+.luna-input[data-variant="transparent"] {
+    border-color: transparent;
+    background: transparent;
+}
+.luna-input[data-variant="transparent"]:focus {
+    border-color: #266c92;
+    background: #ffffff;
+}
+
+/* ================================================
+   LUNA LABEL COMPONENT
+
+   Usage:
+     <label class="luna-label" data-component="Label">Field Label</label>
+     <label class="luna-label" data-variant="caps">CAPS LABEL</label>
+     <label class="luna-label" data-level="2">Secondary label</label>
+
+   Variants: data-variant="default|caps" (default: default)
+   Levels: data-level="1|2" (default: 1)
+     1 — primary color (#334155)
+     2 — secondary/muted color (#64748b)
+
+   Ember translation:
+     <label class="luna-label" data-variant="caps" data-level="2">
+     → <Label @variant="caps" @level={{2}}>
+   ================================================ */
+
+.luna-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+/* Variant: caps */
+.luna-label[data-variant="caps"] {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+}
+
+/* Level: 2 — muted/secondary */
+.luna-label[data-level="2"] {
+    color: #64748b;
+}
+
+/* ================================================
+   LUNA LINK COMPONENT
+
+   Usage:
+     <a class="luna-link" href="#" data-component="Link">Link text</a>
+     <a class="luna-link red" href="#">Destructive link</a>
+     <div class="luna-link gray-with-underline" role="button">Clickable text</div>
+
+   Variants: .blue (default) | .red | .orange | .gray | .gray-with-underline
+   Without href: renders as div[role="button"]
+
+   Ember translation:
+     <a class="luna-link red" href="/path">
+     → <Link @variant="red" @href="/path">
+   ================================================ */
+
+.luna-link {
+    color: #266c92;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: inherit;
+}
+
+.luna-link:hover {
+    text-decoration: underline;
+}
+
+/* Variant: blue (default) */
+.luna-link.blue { color: #1f5dd8; }
+.luna-link.blue:hover { color: #0e48a1; }
+
+/* Variant: red */
+.luna-link.red { color: #db3535; }
+.luna-link.red:hover { color: #ba2a2a; }
+
+/* Variant: orange */
+.luna-link.orange { color: #cc4e00; }
+.luna-link.orange:hover { color: #a84100; }
+
+/* Variant: gray */
+.luna-link.gray { color: #64748b; }
+.luna-link.gray:hover { color: #334155; }
+
+/* Variant: gray-with-underline */
+.luna-link.gray-with-underline { color: #64748b; text-decoration: underline; }
+.luna-link.gray-with-underline:hover { color: #334155; }
+
+/* ================================================
+   LUNA MENU COMPONENT
+
+   Usage:
+     <div class="luna-menu" data-component="Menu">
+         <div class="luna-menu-heading">Section</div>
+         <div class="luna-menu-item" data-component="Option">
+             <span class="luna-icon" data-icon="edit" data-component="Icon"></span> Edit
+         </div>
+         <div class="luna-menu-divider"></div>
+         <div class="luna-menu-submenu">
+             <div class="luna-menu-submenu-label">More <span class="luna-icon" data-icon="chevron-right" data-component="Icon"></span></div>
+             <div class="luna-menu-submenu-items">
+                 <div class="luna-menu-item">Sub-option</div>
+             </div>
+         </div>
+     </div>
+
+   Features: headings, dividers, sub-menus
+   Yields: m.Option, m.Heading, m.SubMenu (in Ember)
+
+   Ember translation:
+     → <Menu as |m|>
+       <m.Heading>Section</m.Heading>
+       <m.Option @onClick={{fn ...}}>Edit</m.Option>
+       <m.SubMenu @label="More" as |sm|>
+         <sm.Option>Sub-option</sm.Option>
+       </m.SubMenu>
+     </Menu>
+   ================================================ */
+
+.luna-menu {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+    min-width: 200px;
+    padding: 0.25rem 0;
+}
+
+.luna-menu-heading {
+    padding: 0.5rem 0.75rem 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+}
+
+.luna-menu-item {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.luna-menu-item:hover {
+    background: #f1f5f9;
+}
+
+.luna-menu-item[data-selected="true"] {
+    color: #266c92;
+}
+
+.luna-menu-item[data-selected="true"]::before {
+    content: '✓';
+    font-size: 0.75rem;
+    width: 1rem;
+}
+
+.luna-menu-item[data-disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.luna-menu-divider {
+    border-top: 1px solid #e2e8f0;
+    margin: 0.25rem 0;
+}
+
+.luna-menu-submenu {
+    position: relative;
+}
+
+.luna-menu-submenu-label {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.luna-menu-submenu-label:hover {
+    background: #f1f5f9;
+}
+
+.luna-menu-submenu-items {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    min-width: 180px;
+    padding: 0.25rem 0;
+}
+
+.luna-menu-submenu:hover .luna-menu-submenu-items {
+    display: block;
+}
+
+/* ================================================
+   LUNA DATA CARD COMPONENT
+
+   Usage:
+     <div class="luna-data-card" data-component="DataCard">
+         <div class="luna-data-card-header">
+             <span class="luna-data-card-id">RISK-42</span>
+             <span class="luna-badge green weak">Active</span>
+         </div>
+         <div class="luna-data-card-title">
+             <a href="#" class="luna-link">Risk Title Here</a>
+         </div>
+         <div class="luna-data-card-description">
+             Brief description text, clamped to 2 lines.
+         </div>
+         <div class="luna-data-card-fields">
+             <div class="luna-data-card-field">
+                 <span class="luna-data-card-field-key">Owner</span>
+                 <span class="luna-data-card-field-value">Jane Kim</span>
+             </div>
+         </div>
+     </div>
+
+   Width: data-width="64|80|96" (Luna size tokens)
+
+   Ember translation:
+     → <DataCard @id="RISK-42" @title="Risk Title" @description="Brief desc" @width={{80}}>
+       <:status as |Badge|><Badge @color="green">Active</Badge></:status>
+       <:fields as |KeyValue|><KeyValue @key="Owner" @value="Jane Kim" /></:fields>
+     </DataCard>
+   ================================================ */
+
+.luna-data-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 1rem;
+    background: #ffffff;
+    width: 20rem;
+}
+
+.luna-data-card[data-width="64"] { width: 16rem; }
+.luna-data-card[data-width="80"] { width: 20rem; }
+.luna-data-card[data-width="96"] { width: 24rem; }
+
+.luna-data-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.luna-data-card-id {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.luna-data-card-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 0.375rem;
+}
+
+.luna-data-card-description {
+    font-size: 0.8125rem;
+    color: #64748b;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.luna-data-card-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 0.75rem;
+}
+
+.luna-data-card-field {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+}
+
+.luna-data-card-field-key {
+    color: #64748b;
+}
+
+.luna-data-card-field-value {
+    color: #1e293b;
+    font-weight: 500;
+}
+
+/* ================================================
+   LUNA MODAL COMPONENT
+
+   Usage:
+     <div class="luna-modal" data-component="Modal">
+         <div class="luna-modal-backdrop"></div>
+         <div class="luna-modal-content" data-highlight="top-blue" data-padding="md" data-radius="md">
+             <div class="luna-modal-header">Modal Title</div>
+             <div class="luna-modal-body">Body content here.</div>
+             <div class="luna-modal-footer">
+                 <button class="luna-btn">Cancel</button>
+                 <button class="luna-btn blue">Confirm</button>
+             </div>
+         </div>
+     </div>
+
+   Highlight: data-highlight="top-blue" (same format as Frame: position-color)
+   Padding: data-padding="none|xs|sm|md|lg" (default: none)
+   Radius: data-radius="sm|md|lg" (default: sm)
+
+   Ember translation:
+     → <Modal @highlight="top-blue" @padding="md" @onClose={{fn ...}} as |close titleId|>
+   ================================================ */
+
+.luna-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9000;
+}
+
+.luna-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.luna-modal-content {
+    position: relative;
+    background: #ffffff;
+    border-radius: 4px;
+    padding: 1.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    max-width: 32rem;
+    width: 100%;
+}
+
+/* Radius variants */
+.luna-modal-content[data-radius="sm"] { border-radius: 4px; }
+.luna-modal-content[data-radius="md"] { border-radius: 8px; }
+.luna-modal-content[data-radius="lg"] { border-radius: 12px; }
+
+/* Padding variants */
+.luna-modal-content[data-padding="none"] { padding: 0; }
+.luna-modal-content[data-padding="xs"]   { padding: 0.25rem; }
+.luna-modal-content[data-padding="sm"]   { padding: 0.5rem; }
+.luna-modal-content[data-padding="md"]   { padding: 1rem; }
+.luna-modal-content[data-padding="lg"]   { padding: 1.5rem; }
+
+/* Highlight stripe (top) */
+.luna-modal-content[data-highlight^="top-"] { border-top: 3px solid; }
+.luna-modal-content[data-highlight="top-blue"]   { border-top-color: #1f5dd8; }
+.luna-modal-content[data-highlight="top-red"]    { border-top-color: #db3535; }
+.luna-modal-content[data-highlight="top-green"]  { border-top-color: #36844a; }
+.luna-modal-content[data-highlight="top-gray"]   { border-top-color: #64748b; }
+.luna-modal-content[data-highlight="top-orange"] { border-top-color: #cc4e00; }
+
+.luna-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.luna-modal-header .luna-modal-title,
+.luna-modal-header > h1,
+.luna-modal-header > h2,
+.luna-modal-header > h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+    color: #0f172a;
+}
+
+.luna-modal-header .luna-btn-icon {
+    flex-shrink: 0;
+}
+
+.luna-modal-body {
+    font-size: 0.875rem;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.luna-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+/* ================================================
+   LUNA NOTICE COMPONENT
+
+   Mirrors production <Notice> from luna-core:
+     libraries/luna-core/package/src/components/notice.gts
+     libraries/luna-core/package/src/components/notice.css
+
+   Structure (Notice is a <Frame> + grid layout):
+     - White background, 1px gray border, 4px radius
+     - Colored 4px left "highlight" bar (via ::before)
+     - Grid: icon column + content column, gap 0.5rem
+     - Inner wrapper inset 0.25rem from the highlight bar
+     - Title (font-weight 500) sits above default body, gap 0.125rem
+     - Body uses luna-font-200 (lg) or luna-font-100 (sm)
+
+   Usage:
+     <div class="luna-notice blue" data-component="Notice">
+         <span class="luna-icon" data-icon="circle-info"></span>
+         <div class="luna-notice-content">
+             <div class="luna-notice-title">Optional Title</div>
+             <div>Notice content here.</div>
+         </div>
+     </div>
+
+   Default icon per variant (from notice.gts):
+     blue → circle-info   · gray → circle-info   · teal → circle-info
+     green → module-controls · orange → module-issues · red → circle-important
+
+   Variants: .gray | .red | .green | .blue | .orange | .teal (default: blue)
+   Sizes: data-size="sm|lg" (default: lg)
+
+   Ember translation:
+     <div class="luna-notice blue" data-size="lg">
+     → <Notice @variant="blue" @size="lg">
+   ================================================ */
+
+.luna-notice {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #e2e8f0; /* --luna-gray-200 */
+    border-left-width: 0;
+    border-radius: 4px; /* --luna-radius-sm */
+    padding: 0.5rem; /* Frame data-padding="md" */
+    padding-left: 0.75rem; /* 0.5rem frame pad + 0.25rem wrapper inset */
+    font-size: 0.875rem; /* --luna-font-200 */
+    color: #0f172a; /* --luna-gray-900 */
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "icon content";
+    gap: 0.5rem;
+    align-items: start;
+    min-height: 1.25rem;
+}
+
+/* Colored left highlight bar (from Frame data-highlight="left-{color}") */
+.luna-notice::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0.25rem;
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+}
+
+/* Icon: sits in first grid column, color matched to variant via currentColor */
+.luna-notice > .luna-icon {
+    grid-area: icon;
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+}
+
+/* Content column: title + body stacked */
+.luna-notice-content {
+    grid-area: content;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.luna-notice-title {
+    font-weight: 500;
+}
+
+/* Size: sm — tighter padding, smaller font + icon */
+.luna-notice[data-size="sm"] {
+    padding: 0.25rem; /* Frame data-padding="sm" */
+    padding-left: 0.5rem;
+    font-size: 0.8125rem; /* --luna-font-100 */
+    gap: 0.5rem;
+}
+
+.luna-notice[data-size="sm"] > .luna-icon {
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+/* Variant colors — left highlight bar + icon tint (via currentColor on .luna-icon) */
+.luna-notice.gray   { --luna-notice-accent: #64748b; } /* --luna-gray-500 */
+.luna-notice.blue   { --luna-notice-accent: #3172e3; } /* --luna-blue-500 */
+.luna-notice.red    { --luna-notice-accent: #db3535; } /* --luna-red-500 */
+.luna-notice.green  { --luna-notice-accent: #429f59; } /* --luna-green-400 */
+.luna-notice.orange { --luna-notice-accent: #ea6706; } /* --luna-orange-400 */
+.luna-notice.teal   { --luna-notice-accent: #266c92; } /* --luna-teal-500 */
+
+.luna-notice::before { background: var(--luna-notice-accent, #3172e3); }
+.luna-notice > .luna-icon { color: var(--luna-notice-accent, #3172e3); }
+
+/* Legacy aliases (deprecated — use color names above) */
+.luna-notice.info    { --luna-notice-accent: #3172e3; }
+.luna-notice.success { --luna-notice-accent: #429f59; }
+.luna-notice.warning { --luna-notice-accent: #ea6706; }
+.luna-notice.error   { --luna-notice-accent: #db3535; }
+
+/* ================================================
+   LUNA OPTION COMPONENT
+
+   Usage:
+     <div class="luna-option">Option label</div>
+
+   Alias for .luna-menu-item styling.
+   ================================================ */
+
+.luna-option {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.luna-option:hover {
+    background: #f1f5f9;
+}
+
+/* ================================================
+   LUNA POPUP COMPONENT
+
+   Usage:
+     <div class="luna-popup" data-component="Popup">
+         Popup content here.
+     </div>
+     <div class="luna-popup" data-variant="dark">Dark tooltip popup.</div>
+
+   Variants: data-variant="light|dark" (default: light)
+   Placement: handled by positioning in prototypes
+   Arrow: add .luna-popup-arrow for arrow indicator
+
+   Ember translation:
+     <div class="luna-popup" data-variant="dark">
+     → <Popup @variant="dark" @placement="bottom">
+   ================================================ */
+
+.luna-popup {
+    position: absolute;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 100;
+}
+
+/* Variant: dark */
+.luna-popup[data-variant="dark"] {
+    background: #1e293b;
+    border-color: #334155;
+    color: #ffffff;
+}
+
+.luna-popup-text {
+    font-size: 0.875rem;
+    color: #1e293b;
+}
+
+.luna-popup[data-variant="dark"] .luna-popup-text {
+    color: #ffffff;
+}
+
+/* ================================================
+   LUNA PROGRESS BAR COMPONENT
+
+   Usage:
+     <div class="luna-progress-bar-wrapper" data-component="ProgressBar">
+         <div class="luna-progress-label">
+             <span class="luna-progress-label-text">Progress</span>
+             <span class="luna-progress-label-value">60%</span>
+         </div>
+         <div class="luna-progress-bar">
+             <div class="luna-progress-bar-fill" style="width: 60%"></div>
+         </div>
+     </div>
+
+   Sizes: data-size="sm|md|lg" (default: sm)
+   Label layout: data-label-layout="hidden|top-left|top-right|inline"
+   Color: set via style on .luna-progress-bar-fill (background-color)
+
+   Ember translation:
+     → <ProgressBar @value={{60}} @max={{100}} @label="Progress" @size="md" @showDetails="percent" />
+   ================================================ */
+
+.luna-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.luna-progress-bar-fill {
+    height: 100%;
+    background: #36844a;
+    border-radius: 99px;
+    transition: width 0.3s;
+}
+
+/* Size variants */
+.luna-progress-bar[data-size="sm"] { height: 6px; }
+.luna-progress-bar[data-size="md"] { height: 8px; }
+.luna-progress-bar[data-size="lg"] { height: 12px; }
+
+.luna-progress-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.luna-progress-label-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.luna-progress-label-value {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+/* Segmented progress bar */
+.luna-progress-bar.segmented {
+    display: flex;
+    gap: 1px;
+}
+
+.luna-progress-bar.segmented .luna-progress-bar-segment {
+    height: 100%;
+    transition: flex 0.3s;
+}
+
+.luna-progress-bar-legend {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.luna-progress-bar-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.luna-progress-bar-legend-swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+}
+
+/* ================================================
+   LUNA RADIO GROUP COMPONENT
+
+   Usage:
+     <div class="luna-radio-group" data-component="RadioGroup">
+         <label class="luna-radio">
+             <input type="radio" name="group1" value="a"> Option A
+         </label>
+         <label class="luna-radio">
+             <input type="radio" name="group1" value="b"> Option B
+         </label>
+     </div>
+
+   Sizes: data-size="sm|md|lg" (default: md)
+   Layout: data-horizontal (horizontal layout)
+
+   Ember translation:
+     <div class="luna-radio-group" data-size="lg" data-horizontal>
+     → <RadioGroup @size="lg" @isHorizontal={{true}} @options={{options}} @onChange={{fn ...}} />
+   ================================================ */
+
+.luna-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.luna-radio {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.luna-radio input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #266c92;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* Horizontal layout */
+.luna-radio-group[data-horizontal] {
+    flex-direction: row;
+    gap: 1.5rem;
+}
+
+/* Size: sm */
+.luna-radio-group[data-size="sm"] .luna-radio { font-size: 0.8125rem; }
+.luna-radio-group[data-size="sm"] .luna-radio input[type="radio"] { width: 14px; height: 14px; }
+
+/* Size: lg */
+.luna-radio-group[data-size="lg"] .luna-radio { font-size: 1rem; }
+.luna-radio-group[data-size="lg"] .luna-radio input[type="radio"] { width: 20px; height: 20px; }
+
+/* ================================================
+   LUNA RANGE COMPONENT
+
+   Usage:
+     <input class="luna-range" type="range" min="0" max="100">
+   ================================================ */
+
+.luna-range {
+    width: 100%;
+    accent-color: #266c92;
+}
+
+.luna-range-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+/* ================================================
+   LUNA SELECT COMPONENT
+
+   Usage:
+     <select class="luna-select" data-component="Select">
+         <option>Option 1</option>
+         <option>Option 2</option>
+     </select>
+
+     <!-- Custom trigger (for richer select UI) -->
+     <button class="luna-select-trigger" data-component="Select">
+         <span>Selected value</span>
+         <span class="luna-icon" data-icon="chevron-down"></span>
+     </button>
+
+   Sizes: data-size="xs|sm|md|lg" (default: md)
+   Variants: data-variant="white|transparent" (default: white)
+
+   Ember translation:
+     <select class="luna-select" data-size="lg">
+     → <Select @size="lg" @options={{options}} @value={{value}} @onChange={{fn ...}} />
+   ================================================ */
+
+.luna-select {
+    width: 100%;
+    /* No vertical padding — height alone controls box size, matching the
+       xs/sm/lg overrides below. With box-sizing: border-box and the prior
+       `0.5rem 0.75rem` padding, the 14px font's descenders were clipped
+       inside the 28px md height. */
+    padding: 0 0.75rem;
+    padding-right: 1.75rem; /* reserve space for the chevron */
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    background: #ffffff;
+    color: #1e293b;
+    appearance: none;
+    height: 1.75rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' fill='none' stroke='%2364748b' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+}
+
+.luna-select:focus {
+    outline: none;
+    border-color: #266c92;
+    box-shadow: 0 0 0 2px rgba(38, 108, 146, 0.15);
+}
+
+.luna-select:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* Size variants */
+.luna-select[data-size="xs"] { height: 1.25rem; font-size: 0.6875rem; padding: 0 0.375rem; padding-right: 1.5rem; }
+.luna-select[data-size="sm"] { height: 1.5rem; font-size: 0.75rem; padding: 0 0.5rem; padding-right: 1.5rem; }
+.luna-select[data-size="md"] { height: 1.75rem; }
+.luna-select[data-size="lg"] { height: 2rem; }
+
+/* Variant: transparent */
+.luna-select[data-variant="transparent"] {
+    border-color: transparent;
+    background-color: transparent;
+}
+.luna-select[data-variant="transparent"]:focus {
+    border-color: #266c92;
+    background-color: #ffffff;
+}
+
+.luna-select-trigger {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #ffffff;
+    font-size: 0.875rem;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #1e293b;
+    height: 1.75rem;
+}
+
+.luna-select-trigger .placeholder {
+    color: #94a3b8;
+}
+
+.luna-select-trigger i,
+.luna-select-trigger .luna-icon {
+    font-size: 0.625rem;
+    color: #94a3b8;
+}
+
+/* Select trigger size variants */
+.luna-select-trigger[data-size="xs"] { height: 1.25rem; font-size: 0.6875rem; }
+.luna-select-trigger[data-size="sm"] { height: 1.5rem; font-size: 0.75rem; }
+.luna-select-trigger[data-size="lg"] { height: 2rem; }
+
+/* ================================================
+   LUNA SELECTED LIST COMPONENT
+
+   Usage:
+     <div class="luna-selected-list">
+         <span class="luna-selected-item">
+             Tag 1 <span class="luna-selected-item-remove">&times;</span>
+         </span>
+         <span class="luna-selected-item">
+             Tag 2 <span class="luna-selected-item-remove">&times;</span>
+         </span>
+     </div>
+   ================================================ */
+
+.luna-selected-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.luna-selected-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+}
+
+.luna-selected-item-remove {
+    cursor: pointer;
+    color: #64748b;
+    font-size: 0.75rem;
+}
+
+.luna-selected-item-remove:hover {
+    color: #334155;
+}
+
+/* ================================================
+   LUNA SPINNER COMPONENT
+
+   Usage:
+     <div class="luna-spinner" data-component="Spinner"></div>
+     <div class="luna-spinner" data-size="sm"></div>
+     <div class="luna-spinner" data-size="lg"></div>
+
+   Sizes: data-size="sm|md|lg" (default: md = 24px)
+
+   Ember translation:
+     <div class="luna-spinner" data-size="lg">
+     → <Spinner @size="lg" />
+   ================================================ */
+
+@keyframes luna-spin {
+    to { transform: rotate(360deg); }
+}
+
+.luna-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #266c92;
+    border-radius: 50%;
+    animation: luna-spin 0.6s linear infinite;
+}
+
+.luna-spinner[data-size="sm"] {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+}
+
+.luna-spinner[data-size="md"] {
+    width: 24px;
+    height: 24px;
+    border-width: 3px;
+}
+
+.luna-spinner[data-size="lg"] {
+    width: 32px;
+    height: 32px;
+    border-width: 4px;
+}
+
+/* ================================================
+   LUNA TEXT COMPONENT
+
+   Usage:
+     <p class="luna-text" data-font="200" data-weight="normal" data-component="Text">Body text.</p>
+     <span class="luna-text" data-font="100" data-weight="weak">Secondary text</span>
+
+   Font scale: data-font="inherit|25|50|100|150|200|300|400|450|500|600" (default: inherit)
+   Weights: data-weight="weak|normal|strong" (default: normal)
+   Clamp: data-clamp="1|2|3|4|5" (truncate after N lines)
+   Alignment: data-align="left|right|center" (default: left)
+
+   Ember translation:
+     <span class="luna-text" data-font="200" data-weight="weak">
+     → <Text @font="200" @weight="weak">
+   ================================================ */
+
+.luna-text {
+    font-size: 0.875rem;
+    color: #334155;
+    line-height: 1.5;
+}
+
+/* Font scale */
+.luna-text[data-font="25"]  { font-size: 0.625rem; }
+.luna-text[data-font="50"]  { font-size: 0.6875rem; }
+.luna-text[data-font="100"] { font-size: 0.75rem; }
+.luna-text[data-font="150"] { font-size: 0.8125rem; }
+.luna-text[data-font="200"] { font-size: 0.875rem; }
+.luna-text[data-font="300"] { font-size: 1rem; }
+.luna-text[data-font="400"] { font-size: 1.25rem; }
+.luna-text[data-font="450"] { font-size: 1.375rem; }
+.luna-text[data-font="500"] { font-size: 1.5rem; }
+.luna-text[data-font="600"] { font-size: 2rem; }
+
+/* Weight variants */
+.luna-text[data-weight="weak"]   { color: #64748b; }
+.luna-text[data-weight="normal"] { color: #334155; }
+.luna-text[data-weight="strong"] { color: #0f172a; font-weight: 600; }
+
+/* Alignment */
+.luna-text[data-align="center"] { text-align: center; }
+.luna-text[data-align="right"]  { text-align: right; }
+
+/* Line clamping */
+.luna-text[data-clamp] {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.luna-text[data-clamp="1"] { -webkit-line-clamp: 1; }
+.luna-text[data-clamp="2"] { -webkit-line-clamp: 2; }
+.luna-text[data-clamp="3"] { -webkit-line-clamp: 3; }
+.luna-text[data-clamp="4"] { -webkit-line-clamp: 4; }
+.luna-text[data-clamp="5"] { -webkit-line-clamp: 5; }
+
+/* ================================================
+   LUNA TEXTAREA COMPONENT
+
+   Usage:
+     <textarea class="luna-textarea" data-component="Textarea" placeholder="Enter text..."></textarea>
+     <textarea class="luna-textarea" data-size="lg" data-variant="transparent"></textarea>
+
+   Sizes: data-size="xs|sm|md|lg" (default: md)
+   Variants: data-variant="default|transparent" (default: default)
+   Rows: default 5 rows in Ember
+
+   Ember translation:
+     <textarea class="luna-textarea" data-size="lg">
+     → <TextArea @size="lg" @rows={{5}} @onChange={{fn ...}} />
+   ================================================ */
+
+.luna-textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: #1e293b;
+    background: #ffffff;
+    min-height: 5rem;
+    resize: vertical;
+}
+
+.luna-textarea:focus {
+    outline: none;
+    border-color: #266c92;
+    box-shadow: 0 0 0 2px rgba(38, 108, 146, 0.15);
+}
+
+.luna-textarea:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* Size variants */
+.luna-textarea[data-size="xs"] { font-size: 0.6875rem; padding: 0.25rem 0.375rem; }
+.luna-textarea[data-size="sm"] { font-size: 0.75rem; padding: 0.375rem 0.5rem; }
+.luna-textarea[data-size="md"] { font-size: 0.875rem; }
+.luna-textarea[data-size="lg"] { font-size: 0.875rem; padding: 0.625rem 0.75rem; }
+
+/* Variant: transparent */
+.luna-textarea[data-variant="transparent"] {
+    border-color: transparent;
+    background: transparent;
+}
+.luna-textarea[data-variant="transparent"]:focus {
+    border-color: #266c92;
+    background: #ffffff;
+}
+
+/* ================================================
+   LUNA TOGGLE COMPONENT
+
+   Usage:
+     <button class="luna-toggle" data-component="Toggle"></button>
+     <button class="luna-toggle active" data-size="lg"></button>
+
+   Sizes: data-size="xs|sm|md|lg" (default: md)
+   Alignment: data-align="left|right|justify" (default: right)
+   States: .active (on), :disabled
+
+   Ember translation:
+     <button class="luna-toggle active" data-size="sm" data-align="left">
+     → <Toggle @value={{true}} @size="sm" @align="left" @onChange={{fn ...}} />
+   ================================================ */
+
+.luna-toggle {
+    width: 36px;
+    height: 20px;
+    background: #cbd5e1;
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.luna-toggle::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.2s;
+}
+
+.luna-toggle.active {
+    background: #266c92;
+}
+
+.luna-toggle.active::after {
+    transform: translateX(16px);
+}
+
+/* Size: xs — 24x14 */
+.luna-toggle[data-size="xs"] { width: 24px; height: 14px; }
+.luna-toggle[data-size="xs"]::after { width: 10px; height: 10px; }
+.luna-toggle[data-size="xs"].active::after { transform: translateX(10px); }
+
+/* Size: sm — 30x17 */
+.luna-toggle[data-size="sm"] { width: 30px; height: 17px; }
+.luna-toggle[data-size="sm"]::after { width: 13px; height: 13px; }
+.luna-toggle[data-size="sm"].active::after { transform: translateX(13px); }
+
+/* Size: md — 36x20 (default above) */
+
+/* Size: lg — 44x24 */
+.luna-toggle[data-size="lg"] { width: 44px; height: 24px; }
+.luna-toggle[data-size="lg"]::after { width: 20px; height: 20px; }
+.luna-toggle[data-size="lg"].active::after { transform: translateX(20px); }
+
+/* Disabled */
+.luna-toggle:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.luna-toggle-label {
+    font-size: 0.875rem;
+    color: #1e293b;
+}
+
+/* ================================================
+   LUNA CLICK-TO-EDIT COMPONENT
+
+   Usage:
+     <span class="luna-click-to-edit" data-component="ClickToEdit">Editable text</span>
+
+   Sizes: data-size="sm|md|lg" (default: md)
+   Note: Must be wrapped in a Form with autosave in Ember
+
+   Ember translation:
+     <span class="luna-click-to-edit">
+     → <Form @autosave={{true}}><ClickToEdit @value={{val}} @onChange={{fn ...}}>
+       <:text>Display text</:text>
+       <:input as |c|><LunaInput @value={{c.value}} @onChange={{c.onChange}} /></:input>
+     </ClickToEdit></Form>
+   ================================================ */
+
+.luna-click-to-edit {
+    padding: 0.25rem 0.5rem;
+    border: 1px dashed #cbd5e1;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    min-width: 200px;
+    font-size: 0.875rem;
+    color: #1e293b;
+}
+
+.luna-click-to-edit:hover {
+    border-color: #266c92;
+    background: #f8fafc;
+}
+
+/* Size variants */
+.luna-click-to-edit[data-size="sm"] { font-size: 0.8125rem; padding: 0.125rem 0.375rem; min-width: 150px; }
+.luna-click-to-edit[data-size="lg"] { font-size: 1rem; padding: 0.375rem 0.625rem; min-width: 250px; }
+
+/* ================================================
+   LUNA LAYOUT COMPONENTS: XStack, YStack, Spacer, Block
+
+   XStack Usage:
+     <div class="luna-xstack" data-spacing="md" data-align="center" data-component="XStack">
+         <span>Left</span>
+         <div class="luna-spacer"></div>
+         <span>Right</span>
+     </div>
+
+   XStack args:
+     data-spacing="none|xs|sm|md|lg|xl" (default: md)
+     data-align="start|center" (default: center)
+     data-width="auto|full" (default: full)
+
+   YStack Usage:
+     <div class="luna-ystack" data-spacing="lg" data-component="YStack">
+         <div>Top</div>
+         <div>Bottom</div>
+     </div>
+
+   YStack args:
+     data-spacing="xs|sm|md|lg|xl|2xl"
+
+   Spacer: fills available space. No arguments.
+
+   Ember translations:
+     <div class="luna-xstack" data-spacing="lg" data-align="start">
+     → <XStack @spacing="lg" @align="start">
+   ================================================ */
+
+.luna-xstack {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+/* XStack spacing variants */
+.luna-xstack[data-spacing="none"] { gap: 0; }
+.luna-xstack[data-spacing="xs"]   { gap: 0.25rem; }
+.luna-xstack[data-spacing="sm"]   { gap: 0.5rem; }
+.luna-xstack[data-spacing="md"]   { gap: 1rem; }
+.luna-xstack[data-spacing="lg"]   { gap: 1.5rem; }
+.luna-xstack[data-spacing="xl"]   { gap: 2rem; }
+
+/* XStack alignment */
+.luna-xstack[data-align="start"]  { align-items: flex-start; }
+.luna-xstack[data-align="center"] { align-items: center; }
+
+/* XStack width */
+.luna-xstack[data-width="auto"] { width: auto; }
+.luna-xstack[data-width="full"] { width: 100%; }
+
+.luna-ystack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* YStack spacing variants */
+.luna-ystack[data-spacing="xs"]  { gap: 0.25rem; }
+.luna-ystack[data-spacing="sm"]  { gap: 0.5rem; }
+.luna-ystack[data-spacing="md"]  { gap: 1rem; }
+.luna-ystack[data-spacing="lg"]  { gap: 1.5rem; }
+.luna-ystack[data-spacing="xl"]  { gap: 2rem; }
+.luna-ystack[data-spacing="2xl"] { gap: 3rem; }
+
+.luna-spacer {
+    flex: 1;
+}
+
+/* ================================================
+   LUNA BLOCK COMPONENT
+
+   Usage:
+     <div class="luna-block" data-padding="md" data-component="Block">
+         Content with token-based styling.
+     </div>
+
+   Padding: data-padding="xs|sm|md|lg|xl|2xl"
+   Background: data-background="<color-token>" (e.g., "blue-500", "white")
+   Scroll: data-scroll (enables overflow scrolling)
+
+   Ember translation:
+     <div class="luna-block" data-padding="lg" data-background="blue-50">
+     → <Block @padding="lg" @background="blue-50">
+   ================================================ */
+
+.luna-block {
+    display: block;
+}
+
+.luna-block[data-padding="xs"]  { padding: 0.25rem; }
+.luna-block[data-padding="sm"]  { padding: 0.5rem; }
+.luna-block[data-padding="md"]  { padding: 1rem; }
+.luna-block[data-padding="lg"]  { padding: 1.5rem; }
+.luna-block[data-padding="xl"]  { padding: 2rem; }
+.luna-block[data-padding="2xl"] { padding: 3rem; }
+
+.luna-block[data-scroll] {
+    overflow: auto;
+}
+
+th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #64748b; /* --luna\\gray500 */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    border-right: 1px solid #e2e8f0;
+}
+
+th:last-child {
+    border-right: none;
+}
+
+th.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+th.sortable:hover {
+    background-color: #f1f5f9; /* --luna\\gray100 */
+}
+
+td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.875rem;
+    color: #0f172a; /* --luna\\gray900 */
+}
+
+tr:hover {
+    background-color: #f8fafc;
+}
+
+/* ================================================
+   LUNA ICON COMPONENT
+
+   Usage:
+     <span class="luna-icon" data-icon="search" data-component="Icon"></span>
+     <span class="luna-icon" data-icon="chevron-down" data-size="lg" data-component="Icon"></span>
+     <span class="luna-icon" data-icon="circle-check-fill" data-color="green" data-component="Icon"></span>
+
+   Sizes: data-size="xs|sm|md|lg|xl|2xl|3xl|match-font" (default: md = 16px)
+   Colors: data-color="blue|green|red|orange|yellow|purple|teal|gray"
+
+   Ember translation:
+     <span class="luna-icon" data-icon="search" data-size="lg">
+     → <Icon @icon="search" @size="lg" />
+   ================================================ */
+
+.luna-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    flex-shrink: 0;
+    color: currentColor;
+}
+
+.luna-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Size variants */
+.luna-icon[data-size="xs"]         { width: 10px; height: 10px; }
+.luna-icon[data-size="sm"]         { width: 12px; height: 12px; }
+.luna-icon[data-size="md"]         { width: 16px; height: 16px; }
+.luna-icon[data-size="lg"]         { width: 20px; height: 20px; }
+.luna-icon[data-size="xl"]         { width: 24px; height: 24px; }
+.luna-icon[data-size="2xl"]        { width: 32px; height: 32px; }
+.luna-icon[data-size="3xl"]        { width: 40px; height: 40px; }
+.luna-icon[data-size="match-font"] { width: 1em;  height: 1em; }
+
+/* Color variants */
+.luna-icon[data-color="blue"]   { color: #266c92; }
+.luna-icon[data-color="green"]  { color: #16a34a; }
+.luna-icon[data-color="red"]    { color: #dc2626; }
+.luna-icon[data-color="orange"] { color: #ea580c; }
+.luna-icon[data-color="yellow"] { color: #ca8a04; }
+.luna-icon[data-color="purple"] { color: #9333ea; }
+.luna-icon[data-color="teal"]   { color: #0d9488; }
+.luna-icon[data-color="gray"]   { color: #64748b; }
+
+/* ==========================================================================
+   HPLV (High-Performance List View) — SchemaTable with @identifier
+   ==========================================================================
+   These rules support the HPLV partial (shared/partials/hplv-table.html).
+   Class names mirror the production Ember component hierarchy:
+     .SchemaTable > .table-container > .table-scroll-container > table
+   Drop the partial into any page; these styles make it render correctly.
+   ========================================================================== */
+
+/* Root container — maps to SchemaTable root element */
+.SchemaTable {
+    background: #ffffff;
+    overflow: hidden;
+}
+
+/* Header bar — maps to <:left-header> / <:right-header> yield blocks */
+.hplv-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 2rem;
+    background: #ffffff;
+    gap: 1rem;
+}
+
+.SchemaTable .left-header,
+.SchemaTable .right-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.SchemaTable .left-header  { flex: 1; }
+.SchemaTable .right-header { gap: 0.75rem; flex-shrink: 0; }
+
+.hplv-search-input {
+    width: 15rem;
+    padding: 0.4375rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    color: #1e293b;
+    background: #ffffff;
+}
+.hplv-search-input:focus {
+    outline: none;
+    border-color: #266c92;
+    box-shadow: 0 0 0 3px rgba(38, 108, 146, 0.1);
+}
+.hplv-search-input::placeholder { color: #94a3b8; }
+
+/* Scroll container — VerticalCollection target in production */
+.SchemaTable .table-container {
+    position: relative;
+    padding: 0 2rem !important; /* override generic .table-container padding */
+}
+.table-scroll-container {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: calc(100vh - 16rem);
+    position: relative;
+    padding-bottom: 3rem;
+}
+.table-header-overlay {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #ffffff;
+}
+
+/* Table */
+.hplv-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* Column headers — maps to SchemaTableColumnHeader */
+.hplv-table thead th {
+    padding: 0.625rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.6875rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    background: #ffffff;
+    border-right: none; /* override global th border-right */
+    border-bottom: 1px solid #e2e8f0;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+.hplv-table thead th:hover { background: #f8fafc; }
+
+/* Sort icon — hidden by default, only shown on sorted column */
+.hplv-table thead th .sort-icon {
+    margin-left: 0.25rem;
+    font-size: 0.625rem;
+    color: #94a3b8;
+    display: none;
+}
+.hplv-table thead th.sorted .sort-icon {
+    display: inline-flex;
+    color: #1e293b;
+}
+
+/* Resize handle — maps to SchemaTable resize-handle component */
+.resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    cursor: col-resize;
+    background: transparent;
+}
+.resize-handle:hover,
+.resize-handle.resizing { background: #266c92; }
+
+/* Checkbox cell — sticky left column, Luna teal accent */
+.checkbox-cell {
+    width: 2.5rem;
+    min-width: 2.5rem;
+    max-width: 2.5rem;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0 !important;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: inherit;
+}
+.checkbox-cell input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #266c92;
+    vertical-align: middle;
+}
+.hplv-table thead .checkbox-cell {
+    background: #ffffff;
+    z-index: 3;
+    text-align: center;
+}
+
+/* Row actions cell — sticky right column (optional) */
+.row-actions-cell {
+    width: 3rem;
+    min-width: 3rem;
+    max-width: 3rem;
+    text-align: center;
+    padding: 0 0.5rem !important;
+    position: sticky;
+    right: 0;
+    z-index: 1;
+    background: inherit;
+    border-left: 1px solid #e2e8f0;
+}
+thead .row-actions-cell {
+    background: #ffffff;
+    z-index: 3;
+}
+.row-actions-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+.row-actions-btn:hover {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* Table body — rows rendered by VerticalCollection in production */
+.hplv-table tbody td {
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
+    color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Row — maps to SchemaTableRowComponent */
+.hplv-table tbody tr.row { cursor: pointer; }
+.hplv-table tbody tr.row:hover { background: #f8fafc; }
+.hplv-table tbody tr.row[data-selected="true"] { background: #f0f9ff; }
+.hplv-table tbody tr.row[data-selected="true"]:hover { background: #e0f2fe; }
+.hplv-table tbody tr.row[data-selected="true"] .checkbox-cell,
+.hplv-table tbody tr.row[data-selected="true"] .row-actions-cell { background: #f0f9ff; }
+.hplv-table tbody tr.row:hover .checkbox-cell,
+.hplv-table tbody tr.row:hover .row-actions-cell { background: #f8fafc; }
+.hplv-table tbody tr.row[data-selected="true"]:hover .checkbox-cell,
+.hplv-table tbody tr.row[data-selected="true"]:hover .row-actions-cell { background: #e0f2fe; }
+
+/* Cell variants */
+.cell-link {
+    color: #0e5371;
+    font-weight: 600;
+    cursor: pointer;
+}
+.cell-link:hover { text-decoration: underline; }
+.cell-muted { color: #94a3b8; }
+.cell-date {
+    color: #64748b;
+    font-size: 0.8125rem;
+}
+
+/* Inline edit indicator — maps to SchemaEditType cell states */
+.cell-editable { position: relative; }
+.cell-editable .cell-editable-pencil {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    opacity: 0;
+    pointer-events: none;
+}
+.cell-editable:hover .cell-editable-pencil { opacity: 1; }
+
+/* Pagination footer — maps to SchemaTablePagination */
+.hplv-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0.5rem 2rem;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    gap: 1rem;
+}
+.hplv-rows-per-page {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: #64748b;
+    white-space: nowrap;
+}
+.hplv-rows-select {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+    color: #1e293b;
+    background: #ffffff;
+    cursor: pointer;
+}
+.hplv-pagination-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.hplv-pagination-range {
+    font-size: 0.8125rem;
+    color: #64748b;
+}
+.hplv-pagination-btn {
+    width: 1.75rem;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #475569;
+    cursor: pointer;
+    font-size: 0.6875rem;
+}
+.hplv-pagination-btn:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #94a3b8;
+}
+.hplv-pagination-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.hplv-pagination-divider {
+    width: 1px;
+    height: 1.5rem;
+    background: #e2e8f0;
+    flex-shrink: 0;
+}
+
+/* Bulk actions — inline in pagination bar when rows are selected */
+.hplv-bulk-actions {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+}
+.hplv-bulk-actions.visible { display: flex; }
+.hplv-bulk-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    color: #64748b;
+    flex-shrink: 0;
+}
+.hplv-bulk-count {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #1e293b;
+    white-space: nowrap;
+}
+.hplv-bulk-separator {
+    width: 1px;
+    height: 1.5rem;
+    background: #e2e8f0;
+    flex-shrink: 0;
+}
+.hplv-bulk-edit-fields {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-left: auto;
+    overflow-x: auto;
+}
+.hplv-bulk-edit-select {
+    padding: 0.3125rem 0.625rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: #64748b;
+    background: #ffffff;
+    cursor: pointer;
+    white-space: nowrap;
+    max-width: 8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Active filter chips */
+.hplv-active-filters {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+}
+.hplv-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: #475569;
+}
+.hplv-filter-chip .chip-label { color: #64748b; }
+
+/* Selection summary */
+.hplv-selection-summary {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: #1e293b;
+}
+.hplv-selection-summary.visible { display: flex; }
+.hplv-selection-summary .selection-icon {
+    color: #64748b;
+    font-size: 0.75rem;
+}
+.hplv-selection-summary .selection-text {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Empty state */
+.hplv-empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.875rem;
+}
+
+/* Column manager trigger */
+.column-manager-trigger { position: relative; }
+
+/* ================================================
+   DETAIL VIEW / DRAWER (QUICK-VIEW PANEL)
+
+   Used by:
+     - shared/templates/detail-view.html (quick-view + full-page modes)
+     - shared/partials/drawer.html (drop-in side panel)
+     - shared/partials/detail-header.html (page header for detail pages)
+
+   Layout modes:
+     - Quick-view: .content[data-pattern="detail-view"] uses flexbox to
+       place .dv-bg-list and .quick-view side-by-side.
+     - Full-page: body.full-page-mode hides the list + bar and shows
+       the LayoutView in .dv-full-page-content instead.
+
+   Important: the .content override is scoped via [data-pattern] so
+   it does not collide with the default .content grid-area layout
+   used by list-view and other pages.
+   ================================================ */
+
+/* Content area: flex layout for drawer / detail-view pages */
+.content[data-pattern="detail-view"],
+.content:has(> .quick-view) {
+    display: flex;
+    overflow: hidden;
+}
+
+/* --- Quick-view panel (drawer) --- */
+.quick-view {
+    min-width: 40rem;
+    max-width: 40rem;
+    background: #ffffff;
+    border-left: 1px solid #e2e8f0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 1800px) {
+    .quick-view {
+        min-width: 50rem;
+        max-width: 50rem;
+    }
+}
+
+@media (max-width: 952px) {
+    .quick-view {
+        min-width: 0;
+        max-width: none;
+        flex: 1;
+    }
+    .dv-bg-list {
+        display: none;
+    }
+}
+
+body.full-page-mode .quick-view {
+    display: none;
+}
+
+/* LayoutView (shared between quick-view and full-page) */
+.LayoutView {
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Detail view header --- */
+.dv-header {
+    padding: 1.25rem 2rem 0 2rem;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: none;
+}
+
+/* Quick-view bar (expand / close icons) */
+.dv-quick-view-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0;
+    font-size: 0.8125rem;
+    color: #64748b;
+}
+
+.dv-quick-view-bar-label {
+    font-weight: 500;
+}
+
+.dv-quick-view-bar-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+body.full-page-mode .dv-quick-view-bar {
+    display: none;
+}
+
+/* Parent link / breadcrumb (full-page mode only) */
+.dv-parent-link {
+    display: none;
+    align-items: center;
+    font-size: 0.8125rem;
+    color: #64748b;
+    gap: 0.375rem;
+    cursor: pointer;
+    padding-bottom: 0.75rem;
+}
+
+.dv-parent-link:hover {
+    color: #0e5371;
+}
+
+body.full-page-mode .dv-parent-link {
+    display: flex;
+}
+
+/* Heading */
+.dv-header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.dv-heading-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.dv-heading-row .luna-heading {
+    max-width: 45ch;
+}
+
+.dv-description {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #475569;
+    max-width: 65ch;
+}
+
+.dv-meta {
+    padding-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: #475569;
+}
+
+.dv-meta-text {
+    color: #64748b;
+}
+
+.dv-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #475569;
+}
+
+.dv-meta-label {
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Actions */
+.dv-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 0.75rem;
+    align-items: center;
+}
+
+.dv-primary-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.dv-secondary-actions {
+    display: flex;
+    gap: 0.25rem;
+    margin-left: auto;
+}
+
+/* Navigation (tabs) */
+.dv-navigation {
+    padding-top: 1rem;
+}
+
+/* --- Body (tab panels) --- */
+.dv-body {
+    flex: 1;
+    overflow: auto;
+    /* Establishes the container context for .dv-sections-container
+       (and anything else inside that uses @container dv-body).
+       Mirrors the <ResponsiveContentWithSidebar> pattern in production
+       where a wrapper element defines the container and a child
+       element carries the grid. */
+    container-type: inline-size;
+    container-name: dv-body;
+}
+
+.dv-tab-panel {
+    display: none;
+    padding: 1rem 2rem 2rem 2rem;
+}
+
+.dv-tab-panel.active {
+    display: block;
+}
+
+/* --- Form fields (Details tab) --- */
+
+/*
+   Content-with-sidebar layout. Mirrors the production
+   <ResponsiveContentWithSidebar> component:
+     - CSS Grid with named areas.
+     - A container query at 52rem toggles between narrow and wide.
+     - Narrow (quick-view drawer, mobile, any container < 52rem):
+         single column, sidebar stacked above content.
+     - Wide (full-page, container >= 52rem):
+         content on the left (5fr), sidebar on the right
+         (minmax(20rem, 2fr)).
+     - DOM order is sidebar first, then content. The wide layout
+       re-orders visually via grid-template-areas — no JS needed.
+     - The sidebar is optional. Pages that don't need one simply
+       omit `.dv-sidebar-area` and the main area fills the grid.
+*/
+.dv-sections-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "sidebar"
+        "content";
+    gap: 1.5rem;
+    padding-top: 0.5rem;
+    align-items: start;
+}
+
+.dv-main-area {
+    grid-area: content;
+    min-width: 0;
+}
+
+.dv-sidebar-area {
+    grid-area: sidebar;
+    min-width: 0;
+}
+
+/* If the sidebar slot is omitted, collapse the grid so the main
+   area fills the available space without a reserved sidebar row. */
+.dv-sections-container:not(:has(> .dv-sidebar-area)) {
+    grid-template-areas: "content";
+}
+
+@container dv-body (min-width: 52rem) {
+    .dv-sections-container {
+        grid-template-columns: 5fr minmax(20rem, 2fr);
+        grid-template-areas: "content sidebar";
+    }
+    .dv-sections-container:not(:has(> .dv-sidebar-area)) {
+        grid-template-columns: 1fr;
+        grid-template-areas: "content";
+    }
+}
+
+.dv-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-top: 0.5rem;
+}
+
+/* When a .dv-form sits inside a main/sidebar area, drop the extra top
+   padding (the sections-container already spaces things out). */
+.dv-main-area .dv-form,
+.dv-sidebar-area .dv-form {
+    padding-top: 0;
+}
+
+.dv-field {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding: 0.5rem 0;
+}
+
+.dv-field-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #64748b;
+    min-width: 10rem;
+    flex-shrink: 0;
+}
+
+.dv-field-value {
+    font-size: 0.875rem;
+    color: #1e293b;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.dv-field-value.empty {
+    color: #94a3b8;
+    font-style: italic;
+}
+
+/* Editable text fields */
+.dv-field[data-field-type="text"] .dv-field-value {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    margin: -0.25rem -0.5rem;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    min-height: 1.75rem;
+}
+
+.dv-field[data-field-type="text"] .dv-field-value .dv-edit-icon {
+    color: #94a3b8;
+    font-size: 0.75rem;
+    opacity: 0;
+    margin-left: auto;
+    flex-shrink: 0;
+    transition: opacity 0.15s;
+}
+
+.dv-field[data-field-type="text"] .dv-field-value:hover {
+    border-color: #e2e8f0;
+    background: #f8fafc;
+}
+
+.dv-field[data-field-type="text"] .dv-field-value:hover .dv-edit-icon {
+    opacity: 1;
+}
+
+.dv-field[data-field-type="text"] .dv-field-value.editing {
+    padding: 0;
+    margin: -0.25rem -0.5rem;
+    border-color: transparent;
+    background: none;
+}
+
+.dv-field[data-field-type="text"] .dv-field-value.editing .dv-edit-icon {
+    display: none;
+}
+
+.dv-field-input {
+    display: none;
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: #1e293b;
+    border: 1px solid #266c92;
+    border-radius: 4px;
+    outline: none;
+    background: #ffffff;
+}
+
+.dv-field-value.editing .dv-field-input {
+    display: block;
+}
+
+.dv-field-value.editing .dv-field-text {
+    display: none;
+}
+
+/* Select / Multi-select fields */
+.dv-field[data-field-type="select"] .dv-field-value,
+.dv-field[data-field-type="multiselect"] .dv-field-value {
+    position: relative;
+}
+
+.dv-select-trigger {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.25rem 0.5rem;
+    margin: -0.25rem -0.5rem;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    min-height: 1.75rem;
+    gap: 0.5rem;
+}
+
+.dv-select-trigger:hover {
+    border-color: #e2e8f0;
+    background: #f8fafc;
+}
+
+.dv-select-trigger.open {
+    border-color: #266c92;
+    background: #ffffff;
+}
+
+.dv-select-trigger .dv-edit-icon {
+    color: #94a3b8;
+    font-size: 0.75rem;
+    opacity: 0;
+    margin-left: auto;
+    flex-shrink: 0;
+    transition: opacity 0.15s;
+    padding-top: 0.125rem;
+}
+
+.dv-select-trigger:hover .dv-edit-icon {
+    opacity: 1;
+}
+
+.dv-select-trigger.open .dv-edit-icon {
+    display: none;
+}
+
+.dv-select-display {
+    flex: 1;
+    min-width: 0;
+}
+
+.dv-select-display.empty {
+    color: #94a3b8;
+}
+
+/* Selected items list (multiselect) */
+.dv-selected-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.dv-selected-item {
+    line-height: 1.4;
+}
+
+.dv-selected-item a {
+    color: #0e5371;
+    text-decoration: none;
+}
+
+.dv-selected-item a:hover {
+    text-decoration: underline;
+}
+
+.dv-selected-item .dv-item-desc {
+    color: #1e293b;
+}
+
+/* Dropdown panel */
+.dv-select-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    left: -0.5rem;
+    right: -0.5rem;
+    min-width: 20rem;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+    z-index: 100;
+    overflow: hidden;
+}
+
+.dv-select-dropdown.open {
+    display: block;
+}
+
+.dv-select-search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.dv-select-search .luna-icon {
+    color: #94a3b8;
+}
+
+.dv-select-search input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: #1e293b;
+    background: none;
+}
+
+.dv-select-search input::placeholder {
+    color: #94a3b8;
+}
+
+.dv-select-options {
+    max-height: 16rem;
+    overflow-y: auto;
+    padding: 0.25rem 0;
+}
+
+.dv-select-option {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: #1e293b;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.dv-select-option:hover,
+.dv-select-option:focus-visible {
+    background: #f8fafc;
+    border-color: #0e5371;
+    border-radius: 4px;
+}
+
+.dv-select-option input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: #266c92;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.dv-select-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.dv-select-footer button {
+    padding: 0.375rem 0.875rem;
+    font-size: 0.8125rem;
+    font-family: inherit;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+}
+
+.dv-select-footer .dv-select-clear {
+    background: none;
+    color: #64748b;
+}
+
+.dv-select-footer .dv-select-clear:hover {
+    color: #334155;
+}
+
+.dv-select-footer .dv-select-apply {
+    background: #266c92;
+    color: #ffffff;
+}
+
+.dv-select-footer .dv-select-apply:hover {
+    background: #1e5a7a;
+}
+
+/* Accordion list container */
+.dv-accordions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Ghost variant of luna-btn-icon (borderless, for quick-view bar) */
+.luna-btn-icon.ghost {
+    border-color: transparent;
+    background: transparent;
+}
+
+.luna-btn-icon.ghost:hover {
+    border-color: transparent;
+    background: #f1f5f9;
+}
+
+/* Placeholder content */
+.dv-placeholder {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    padding: 2rem 0;
+}
+
+/* Background list table (behind quick-view) */
+.dv-bg-list {
+    padding: 1.5rem;
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+}
+
+.dv-bg-list h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 1rem;
+}
+
+.dv-bg-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+}
+
+.dv-bg-table th {
+    text-align: left;
+    padding: 0.625rem 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.dv-bg-table td {
+    padding: 0.625rem 0.75rem;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.dv-bg-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.dv-bg-table .row-link {
+    color: #0e5371;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.dv-bg-table .row-link:hover {
+    text-decoration: underline;
+}
+
+/* Full-page detail content */
+.dv-full-page-content {
+    display: none;
+}
+
+body.full-page-mode .dv-full-page-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+    min-width: 0;
+}
+
+body.full-page-mode .dv-bg-list,
+body.full-page-mode .dv-bg-empty {
+    display: none;
+}
+
+/* Empty placeholder standing in for whatever parent view the
+   quick-view was opened from (list, dashboard, search, etc.).
+   Fills the left side so the quick-view panel can sit flush on
+   the right without implying a specific parent pattern. */
+.dv-bg-empty {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ================================================
+   LUNA MODAL — default hidden state
+   (modal CSS defined above; this enables the
+    shared/partials/modal.html open/close pattern)
+   ================================================ */
+.luna-modal {
+    display: none;
+}
+
+.luna-modal.open {
+    display: flex;
+}
+
+/* ================================================
+   SCHEMA TABLE PARTIAL (st- prefix)
+   Used by shared/partials/schema-table.html — the
+   embedded standard SchemaTable. HPLV is the page
+   default; the schema table lives as a partial for
+   use inside detail pages, drawers, modals, etc.
+
+   Class names + data-qid-* attributes mirror
+   production <SchemaTable> (libraries/schema-table)
+   so translation to Ember is mechanical.
+   ================================================ */
+.st-table-wrapper {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    /* No overflow:hidden on the outer wrapper — sticky thead needs the
+       scroll context on the inner .st-table-scroll container, not here,
+       so header/footer zones stay flush to the wrapper edges. */
+}
+
+/* Horizontal scroll container — wraps ONLY the <table>, leaving the
+   header bar and footer pinned to the wrapper's width.
+
+   Mirrors production `.table-scroll-container` behavior: when the sum
+   of column min-widths exceeds the container width, the table keeps
+   its natural column widths and the container scrolls horizontally
+   instead of compressing columns into a wrapping mess.
+
+   Ref: auditboard-frontend/libraries/schema-table/package/src/
+        components/schema-table/_base-table.css:124
+        (`.table-scroll-container { overflow-x: auto }`)
+
+   Pair this with:
+     - per-column `min-width` on each <th> (CellWidth tokens, see
+       partials/schema-table.html)
+     - `.st-table tbody { min-width: fit-content }` below */
+.st-table-scroll {
+    overflow-x: auto;
+    overflow-y: visible;
+    position: relative;
+}
+
+/* Saved views tablist (optional — shown when .st-views-bar is uncommented) */
+.st-views-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Header bar: left-header + right-header grid zones
+   Maps to production .left-header / .right-header in <SchemaTable>. */
+.st-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    gap: 1rem;
+}
+.st-header-bar .left-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+}
+.st-header-bar .right-header {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+.st-active-filters { display: flex; align-items: center; gap: 0.375rem; flex-wrap: wrap; }
+
+/* Table
+   `table-layout: auto` (the default) so per-column `min-width` on <th>
+   is respected — when the viewport narrows, columns hold their minimums
+   and the parent `.st-table-scroll` activates horizontal scroll.
+   Ref: auditboard-frontend/libraries/schema-table/package/src/const.ts:10-17
+        (CellWidth tokens: xs=60, sm=120, md=160, lg=220, xl=300, 2xl=400) */
+.st-table { width: 100%; border-collapse: collapse; }
+
+/* When the table is wrapped in `.st-table-scroll`, let the tbody grow
+   to the sum of its column min-widths rather than being constrained to
+   the wrapper width. Combined with `.st-table-scroll { overflow-x: auto }`,
+   this makes wide tables scroll instead of compressing columns.
+
+   Scoped to `.st-table-scroll` so existing prototypes that use the
+   standard `.st-table-wrapper > .st-table` structure (without the
+   inner scroll container) keep their previous behavior.
+
+   Ref: auditboard-frontend/libraries/schema-table/package/src/
+        components/schema-table/_base-table.css:405
+        (`tbody { min-width: fit-content }`) */
+.st-table-scroll .st-table tbody { min-width: fit-content; }
+
+.st-checkbox-cell {
+    width: 2.5rem;
+    text-align: center;
+    padding: 0 0.5rem !important;
+}
+
+.st-table thead th {
+    padding: 0.625rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.6875rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+    cursor: pointer;
+    user-select: none;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+.st-table thead th:last-child { border-right: none; }
+.st-table thead th:hover { background: #f1f5f9; }
+.st-table thead th .sort-icon { margin-left: 0.25rem; font-size: 0.625rem; color: #94a3b8; }
+.st-table thead th.sorted .sort-icon { color: #266c92; }
+
+.st-table tbody td {
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
+    color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+}
+
+/* Opt-in: single-line truncation with ellipsis for long-text cells
+   (e.g. description columns). Apply by adding `cell-truncate` to the
+   <td> (or the <th> + all matching <td>s via a column class). Pair
+   with an explicit `max-width` on the <th>/`<td>` so ellipsis has a
+   stopping point — otherwise the cell keeps growing with content.
+   Example:
+     <th class="cell-truncate" style="min-width:18.75rem; max-width:28rem">
+     <td class="cell-truncate">Long description that will truncate…</td>
+*/
+.st-table td.cell-truncate,
+.st-table th.cell-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.st-table tbody tr { cursor: pointer; }
+.st-table tbody tr:hover { background: #f8fafc; }
+.st-table tbody tr[data-selected="true"] { background: #eff6ff; }
+.st-table tbody tr[data-selected="true"]:hover { background: #dbeafe; }
+
+/* .cell-link, .cell-muted, .cell-date defined globally above (shared with HPLV) */
+
+/* Footer: integrates rows-per-page, pagination, AND the selection summary
+   (which appears when rows are selected). Matches production
+   <SchemaTablePagination> with <:bulk-actions> yielded inline. */
+.st-table-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    border-top: 1px solid #e2e8f0;
+    background: #ffffff;
+}
+.st-rows-per-page {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: #64748b;
+    margin-left: auto;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+.st-pagination { display: flex; align-items: center; gap: 0.5rem; }
+.st-pagination-range { font-size: 0.8125rem; color: #64748b; }
+
+/* Selection summary + bulk actions — lives on the LEFT of the footer,
+   hidden by default, shown when at least one row is selected. */
+.st-selection-summary {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+}
+.st-selection-summary.visible { display: flex; }
+.st-selection-summary .selection-icon {
+    color: #0e5371;
+    font-size: 0.875rem;
+}
+.st-bulk-count {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #0e5371;
+    white-space: nowrap;
+}
+.st-footer-divider {
+    width: 1px;
+    height: 1.25rem;
+    background: #cbd5e1;
+    margin: 0 0.25rem;
+}
+.st-bulk-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+/* ---- Legacy aliases (older prototypes copied the partial before the
+   production-aligned rename). Keep these until callers migrate. New
+   code should use .st-header-bar / .left-header / .right-header and
+   the integrated footer selection summary. ---- */
+.st-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    gap: 1rem;
+}
+.st-filter-left  { display: flex; align-items: center; gap: 0.5rem; flex: 1; }
+.st-filter-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+.st-results-count { font-size: 0.8125rem; color: #64748b; white-space: nowrap; }
+.st-bulk-bar {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    background: #f0f9ff;
+    border-bottom: 1px solid #bae6fd;
+}
+.st-bulk-bar.visible { display: flex; }
+
+/* ============================================================
+   LUNA GROWL (Toast notifications)
+   Production source: libraries/luna-react/package/src/components/
+     growl/growl.module.css
+   Translates to: <Growl::Viewport> + <Growl::Item> (Luna React)
+     or the Ember NotificationService (notifications.show(...)).
+   ------------------------------------------------------------
+   Fires via window.LunaToast — see shared/scripts/luna-toast.js.
+   Shown top-right, auto-dismiss after 7s unless { sticky: true }.
+   Variants: success, error, warning, info, broadcast.
+   ============================================================ */
+.luna-growl-viewport {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: grid;
+    gap: 0.75rem;
+    margin: 0.75rem;
+    z-index: 10002; /* above component-overlay legend (10000) */
+    max-width: 400px;
+    width: 100%;
+    pointer-events: none;
+}
+.luna-growl {
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+.luna-growl.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+.luna-growl.exiting {
+    opacity: 0;
+    transform: translateX(100%);
+}
+.luna-growl-content {
+    overflow: hidden;
+    border-radius: 0.375rem;
+    box-shadow:
+        0 0.5rem 1rem rgba(15, 23, 42, 0.08),
+        0 0 1.5rem rgba(15, 23, 42, 0.04);
+}
+.luna-growl-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    padding-top: 1rem; /* room for the 0.25rem highlight bar */
+    background: #ffffff;
+    border-radius: 0.375rem;
+    min-width: 400px;
+    font-size: 0.875rem; /* luna-font-200 */
+    color: rgb(15, 23, 42);
+}
+.luna-growl-item::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0.25rem;
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+}
+.luna-growl-item[data-type="success"]::before { background-color: #22c55e; }
+.luna-growl-item[data-type="error"]::before   { background-color: #ef4444; }
+.luna-growl-item[data-type="warning"]::before { background-color: #f97316; }
+.luna-growl-item[data-type="info"]::before    { background-color: #3b82f6; }
+.luna-growl-item[data-type="broadcast"]::before { background-color: #6b7280; }
+
+.luna-growl-icon {
+    display: flex;
+    align-items: flex-start;
+    padding-top: 0.125rem;
+}
+.luna-growl-icon[data-type="success"]   { color: #22c55e; }
+.luna-growl-icon[data-type="error"]     { color: #ef4444; }
+.luna-growl-icon[data-type="warning"]   { color: #f97316; }
+.luna-growl-icon[data-type="info"]      { color: #3b82f6; }
+.luna-growl-icon[data-type="broadcast"] { color: #6b7280; }
+
+.luna-growl-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+.luna-growl-header {
+    margin: 0;
+    font-size: inherit;
+    font-weight: 600;
+    line-height: 1.35;
+    color: rgb(15, 23, 42);
+}
+.luna-growl-message {
+    margin: 0;
+    color: rgb(15, 23, 42);
+    line-height: 1.4;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+.luna-growl-close {
+    align-self: flex-start;
+}

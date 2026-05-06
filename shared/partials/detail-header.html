@@ -1,0 +1,76 @@
+<!--
+    ============================================================
+    DETAIL PAGE HEADER — shared partial
+    ============================================================
+
+    Standard detail-page header block: title + status badge,
+    description, metadata, primary/secondary action buttons, and
+    optional tablist navigation.
+
+    Use this inside a full-page detail view, or anywhere you need
+    the canonical AuditBoard detail header layout WITHOUT the
+    drawer panel around it. For drawer/quick-view usage, use
+    shared/partials/drawer.html instead — it already embeds this
+    header structure.
+
+    REQUIREMENTS in the host page:
+      - shared/styles/layout.css (provides .dv-header and children)
+      - shared/assets/icons/luna-icons.js
+
+    EMBER TRANSLATION:
+      <ViewLayoutHeader @title="..." @badge={{...}}>
+        <:actions> ... </:actions>
+        <:tablist> ... </:tablist>
+      </ViewLayoutHeader>
+
+    CUSTOMIZATION:
+      - Replace heading text, badge color/label
+      - Replace description + meta text
+      - Replace action buttons
+      - Replace tabs (or delete the .dv-navigation block if not needed)
+    ============================================================
+-->
+
+<div class="dv-header" data-qid-layout-view-header data-component="ViewLayoutHeader">
+
+    <!-- Optional breadcrumb / parent link -->
+    <a class="dv-parent-link" href="#" data-component="Link" style="display: flex;">
+        <span class="luna-icon" data-icon="arrow-left" data-component="Icon"></span>
+        <span>Back to list</span>
+    </a>
+
+    <div class="dv-header-content">
+        <div class="dv-heading-row">
+            <h1 class="luna-heading" data-component="Heading">Page Title</h1>
+        </div>
+        <div class="dv-description">Description details or any instructions here</div>
+        <div class="dv-meta">
+            <span class="luna-badge blue weak" data-component="Badge">Status</span>
+            <span class="dv-meta-item"><span class="dv-meta-label">Label:</span> Value</span>
+            <span class="dv-meta-item"><span class="dv-meta-label">Label:</span> Value</span>
+            <span class="dv-meta-item"><span class="dv-meta-label">Label:</span> Value</span>
+            <span class="dv-meta-item"><span class="dv-meta-label">Label:</span> Value</span>
+        </div>
+    </div>
+
+    <div class="dv-actions">
+        <div class="dv-primary-actions">
+            <button class="luna-btn primary" data-component="Button">Button</button>
+            <button class="luna-btn" data-component="Button">Button</button>
+        </div>
+        <div class="dv-secondary-actions">
+            <button class="luna-btn-icon" aria-label="More options" data-component="Button">
+                <span class="luna-icon" data-icon="more-horizontal" data-component="Icon"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Optional tablist — remove if the page has no tabs -->
+    <div class="dv-navigation">
+        <div class="luna-tablist" data-component="Tablist">
+            <button class="luna-tab active" data-component="Tab">Tab</button>
+            <button class="luna-tab" data-component="Tab">Tab</button>
+            <button class="luna-tab" data-component="Tab">Tab</button>
+        </div>
+    </div>
+</div>

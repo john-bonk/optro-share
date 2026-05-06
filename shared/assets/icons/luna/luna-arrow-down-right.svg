@@ -1,0 +1,16 @@
+<svg
+  viewBox="0 0 16 16"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M9.14 1.64L15.5 8L9.14 14.36L7.92 13.15L12.2 8.86H0.5V7.14H12.2L7.92 2.85L9.14 1.64Z"
+    fill="currentColor"
+  ></path>
+  <rect
+    x="0.5"
+    y="1.64"
+    width="2"
+    height="7.21145"
+    fill="currentColor"
+  ></rect>
+</svg>

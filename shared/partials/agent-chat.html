@@ -1,0 +1,79 @@
+<!--
+  AI Agent Chat - Markup snippets for prototypes/shared/agent-chat.js
+  Copy the sections you need into your prototype or use as reference for building messages.
+  The panel itself is created by agent-chat.js; these are content patterns only.
+-->
+
+<!-- 1. ZERO STATE (shown when opening a new chat from the nav icon) -->
+<div class="agent-chat-zero-state">
+    <div class="agent-chat-zero-state-title">AI Assistant</div>
+    <div class="agent-chat-zero-state-text">Ask a question or try one of the suggestions below.</div>
+    <div class="agent-chat-suggestions">
+        <button type="button" class="agent-chat-suggestion-chip" data-prompt="Summarize the risks on this page">Summarize the risks on this page</button>
+        <button type="button" class="agent-chat-suggestion-chip" data-prompt="Find related controls">Find related controls</button>
+        <button type="button" class="agent-chat-suggestion-chip" data-prompt="Suggest improvements">Suggest improvements</button>
+    </div>
+</div>
+
+<!-- 2. MESSAGE WITH TEXT HIERARCHY (headers, subheaders, bullets) -->
+<div class="agent-msg agent-msg-assistant">
+    <div class="agent-msg-bubble">
+        <div class="agent-msg-body">
+            <h2>Summary</h2>
+            <p>Here is the overview you asked for.</p>
+            <h3>Key points</h3>
+            <ul>
+                <li>First bullet</li>
+                <li>Second bullet</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- 3. SOURCES BLOCK (external references / searched sites) -->
+<div class="agent-msg-sources">
+    <div class="agent-msg-sources-title">Sources</div>
+    <div class="agent-msg-sources-list">
+        <a href="#" class="agent-msg-source-item">Source 1 - Example document</a>
+        <a href="#" class="agent-msg-source-item">Source 2 - Reference page</a>
+    </div>
+</div>
+
+<!-- 4. FOLLOW-UP CHIPS (suggested next questions) -->
+<div class="agent-msg-followups">
+    <button type="button" class="agent-followup-chip" data-prompt="Tell me more">Tell me more</button>
+    <button type="button" class="agent-followup-chip" data-prompt="Show related items">Show related items</button>
+</div>
+
+<!-- 5. PROCEED CONFIRMATION -->
+<div class="agent-msg-proceed">
+    <div class="agent-msg-proceed-text">Do you want to proceed with this action?</div>
+    <div class="agent-msg-proceed-actions">
+        <button type="button" class="agent-btn-primary">Confirm</button>
+        <button type="button" class="agent-btn-secondary">Cancel</button>
+    </div>
+</div>
+
+<!-- 6. PREVIEW (agentic action - e.g. control, issue, risk to be created) -->
+<div class="agent-msg-preview">
+    <div class="agent-msg-preview-title">Preview</div>
+    <div class="agent-preview-cards">
+        <div class="agent-preview-card"><strong>Control:</strong> Example Control Name</div>
+        <div class="agent-preview-card"><strong>Issue:</strong> Example Issue</div>
+        <div class="agent-preview-card"><strong>Risk:</strong> Example Risk</div>
+    </div>
+    <div class="agent-msg-preview-actions">
+        <button type="button" class="agent-btn-primary">Create</button>
+        <button type="button" class="agent-btn-secondary">Cancel</button>
+    </div>
+</div>
+
+<!-- 7. INTERNAL REFERENCES (AuditBoard objects - controls, issues, risks) -->
+<div class="agent-internal-refs">
+    <a href="#" class="agent-internal-ref"><span class="agent-internal-ref-type">Control:</span> SOX-001</a>
+    <a href="#" class="agent-internal-ref"><span class="agent-internal-ref-type">Issue:</span> ISS-042</a>
+    <a href="#" class="agent-internal-ref"><span class="agent-internal-ref-type">Risk:</span> RISK-12</a>
+</div>
+
+<!-- CTA to open agent with a pre-filled prompt (use anywhere on the page) -->
+<button type="button" data-agent-open="Explain this control">Ask AI about this</button>

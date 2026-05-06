@@ -1,0 +1,86 @@
+<!--
+    ============================================================
+    LUNA MODAL — shared partial
+    ============================================================
+
+    Standard Luna modal with backdrop, header, body, footer.
+    Hidden by default (layout.css sets .luna-modal { display: none };
+    add the .open class to show it).
+
+    REQUIREMENTS in the host page:
+      - shared/styles/layout.css (provides all .luna-modal styles)
+
+    OPENING / CLOSING:
+      - JS: openModal('modal-id') / closeModal('modal-id')
+      - Or toggle the .open class manually
+      - Clicking the backdrop or a [data-modal-close] element closes
+
+    ATTRIBUTES (on .luna-modal-content):
+      - data-highlight="top-blue|top-red|top-green|top-gray|top-orange"
+      - data-padding="none|xs|sm|md|lg"
+      - data-radius="sm|md|lg"
+
+    EMBER TRANSLATION:
+      <Modal @highlight="top-blue" @padding="md" @onClose={{fn ...}}
+             as |close titleId|>
+        <h2 id={{titleId}}>Title</h2>
+        Body content
+        <button {{on "click" close}}>Cancel</button>
+      </Modal>
+
+    CUSTOMIZATION:
+      - Change id to something unique per modal on the page
+      - Replace header / body / footer content
+      - Adjust highlight / padding / radius on .luna-modal-content
+    ============================================================
+-->
+
+<div class="luna-modal" id="example-modal" data-component="Modal" role="dialog" aria-modal="true" aria-labelledby="example-modal-title">
+    <div class="luna-modal-backdrop" data-modal-close></div>
+    <div class="luna-modal-content" data-highlight="top-blue" data-padding="md" data-radius="md">
+        <div class="luna-modal-header">
+            <h3 class="luna-modal-title" id="example-modal-title">Modal Title</h3>
+            <button class="luna-btn-icon ghost" data-size="sm" data-modal-close aria-label="Close" data-component="Icon Button">
+                <span class="luna-icon" data-icon="close"></span>
+            </button>
+        </div>
+        <div class="luna-modal-body">
+            Body content goes here. Replace with your form, confirmation prompt, or other content.
+        </div>
+        <div class="luna-modal-footer">
+            <button class="luna-btn" data-modal-close data-component="Button">Cancel</button>
+            <button class="luna-btn blue" data-component="Button">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Modal open/close helpers ---
+    (function() {
+        window.openModal = function(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.add('open');
+        };
+
+        window.closeModal = function(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.remove('open');
+        };
+
+        // Click backdrop or [data-modal-close] to close
+        document.addEventListener('click', function(e) {
+            const closeTarget = e.target.closest('[data-modal-close]');
+            if (closeTarget) {
+                const modal = closeTarget.closest('.luna-modal');
+                if (modal) modal.classList.remove('open');
+            }
+        });
+
+        // ESC key closes any open modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.luna-modal.open').forEach(m => m.classList.remove('open'));
+            }
+        });
+    })();
+</script>

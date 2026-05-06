@@ -1,0 +1,150 @@
+<!--
+    ============================================================
+    DRAWER (QUICK-VIEW PANEL) — shared partial
+    ============================================================
+
+    Drop this into any prototype that needs a side-by-side drawer
+    (quick-view panel) for displaying a single record beside a
+    list or other host content.
+
+    REQUIREMENTS in the host page:
+      - shared/styles/layout.css        (provides all .quick-view / .dv-* / LayoutView styles)
+      - shared/assets/icons/luna-icons.js
+      - shared/scripts/component-overlay.js
+
+    PARENT CONTAINER:
+      The drawer expects to live inside a flex container. If your
+      host page uses <div class="content" data-pattern="detail-view">,
+      layout.css already applies the correct display:flex/overflow:hidden
+      scoping automatically. Otherwise, ensure the immediate parent has:
+            display: flex;
+            overflow: hidden;
+
+    TWO DISPLAY MODES:
+      1. Quick-view  — side-by-side with host list (default)
+      2. Full-page   — set <body class="full-page-mode"> to hide the
+                       panel and show the .dv-full-page-content instead.
+
+    EMBER TRANSLATION:
+      <ViewLayout @mode="quick-view" @onClose={{fn ...}}>
+        <:header> ... </:header>
+        <:body> ... </:body>
+      </ViewLayout>
+
+    CUSTOMIZATION:
+      - Replace heading, badge, description inside the header
+      - Replace tab names + panels inside the body
+      - Adjust fields, accordions, history, etc. per your feature
+    ============================================================
+-->
+
+<!-- Quick-view panel (drawer) -->
+<aside class="quick-view" data-qid-quickview>
+    <div class="LayoutView" data-qid-layout-view data-component="ViewLayout">
+
+        <!-- Header: sticky top section (quick-view bar + title + actions + tabs) -->
+        <div class="dv-header" data-qid-layout-view-header>
+
+            <!-- Quick-view bar: hidden in full-page mode -->
+            <div class="dv-quick-view-bar">
+                <span class="dv-quick-view-bar-label">Quick View</span>
+                <div class="dv-quick-view-bar-actions">
+                    <button class="luna-btn-icon ghost" data-size="sm" data-qid-expand-quickview onclick="expandToFullPage()" title="Expand to full page" data-component="Icon Button">
+                        <span class="luna-icon" data-icon="screen-expand"></span>
+                    </button>
+                    <button class="luna-btn-icon ghost" data-size="sm" data-qid-close-quickview onclick="closeQuickView()" title="Close" data-component="Icon Button">
+                        <span class="luna-icon" data-icon="close"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Parent breadcrumb: shown only in full-page mode -->
+            <div class="dv-parent-link" onclick="openQuickView()">
+                <span class="luna-icon" data-icon="arrow-left" data-component="Icon"></span>
+                <span>Back to list</span>
+            </div>
+
+            <div class="dv-header-content">
+                <div class="dv-heading-row">
+                    <div class="luna-heading" data-font="400" data-component="Heading">Page Title</div>
+                    <button class="luna-btn-icon" data-tooltip="More actions" data-component="IconButton">
+                        <span class="luna-icon" data-icon="more-horizontal"></span>
+                    </button>
+                </div>
+                <div class="dv-description" data-component="Text">Description details or any instructions here</div>
+                <div class="dv-meta">
+                    <span class="luna-badge blue weak" data-component="Badge">Status</span>
+                    <span class="dv-meta-item"><span class="dv-meta-label">Label:</span> Value</span>
+                    <span class="dv-meta-item"><span class="dv-meta-label">Label:</span> Value</span>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="dv-actions">
+                <div class="dv-primary-actions">
+                    <button class="luna-btn primary" data-component="Button">Button</button>
+                    <button class="luna-btn" data-component="Button">Button</button>
+                </div>
+            </div>
+
+            <!-- Tablist -->
+            <div class="dv-navigation" data-qid-layout-view-navigation>
+                <div class="luna-tablist" data-component="Tablist">
+                    <button class="luna-tab active" onclick="switchTab('tab1')" data-component="Tab">Tab</button>
+                    <button class="luna-tab" onclick="switchTab('tab2')" data-component="Tab">Tab</button>
+                    <button class="luna-tab" onclick="switchTab('tab3')" data-component="Tab">Tab</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Body: tab panels -->
+        <div class="dv-body" data-qid-layout-view-body>
+            <div class="dv-tab-panel active" data-tab="tab1">
+                <div class="dv-placeholder">Tab content goes here</div>
+            </div>
+            <div class="dv-tab-panel" data-tab="tab2">
+                <div class="dv-placeholder">Tab content goes here</div>
+            </div>
+            <div class="dv-tab-panel" data-tab="tab3">
+                <div class="dv-placeholder">Tab content goes here</div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<!-- Full-page target (sibling of .quick-view; receives .LayoutView when body.full-page-mode is set) -->
+<div class="dv-full-page-content" data-screen="Detail View — Full Page">
+    <!-- The LayoutView is moved here by expandToFullPage() -->
+</div>
+
+<script>
+    // --- Drawer mode switching ---
+    (function() {
+        const quickView = document.querySelector('.quick-view');
+        const fullPageContent = document.querySelector('.dv-full-page-content');
+        const layoutView = quickView && quickView.querySelector('.LayoutView');
+
+        window.expandToFullPage = function() {
+            document.body.classList.add('full-page-mode');
+            if (fullPageContent && layoutView) fullPageContent.appendChild(layoutView);
+        };
+
+        window.openQuickView = function() {
+            document.body.classList.remove('full-page-mode');
+            if (quickView && layoutView) quickView.appendChild(layoutView);
+        };
+
+        window.closeQuickView = function() {
+            if (quickView) quickView.style.display = 'none';
+        };
+
+        window.switchTab = function(tabName) {
+            document.querySelectorAll('.luna-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.textContent.trim().toLowerCase() === tabName);
+            });
+            document.querySelectorAll('.dv-tab-panel').forEach(panel => {
+                panel.classList.toggle('active', panel.dataset.tab === tabName);
+            });
+        };
+    })();
+</script>

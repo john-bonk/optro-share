@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usability Test — {{PROTOTYPE_TITLE}}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ============================================
+           USABILITY TEST VIEWER — STYLES
+           ============================================ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #1e293b;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ---- Toolbar ---- */
+        .ut-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 3rem;
+            padding: 0 1rem;
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        .ut-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .ut-toolbar-title {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            white-space: nowrap;
+        }
+        .ut-toolbar-badge {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            color: #94a3b8;
+            background: #334155;
+            padding: 0.125rem 0.5rem;
+            border-radius: 999px;
+        }
+        .ut-toolbar-center {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .ut-zoom-btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: #94a3b8;
+            background: none;
+            border: 1px solid #475569;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s;
+        }
+        .ut-zoom-btn:hover { color: #e2e8f0; border-color: #64748b; }
+        .ut-zoom-btn.active { color: #e2e8f0; background: #475569; border-color: #64748b; }
+        .ut-toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        .ut-rail-toggle {
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            background: none;
+            border: 1px solid #475569;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.15s;
+        }
+        .ut-rail-toggle:hover { color: #e2e8f0; border-color: #64748b; }
+        .ut-rail-toggle.active { color: #e2e8f0; background: #475569; }
+
+        /* ---- App Layout ---- */
+        .ut-app {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* ---- Left Nav ---- */
+        .ut-nav {
+            width: 180px;
+            background: #1e293b;
+            border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            padding-top: 0.5rem;
+            flex-shrink: 0;
+            transition: width 0.2s ease;
+        }
+        .ut-nav.collapsed { width: 48px; }
+        .ut-nav-items { flex: 1; }
+        .ut-nav-btn {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.625rem 0.875rem;
+            color: #94a3b8;
+            cursor: pointer;
+            border: none;
+            background: none;
+            border-left: 3px solid transparent;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            font-family: inherit;
+            letter-spacing: 0.01em;
+            transition: all 0.15s;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            position: relative;
+        }
+        .ut-nav-btn:hover { color: #e2e8f0; background: rgba(255,255,255,0.06); }
+        .ut-nav-btn.active {
+            color: #ffffff;
+            background: rgba(255,255,255,0.08);
+            border-left-color: #3b82f6;
+            font-weight: 600;
+        }
+        .ut-nav-btn i { font-size: 0.875rem; flex-shrink: 0; width: 1rem; text-align: center; }
+        .ut-nav-btn .ut-nav-label { transition: opacity 0.15s; }
+        .ut-nav.collapsed .ut-nav-label { opacity: 0; width: 0; overflow: hidden; }
+        .ut-nav.collapsed .ut-nav-btn { padding: 0.625rem 0; justify-content: center; gap: 0; }
+
+        /* Collapse toggle */
+        .ut-nav-collapse {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 0.875rem;
+            color: #64748b;
+            cursor: pointer;
+            border: none;
+            background: none;
+            border-top: 1px solid #334155;
+            font-size: 0.75rem;
+            font-weight: 500;
+            font-family: inherit;
+            transition: all 0.15s;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .ut-nav-collapse:hover { color: #94a3b8; background: rgba(255,255,255,0.04); }
+        .ut-nav-collapse i { font-size: 0.75rem; flex-shrink: 0; transition: transform 0.2s; }
+        .ut-nav.collapsed .ut-nav-collapse i { transform: rotate(180deg); }
+        .ut-nav-collapse .ut-nav-label { transition: opacity 0.15s; }
+        .ut-nav.collapsed .ut-nav-collapse { padding: 0.625rem 0; justify-content: center; gap: 0; }
+
+        /* Tooltip for collapsed nav */
+        .ut-nav-tooltip {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 8px;
+            background: #0f172a;
+            color: #e2e8f0;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.625rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 1000;
+            pointer-events: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .ut-nav.collapsed .ut-nav-btn:hover .ut-nav-tooltip { display: block; }
+
+        /* ---- Pages ---- */
+        .ut-page { display: none; flex: 1; min-height: 0; overflow: hidden; }
+        .ut-page.active { display: flex; }
+
+        /* ---- Page: Summary ---- */
+        #page-summary { background: #ffffff; overflow-y: auto; position: relative; }
+        .ut-summary-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem;
+            width: 100%;
+        }
+        .ut-summary-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .ut-summary-title {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+        .ut-summary-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.8125rem;
+            color: #64748b;
+        }
+        .ut-summary-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        .ut-summary-meta-item i { font-size: 0.75rem; color: #94a3b8; }
+
+        .ut-summary-section {
+            margin-bottom: 2rem;
+        }
+        .ut-summary-section-title {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.625rem;
+        }
+        .ut-summary-jtbd {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #0f172a;
+            line-height: 1.55;
+        }
+        .ut-summary-tasks {
+            list-style: none;
+            counter-reset: task;
+        }
+        .ut-summary-task {
+            counter-increment: task;
+            font-size: 0.9375rem;
+            color: #334155;
+            line-height: 1.5;
+            padding: 0.5rem 0 0.5rem 2rem;
+            position: relative;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .ut-summary-task:last-child { border-bottom: none; }
+        .ut-summary-task::before {
+            content: counter(task);
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background: #eff6ff;
+            color: #3b82f6;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Persona cards grid */
+        .ut-persona-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .ut-persona-card-lg {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: #ffffff;
+        }
+        .ut-persona-card-lg:hover { border-color: #93c5fd; box-shadow: 0 2px 12px rgba(59,130,246,0.1); }
+        .ut-persona-card-lg.active { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.15); }
+        .ut-persona-card-top {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.625rem;
+        }
+        .ut-persona-avatar-lg {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+        .ut-persona-name-lg {
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .ut-persona-archetype-lg {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.125rem;
+        }
+        .ut-persona-title-lg {
+            font-size: 0.8125rem;
+            color: #475569;
+        }
+
+        /* Persona quick-view rail (Summary page) */
+        .ut-persona-rail {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 420px;
+            background: #ffffff;
+            border-left: 1px solid #e2e8f0;
+            box-shadow: -4px 0 24px rgba(0,0,0,0.08);
+            transform: translateX(100%);
+            transition: transform 0.25s ease;
+            overflow-y: auto;
+            z-index: 20;
+        }
+        .ut-persona-rail.open { transform: translateX(0); }
+        .ut-persona-rail-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .ut-persona-rail-close {
+            margin-left: auto;
+            width: 1.75rem;
+            height: 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            color: #94a3b8;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            transition: all 0.1s;
+        }
+        .ut-persona-rail-close:hover { background: #f1f5f9; color: #475569; }
+        .ut-persona-rail-body { padding: 1.25rem 1.5rem; }
+        .ut-persona-rail-section { margin-bottom: 1.25rem; }
+        .ut-persona-rail-section:last-child { margin-bottom: 0; }
+        .ut-persona-rail-section-title {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.375rem;
+        }
+        .ut-persona-rail-section-text {
+            font-size: 0.875rem;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .ut-persona-rail-list {
+            list-style: none;
+            padding: 0;
+        }
+        .ut-persona-rail-list li {
+            font-size: 0.875rem;
+            color: #334155;
+            line-height: 1.55;
+            padding: 0.25rem 0 0.25rem 1rem;
+            position: relative;
+        }
+        .ut-persona-rail-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.65rem;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #94a3b8;
+        }
+        .ut-persona-rail-quote {
+            font-size: 0.8125rem;
+            color: #64748b;
+            line-height: 1.6;
+            font-style: italic;
+            padding-left: 0.75rem;
+            border-left: 2px solid #e2e8f0;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ---- Page: Screens ---- */
+        #page-screens {
+            flex: 1;
+            min-height: 0;
+        }
+        #page-screens.active {
+            display: grid;
+            grid-template-columns: 200px 1fr 400px;
+        }
+        #page-screens.right-collapsed { grid-template-columns: 200px 1fr 0px; }
+
+        .ut-screen-list {
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            overflow-y: auto;
+            padding: 0.75rem;
+        }
+        .ut-screen-list-title {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.25rem 0.5rem 0.625rem;
+        }
+        .ut-screen-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.5rem 0.625rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #475569;
+            background: none;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
+            transition: all 0.15s;
+            margin-bottom: 0.25rem;
+        }
+        .ut-screen-btn:last-child { margin-bottom: 0; }
+        .ut-screen-btn:hover { background: #f1f5f9; }
+        .ut-screen-btn.active { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; font-weight: 600; }
+        .ut-screen-btn .ut-screen-count {
+            margin-left: auto;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #94a3b8;
+            background: #f1f5f9;
+            padding: 0.0625rem 0.375rem;
+            border-radius: 999px;
+        }
+        .ut-screen-btn.active .ut-screen-count { background: #dbeafe; color: #2563eb; }
+
+        /* Center Panel */
+        .ut-center {
+            background: #0f172a;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+        .ut-center iframe {
+            border: none;
+            transform-origin: 0 0;
+            display: block;
+        }
+
+        /* Right Rail (Screens page) */
+        .ut-right-rail {
+            background: #ffffff;
+            border-left: 1px solid #e2e8f0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: opacity 0.2s;
+        }
+        #page-screens.right-collapsed .ut-right-rail { opacity: 0; pointer-events: none; overflow: hidden; }
+
+        .ut-right-header {
+            padding: 0.875rem 1.125rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .ut-right-header-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .ut-right-header-subtitle {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.125rem;
+        }
+        .ut-right-body { padding: 0.75rem; }
+
+        /* Commentary Cards (Screens right rail) */
+        .ut-commentary-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 0.625rem;
+            overflow: hidden;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .ut-commentary-card:hover { border-color: #cbd5e1; }
+        .ut-commentary-card.selected {
+            border-color: #93c5fd;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+        }
+        .ut-commentary-header {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.75rem 0.875rem;
+            cursor: pointer;
+        }
+        .ut-annotation-number {
+            width: 1.625rem;
+            height: 1.625rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+        .ut-ann-critical { background: #dc2626; }
+        .ut-ann-high { background: #dc2626; }
+        .ut-ann-medium { background: #f97316; }
+        .ut-ann-low { background: #eab308; }
+        .ut-ann-positive { background: #16a34a; }
+        .ut-commentary-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1e293b;
+            flex: 1;
+        }
+        .ut-commentary-sev-tag {
+            font-size: 0.625rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.125rem 0.375rem;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        .ut-sev-tag-critical { background: #fef2f2; color: #dc2626; }
+        .ut-sev-tag-high { background: #fef2f2; color: #dc2626; }
+        .ut-sev-tag-medium { background: #fff7ed; color: #ea580c; }
+        .ut-sev-tag-low { background: #fefce8; color: #a16207; }
+        .ut-sev-tag-positive { background: #f0fdf4; color: #16a34a; }
+
+        /* Expanded detail */
+        .ut-commentary-detail {
+            display: none;
+            padding: 0 0.875rem 0.875rem;
+            border-top: 1px solid #f1f5f9;
+        }
+        .ut-commentary-card.selected .ut-commentary-detail { display: block; }
+        .ut-detail-section { margin-top: 0.75rem; }
+        .ut-detail-label {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.25rem;
+        }
+        .ut-detail-text {
+            font-size: 0.875rem;
+            color: #475569;
+            line-height: 1.65;
+        }
+        .ut-detail-text code {
+            font-size: 0.8125rem;
+            background: #f1f5f9;
+            padding: 0.0625rem 0.375rem;
+            border-radius: 3px;
+            color: #7c3aed;
+        }
+
+        /* Persona reactions (collapsed by default) */
+        .ut-reactions-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.5rem 0;
+            cursor: pointer;
+            user-select: none;
+        }
+        .ut-reactions-toggle:hover .ut-reactions-toggle-label { color: #1e293b; }
+        .ut-reactions-avatars {
+            display: flex;
+            align-items: center;
+        }
+        .ut-reactions-avatar-sm {
+            width: 1.375rem;
+            height: 1.375rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-left: -0.25rem;
+            border: 2px solid #ffffff;
+        }
+        .ut-reactions-avatar-sm:first-child { margin-left: 0; }
+        .ut-reactions-toggle-label {
+            font-size: 0.8125rem;
+            color: #64748b;
+            transition: color 0.1s;
+        }
+        .ut-reactions-toggle-chevron {
+            font-size: 0.5625rem;
+            color: #94a3b8;
+            transition: transform 0.2s;
+            margin-left: auto;
+        }
+        .ut-reactions-toggle.open .ut-reactions-toggle-chevron { transform: rotate(180deg); }
+        .ut-reactions-body { display: none; margin-top: 0.25rem; }
+        .ut-reactions-toggle.open + .ut-reactions-body { display: block; }
+
+        .ut-persona-reaction {
+            padding: 0.625rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            background: #fafbfc;
+        }
+        .ut-persona-reaction-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.375rem;
+        }
+        .ut-persona-reaction-avatar {
+            width: 1.375rem;
+            height: 1.375rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .ut-persona-reaction-name {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .ut-persona-reaction-text {
+            font-size: 0.875rem;
+            color: #475569;
+            line-height: 1.65;
+        }
+
+        /* ---- Page: Findings ---- */
+        #page-findings { background: #ffffff; overflow-y: auto; }
+        #page-findings.active { display: block; }
+        .ut-findings-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem 1rem;
+            width: 100%;
+        }
+        .ut-findings-page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1.25rem;
+        }
+        .ut-findings-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 0;
+        }
+        .ut-findings-tab {
+            padding: 0.625rem 1rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #64748b;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .ut-findings-tab:hover { color: #334155; }
+        .ut-findings-tab.active { color: #1e40af; border-bottom-color: #3b82f6; }
+        .ut-findings-tab .tab-count {
+            font-size: 0.625rem;
+            font-weight: 700;
+            background: #e2e8f0;
+            color: #64748b;
+            padding: 0.0625rem 0.375rem;
+            border-radius: 999px;
+        }
+        .ut-findings-tab.active .tab-count { background: #dbeafe; color: #2563eb; }
+        .ut-findings-tab-panel {
+            display: none;
+        }
+        .ut-findings-tab-panel.active { display: block; }
+        .ut-findings-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1.5rem 0 2rem;
+            width: 100%;
+        }
+
+        /* Findings table */
+        .ut-findings-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .ut-findings-table th {
+            text-align: left;
+            padding: 0.625rem 0.875rem;
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .ut-findings-table td {
+            padding: 0.75rem 0.875rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+            line-height: 1.55;
+            color: #334155;
+        }
+        .ut-findings-table tr:hover td { background: #fafbfc; }
+        .ut-findings-table .col-severity { width: 90px; }
+        .ut-findings-table .col-screen { width: 140px; white-space: nowrap; }
+        .ut-findings-table .col-personas { width: 100px; }
+        .ut-sev-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            padding: 0.1875rem 0.5rem;
+            border-radius: 999px;
+            text-transform: capitalize;
+        }
+        .ut-sev-badge-critical { background: #fef2f2; color: #dc2626; }
+        .ut-sev-badge-high { background: #fef2f2; color: #dc2626; }
+        .ut-sev-badge-medium { background: #fff7ed; color: #ea580c; }
+        .ut-sev-badge-low { background: #fefce8; color: #a16207; }
+        .ut-sev-badge-positive { background: #f0fdf4; color: #16a34a; }
+        .ut-sev-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        .ut-sev-dot-critical { background: #dc2626; }
+        .ut-sev-dot-high { background: #dc2626; }
+        .ut-sev-dot-medium { background: #f97316; }
+        .ut-sev-dot-low { background: #eab308; }
+        .ut-sev-dot-positive { background: #16a34a; }
+        .ut-table-personas {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+        .ut-table-persona-dot {
+            width: 1.375rem;
+            height: 1.375rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-left: -0.25rem;
+            border: 2px solid #ffffff;
+        }
+        .ut-table-persona-dot:first-child { margin-left: 0; }
+        .ut-table-rec {
+            font-size: 0.8125rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        /* Patterns */
+        .ut-pattern-item {
+            font-size: 0.9375rem;
+            color: #334155;
+            line-height: 1.6;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            gap: 0.75rem;
+        }
+        .ut-pattern-item:last-child { border-bottom: none; }
+        .ut-pattern-num {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+        .ut-pattern-personas {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-top: 0.375rem;
+        }
+
+        /* Open questions */
+        .ut-oq-item {
+            font-size: 0.9375rem;
+            color: #334155;
+            line-height: 1.6;
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .ut-oq-item:last-child { border-bottom: none; }
+        .ut-oq-item::before {
+            content: '?';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 1.125rem;
+            height: 1.125rem;
+            border-radius: 50%;
+            background: #eff6ff;
+            color: #3b82f6;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ---- Page: Insights by User ---- */
+        #page-user { background: #ffffff; }
+        #page-user.active {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 0;
+        }
+        .ut-user-panel {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-right: 1px solid #e2e8f0;
+        }
+        .ut-user-persona-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+            flex-shrink: 0;
+            overflow-x: auto;
+        }
+        .ut-user-persona-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem 0.375rem 0.375rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 999px;
+            background: #ffffff;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #475569;
+            white-space: nowrap;
+            transition: all 0.15s;
+        }
+        .ut-user-persona-pill:hover { border-color: #cbd5e1; background: #f8fafc; }
+        .ut-user-persona-pill.active { border-color: var(--pill-color, #3b82f6); background: color-mix(in srgb, var(--pill-color, #3b82f6) 8%, white); color: #1e293b; }
+        .ut-user-persona-pill .pill-avatar {
+            width: 1.375rem;
+            height: 1.375rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+        .ut-user-timeline-wrap {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.25rem 1rem 1.25rem 2.5rem;
+            position: relative;
+        }
+        .ut-timeline-line {
+            position: absolute;
+            left: 2rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e2e8f0;
+        }
+        .ut-timeline-screen-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 0.25rem 0.625rem;
+            border-radius: 999px;
+            margin-bottom: 0.625rem;
+            margin-left: -0.25rem;
+        }
+        .ut-timeline-screen-label i { font-size: 0.625rem; color: #94a3b8; }
+        .ut-timeline-step {
+            position: relative;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+        }
+        .ut-timeline-step:hover { border-color: #cbd5e1; border-left-color: #cbd5e1; }
+        .ut-timeline-step.active { border-color: #93c5fd; border-left-color: #3b82f6; box-shadow: 0 1px 6px rgba(59,130,246,0.1); }
+        .ut-timeline-step-thought {
+            background: #eff6ff;
+        }
+        .ut-timeline-step-action {
+            background: #f8fafc;
+        }
+        .ut-timeline-dot {
+            position: absolute;
+            left: -1.875rem;
+            top: 0.875rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5625rem;
+            color: #ffffff;
+            z-index: 2;
+            border: 2px solid #ffffff;
+        }
+        .ut-timeline-dot-thought { background: #3b82f6; }
+        .ut-timeline-dot-action { background: #64748b; }
+        .ut-timeline-step-num {
+            font-size: 0.625rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 0.25rem;
+        }
+        .ut-timeline-step-text {
+            font-size: 0.875rem;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .ut-timeline-step-thought .ut-timeline-step-text {
+            font-style: italic;
+            color: #1e40af;
+        }
+        .ut-timeline-step-ann-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            font-size: 0.5625rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-left: 0.375rem;
+            vertical-align: middle;
+        }
+
+        /* User page preview */
+        .ut-user-preview {
+            background: #0f172a;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+        .ut-user-preview iframe {
+            border: none;
+            transform-origin: 0 0;
+            display: block;
+        }
+
+        /* ---- Heatmap Overlay ---- */
+        .ut-heatmap-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 5;
+            transform-origin: 0 0;
+        }
+        .ut-heatmap-disclaimer {
+            position: absolute;
+            top: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 6;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #f59e0b;
+            background: rgba(0,0,0,0.75);
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            pointer-events: none;
+            white-space: nowrap;
+            display: none;
+        }
+        .ut-heatmap-disclaimer.visible { display: block; }
+        .ut-heatmap-select {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: #94a3b8;
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 4px;
+            padding: 0.25rem 0.375rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .ut-heatmap-select:hover { color: #e2e8f0; border-color: #64748b; }
+
+        /* ---- Scrollbar Styling ---- */
+        .ut-screen-list::-webkit-scrollbar,
+        .ut-right-rail::-webkit-scrollbar,
+        #page-summary::-webkit-scrollbar,
+        #page-findings::-webkit-scrollbar,
+        .ut-persona-rail::-webkit-scrollbar,
+        .ut-user-timeline-wrap::-webkit-scrollbar { width: 4px; }
+        .ut-screen-list::-webkit-scrollbar-track,
+        .ut-right-rail::-webkit-scrollbar-track,
+        #page-summary::-webkit-scrollbar-track,
+        #page-findings::-webkit-scrollbar-track,
+        .ut-persona-rail::-webkit-scrollbar-track,
+        .ut-user-timeline-wrap::-webkit-scrollbar-track { background: transparent; }
+        .ut-screen-list::-webkit-scrollbar-thumb,
+        .ut-right-rail::-webkit-scrollbar-thumb,
+        #page-summary::-webkit-scrollbar-thumb,
+        #page-findings::-webkit-scrollbar-thumb,
+        .ut-persona-rail::-webkit-scrollbar-thumb,
+        .ut-user-timeline-wrap::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+    </style>
+</head>
+<body>
+
+    <!-- Toolbar -->
+    <header class="ut-toolbar">
+        <div class="ut-toolbar-left">
+            <span class="ut-toolbar-title">Usability Test — {{PROTOTYPE_TITLE}}</span>
+            <span class="ut-toolbar-badge" id="toolbar-date"></span>
+        </div>
+        <div class="ut-toolbar-center" id="toolbar-center" style="display:none;">
+            <button class="ut-zoom-btn" onclick="setZoom(0.5)">50%</button>
+            <button class="ut-zoom-btn" onclick="setZoom(0.75)">75%</button>
+            <button class="ut-zoom-btn active" onclick="setZoom('fit')">Fit</button>
+            <button class="ut-zoom-btn" onclick="setZoom(1)">100%</button>
+        </div>
+        <div class="ut-toolbar-right" id="toolbar-right" style="display:none;">
+            <select class="ut-heatmap-select" id="heatmap-persona-select" onchange="setHeatmapPersona(this.value)" style="display:none;">
+                <option value="_aggregate">All Personas</option>
+            </select>
+            <button class="ut-rail-toggle" id="toggle-heatmap" onclick="toggleHeatmap()" title="Toggle predicted attention heatmap">
+                <i class="fas fa-fire"></i>
+            </button>
+            <button class="ut-rail-toggle active" id="toggle-right" onclick="toggleRightRail()" title="Toggle annotation rail">
+                <i class="fas fa-comment-dots"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- App: Nav + Pages -->
+    <main class="ut-app">
+
+        <!-- Left Nav -->
+        <nav class="ut-nav" id="ut-nav">
+            <div class="ut-nav-items">
+                <button class="ut-nav-btn active" data-page="summary" onclick="switchPage('summary')">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span class="ut-nav-label">Summary</span>
+                    <span class="ut-nav-tooltip">Summary</span>
+                </button>
+                <button class="ut-nav-btn" data-page="screens" onclick="switchPage('screens')">
+                    <i class="fas fa-desktop"></i>
+                    <span class="ut-nav-label">Insights by Screen</span>
+                    <span class="ut-nav-tooltip">Insights by Screen</span>
+                </button>
+                <button class="ut-nav-btn" data-page="user" onclick="switchPage('user')">
+                    <i class="fas fa-user-clock"></i>
+                    <span class="ut-nav-label">Insights by User</span>
+                    <span class="ut-nav-tooltip">Insights by User</span>
+                </button>
+                <button class="ut-nav-btn" data-page="findings" onclick="switchPage('findings')">
+                    <i class="fas fa-table-list"></i>
+                    <span class="ut-nav-label">Findings</span>
+                    <span class="ut-nav-tooltip">Findings</span>
+                </button>
+            </div>
+            <button class="ut-nav-collapse" onclick="toggleNav()" title="Collapse navigation">
+                <i class="fas fa-chevron-left"></i>
+                <span class="ut-nav-label">Collapse</span>
+            </button>
+        </nav>
+
+        <!-- Page: Summary -->
+        <div class="ut-page active" id="page-summary">
+            <div class="ut-summary-content" id="summary-content"></div>
+            <div class="ut-persona-rail" id="persona-rail">
+                <div class="ut-persona-rail-header" id="persona-rail-header"></div>
+                <div class="ut-persona-rail-body" id="persona-rail-body"></div>
+            </div>
+        </div>
+
+        <!-- Page: Screens -->
+        <div class="ut-page" id="page-screens">
+            <aside class="ut-screen-list" id="screen-list">
+                <div class="ut-screen-list-title">Screens</div>
+                <div id="screen-list-body"></div>
+            </aside>
+            <section class="ut-center" id="ut-center">
+                <canvas class="ut-heatmap-canvas" id="heatmap-canvas" width="1920" height="1080"></canvas>
+                <div class="ut-heatmap-disclaimer" id="heatmap-disclaimer">&#9888;&#65039; Predicted Attention — Not real user data</div>
+                <iframe id="prototype-frame"></iframe>
+            </section>
+            <aside class="ut-right-rail" id="right-rail">
+                <div class="ut-right-header">
+                    <div class="ut-right-header-title" id="right-header-title">Annotations</div>
+                    <div class="ut-right-header-subtitle" id="right-header-subtitle">Select a screen to begin</div>
+                </div>
+                <div class="ut-right-body" id="right-body"></div>
+            </aside>
+        </div>
+
+        <!-- Page: Insights by User -->
+        <div class="ut-page" id="page-user">
+            <div class="ut-user-panel">
+                <div class="ut-user-persona-selector" id="user-persona-selector"></div>
+                <div class="ut-user-timeline-wrap" id="user-timeline-wrap">
+                    <div class="ut-timeline-line"></div>
+                    <div id="user-timeline"></div>
+                </div>
+            </div>
+            <section class="ut-user-preview" id="user-preview">
+                <canvas class="ut-heatmap-canvas" id="user-heatmap-canvas" width="1920" height="1080"></canvas>
+                <iframe id="user-prototype-frame"></iframe>
+            </section>
+        </div>
+
+        <!-- Page: Findings -->
+        <div class="ut-page" id="page-findings">
+            <div class="ut-findings-wrapper">
+                <div class="ut-findings-page-title">Findings</div>
+                <div class="ut-findings-tabs" id="findings-tabs"></div>
+            </div>
+            <div class="ut-findings-tab-panel active" id="tab-findings">
+                <div class="ut-findings-content" id="findings-table-content"></div>
+            </div>
+            <div class="ut-findings-tab-panel" id="tab-patterns">
+                <div class="ut-findings-content" id="patterns-content"></div>
+            </div>
+            <div class="ut-findings-tab-panel" id="tab-questions">
+                <div class="ut-findings-content" id="questions-content"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Embedded prototype HTML -->
+    <script type="text/prototype-html" id="prototype-html-source">
+{{PROTOTYPE_HTML}}
+    </script>
+
+    <script>
+    // ============================================
+    // TEST DATA (populated by Claude)
+    // ============================================
+    const testData = {{TEST_DATA_JSON}};
+
+    // ============================================
+    // STATE
+    // ============================================
+    let currentPage = 'summary';
+    let currentScreenId = null;
+    let currentZoom = 'fit';
+    let selectedAnnotationId = null;
+    let iframeReady = false;
+
+    // Insights by User state
+    let currentPersonaId = null;
+    let activeStepIndex = 0;
+    let userIframeReady = false;
+    let userCurrentScreenId = null;
+
+    // Heatmap state
+    let heatmapEnabled = false;
+    let heatmapPersonaFilter = '_aggregate';
+
+    // Severity colors (marker, background tint, text)
+    const sevColors = {
+        critical: { marker: '#dc2626', bg: '#fef2f2', text: '#dc2626' },
+        high:     { marker: '#dc2626', bg: '#fef2f2', text: '#dc2626' },
+        medium:   { marker: '#f97316', bg: '#fff7ed', text: '#ea580c' },
+        low:      { marker: '#eab308', bg: '#fefce8', text: '#a16207' },
+        positive: { marker: '#16a34a', bg: '#f0fdf4', text: '#16a34a' }
+    };
+
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('toolbar-date').textContent = testData.meta.date || '';
+
+        renderSummaryPage();
+        renderScreensList();
+        renderFindingsPage();
+        renderUserPage();
+        populateHeatmapPersonaSelect();
+
+        // Load embedded prototype HTML into iframe via srcdoc
+        const iframe = document.getElementById('prototype-frame');
+        iframe.addEventListener('load', onIframeLoad);
+
+        const protoSource = document.getElementById('prototype-html-source');
+        const srcdocHtml = protoSource && protoSource.textContent.trim()
+            ? protoSource.textContent.split('<\\/scr' + 'ipt>').join('<\/scr' + 'ipt>')
+            : '';
+
+        if (srcdocHtml) {
+            iframe.srcdoc = srcdocHtml;
+
+            // Also load srcdoc into the user page iframe
+            const userIframe = document.getElementById('user-prototype-frame');
+            userIframe.addEventListener('load', onUserIframeLoad);
+            userIframe.srcdoc = srcdocHtml;
+        }
+    });
+
+    function onIframeLoad() {
+        const iframe = document.getElementById('prototype-frame');
+        iframeReady = true;
+        injectAnnotationStyles();
+        scaleIframe();
+
+        // Delay initial screen switch to let srcdoc scripts finish executing
+        setTimeout(() => {
+            const firstScreen = testData.screens[0];
+            if (firstScreen) switchScreen(firstScreen.id);
+            setupMutationObserver();
+        }, 100);
+    }
+
+    // Listen for annotation clicks from iframe
+    window.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'ut-annotation-click') {
+            selectAnnotation(event.data.annotationId);
+        }
+    });
+
+    // Escape key deselects annotation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (currentPage === 'screens' && selectedAnnotationId) {
+                deselectAnnotation();
+            }
+            if (currentPage === 'summary') {
+                closePersonaRail();
+            }
+        }
+    });
+
+    // ============================================
+    // PAGE SWITCHING
+    // ============================================
+    function switchPage(page) {
+        currentPage = page;
+        document.querySelectorAll('.ut-page').forEach(p => p.classList.remove('active'));
+        document.getElementById(`page-${page}`).classList.add('active');
+        document.querySelectorAll('.ut-nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.ut-nav-btn[data-page="${page}"]`).classList.add('active');
+
+        // Show/hide toolbar controls (on Screens or User pages)
+        const showScreenTools = (page === 'screens' || page === 'user');
+        document.getElementById('toolbar-center').style.display = showScreenTools ? 'flex' : 'none';
+        document.getElementById('toolbar-right').style.display = page === 'screens' ? 'flex' : 'none';
+
+        if (page === 'screens') setTimeout(scaleIframe, 50);
+        if (page === 'user') setTimeout(scaleUserIframe, 50);
+    }
+
+    // ============================================
+    // IFRAME SCALING
+    // ============================================
+    function scaleIframe() {
+        const container = document.getElementById('ut-center');
+        const iframe = document.getElementById('prototype-frame');
+        if (!iframe || !container) return;
+
+        const cw = container.clientWidth;
+        const ch = container.clientHeight;
+        if (cw === 0 || ch === 0) return;
+
+        let scale;
+        if (currentZoom === 'fit') {
+            const scaleX = cw / 1920;
+            const scaleY = ch / 1080;
+            scale = Math.min(scaleX, scaleY);
+            iframe.style.width = '1920px';
+            iframe.style.height = '1080px';
+            iframe.style.transform = `scale(${scale})`;
+        } else {
+            scale = currentZoom;
+            iframe.style.width = '1920px';
+            iframe.style.height = `${ch / scale}px`;
+            iframe.style.transform = `scale(${scale})`;
+        }
+
+        // Scale heatmap canvas to match
+        const hc = document.getElementById('heatmap-canvas');
+        if (hc) hc.style.transform = `scale(${scale})`;
+    }
+
+    function scaleUserIframe() {
+        const container = document.getElementById('user-preview');
+        const iframe = document.getElementById('user-prototype-frame');
+        if (!iframe || !container) return;
+
+        const cw = container.clientWidth;
+        const ch = container.clientHeight;
+        if (cw === 0 || ch === 0) return;
+
+        let scale;
+        if (currentZoom === 'fit') {
+            scale = Math.min(cw / 1920, ch / 1080);
+            iframe.style.width = '1920px';
+            iframe.style.height = '1080px';
+            iframe.style.transform = `scale(${scale})`;
+        } else {
+            scale = currentZoom;
+            iframe.style.width = '1920px';
+            iframe.style.height = `${ch / scale}px`;
+            iframe.style.transform = `scale(${scale})`;
+        }
+
+        const hc = document.getElementById('user-heatmap-canvas');
+        if (hc) hc.style.transform = `scale(${scale})`;
+    }
+
+    function setZoom(level) {
+        currentZoom = level;
+        document.querySelectorAll('.ut-zoom-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        scaleIframe();
+    }
+
+    window.addEventListener('resize', () => { scaleIframe(); scaleUserIframe(); });
+
+    // ============================================
+    // RIGHT RAIL TOGGLE (Screens page)
+    // ============================================
+    function toggleRightRail() {
+        const page = document.getElementById('page-screens');
+        const btn = document.getElementById('toggle-right');
+        page.classList.toggle('right-collapsed');
+        btn.classList.toggle('active');
+        setTimeout(scaleIframe, 260);
+    }
+
+    function toggleNav() {
+        const nav = document.getElementById('ut-nav');
+        nav.classList.toggle('collapsed');
+        // Rescale iframes after transition
+        setTimeout(() => { scaleIframe(); scaleUserIframe(); }, 250);
+    }
+
+    // ============================================
+    // ANNOTATION MANAGER
+    // ============================================
+    function injectAnnotationStyles() {
+        const iframe = document.getElementById('prototype-frame');
+        const doc = iframe.contentWindow.document;
+        const style = doc.createElement('style');
+        style.id = 'ut-annotation-styles';
+        style.textContent = `
+            .ut-marker {
+                position: absolute;
+                width: 28px; height: 28px; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 12px; font-weight: 700; color: #ffffff;
+                z-index: 10000; cursor: pointer;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+                transition: transform 0.15s, box-shadow 0.15s;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                line-height: 1; pointer-events: auto;
+            }
+            .ut-marker:hover { transform: scale(1.15); box-shadow: 0 4px 14px rgba(0,0,0,0.35); }
+            .ut-marker.ut-selected { transform: scale(1.25); box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 4px 14px rgba(0,0,0,0.35); }
+            .ut-highlight-outline { outline: 2px dashed currentColor !important; outline-offset: 3px !important; }
+        `;
+        doc.head.appendChild(style);
+    }
+
+    function clearAnnotations() {
+        const iframe = document.getElementById('prototype-frame');
+        if (!iframeReady) return;
+        try {
+            const doc = iframe.contentWindow.document;
+            doc.querySelectorAll('.ut-marker').forEach(m => m.remove());
+            doc.querySelectorAll('.ut-highlight-outline').forEach(el => {
+                el.classList.remove('ut-highlight-outline');
+                el.style.removeProperty('--ut-highlight-color');
+            });
+        } catch (e) {}
+    }
+
+    function injectAnnotationsForScreen(screenId) {
+        const iframe = document.getElementById('prototype-frame');
+        if (!iframeReady) return;
+        const screen = testData.screens.find(s => s.id === screenId);
+        if (!screen || !screen.annotations) return;
+        const doc = iframe.contentWindow.document;
+
+        screen.annotations.forEach(ann => {
+            const sev = sevColors[ann.severity] || sevColors.low;
+            const marker = doc.createElement('div');
+            marker.className = 'ut-marker';
+            marker.id = `ut-marker-${ann.id}`;
+            marker.textContent = ann.number;
+            marker.style.backgroundColor = sev.marker;
+            marker.setAttribute('data-annotation-id', ann.id);
+
+            marker.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                window.parent.postMessage({ type: 'ut-annotation-click', annotationId: ann.id }, '*');
+            });
+
+            let target = null;
+            try { target = doc.querySelector(ann.selector); } catch (e) {}
+
+            if (target) {
+                const cs = iframe.contentWindow.getComputedStyle(target);
+                if (cs.position === 'static') target.style.position = 'relative';
+                marker.style.top = '-8px';
+                marker.style.right = '-8px';
+                target.appendChild(marker);
+                target.classList.add('ut-highlight-outline');
+                target.style.color = sev.marker;
+            } else if (ann.fallbackPosition) {
+                marker.style.position = 'fixed';
+                marker.style.top = ann.fallbackPosition.top;
+                marker.style.left = ann.fallbackPosition.left;
+                doc.body.appendChild(marker);
+            }
+        });
+    }
+
+    function selectAnnotationInIframe(annotationId) {
+        const iframe = document.getElementById('prototype-frame');
+        if (!iframeReady) return;
+        try {
+            const doc = iframe.contentWindow.document;
+            doc.querySelectorAll('.ut-marker').forEach(m => m.classList.remove('ut-selected'));
+            if (annotationId) {
+                const marker = doc.getElementById(`ut-marker-${annotationId}`);
+                if (marker) {
+                    marker.classList.add('ut-selected');
+                    marker.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        } catch (e) {}
+    }
+
+    // ============================================
+    // SCREEN SWITCHING
+    // ============================================
+    function switchScreen(screenId) {
+        if (!iframeReady) return;
+        const iframe = document.getElementById('prototype-frame');
+        const screen = testData.screens.find(s => s.id === screenId);
+        if (!screen) return;
+
+        currentScreenId = screenId;
+        selectedAnnotationId = null;
+
+        try { iframe.contentWindow.eval(screen.showFn); } catch (e) {
+            console.warn('Screen switch failed:', e);
+        }
+
+        document.querySelectorAll('.ut-screen-btn').forEach(b => b.classList.remove('active'));
+        const btn = document.querySelector(`.ut-screen-btn[data-screen="${screenId}"]`);
+        if (btn) btn.classList.add('active');
+
+        clearAnnotations();
+        const hasCompound = screen.showFn.includes('setTimeout');
+        const delay = hasCompound ? 600 : 200;
+        setTimeout(() => {
+            clearAnnotations();
+            injectAnnotationsForScreen(screenId);
+            renderRightRailForScreen(screenId);
+        }, delay);
+    }
+
+    function setupMutationObserver() {
+        const iframe = document.getElementById('prototype-frame');
+        if (!iframeReady) return;
+        try {
+            const doc = iframe.contentWindow.document;
+            const screens = doc.querySelectorAll('.screen');
+            const observer = new MutationObserver(() => {
+                const activeScreen = doc.querySelector('.screen.active');
+                if (!activeScreen) return;
+                const currentBase = currentScreenId ? currentScreenId.split('-qv')[0] : null;
+                if (activeScreen.id === currentBase || activeScreen.id === currentScreenId) return;
+                const matching = testData.screens.find(s => s.id === activeScreen.id);
+                if (matching) {
+                    currentScreenId = matching.id;
+                    selectedAnnotationId = null;
+                    document.querySelectorAll('.ut-screen-btn').forEach(b => b.classList.remove('active'));
+                    const btn = document.querySelector(`.ut-screen-btn[data-screen="${matching.id}"]`);
+                    if (btn) btn.classList.add('active');
+                    clearAnnotations();
+                    setTimeout(() => {
+                        injectAnnotationsForScreen(matching.id);
+                        renderRightRailForScreen(matching.id);
+                    }, 200);
+                }
+            });
+            screens.forEach(s => observer.observe(s, { attributes: true, attributeFilter: ['class'] }));
+        } catch (e) {}
+    }
+
+    // ============================================
+    // PAGE: SUMMARY
+    // ============================================
+    function renderSummaryPage() {
+        const m = testData.meta;
+        let html = '';
+
+        // Header
+        html += `<div class="ut-summary-header">`;
+        html += `<div class="ut-summary-title">Usability Test Report</div>`;
+        html += `<div class="ut-summary-meta">`;
+        html += `<span class="ut-summary-meta-item"><i class="fas fa-calendar"></i> ${m.date || ''}</span>`;
+        html += `<span class="ut-summary-meta-item"><i class="fas fa-desktop"></i> ${m.displayResolution || '1920x1080'}</span>`;
+        html += `<span class="ut-summary-meta-item"><i class="fas fa-file-code"></i> ${m.prototypeFile || ''}</span>`;
+        html += `</div></div>`;
+
+        // Job to Be Done
+        html += `<div class="ut-summary-section">`;
+        html += `<div class="ut-summary-section-title">Job to Be Done</div>`;
+        html += `<div class="ut-summary-jtbd">${m.jobToBeDone || '—'}</div>`;
+        html += `</div>`;
+
+        // Tasks
+        if (m.tasks && m.tasks.length) {
+            html += `<div class="ut-summary-section">`;
+            html += `<div class="ut-summary-section-title">Tasks Evaluated</div>`;
+            html += `<ol class="ut-summary-tasks">`;
+            m.tasks.forEach(t => { html += `<li class="ut-summary-task">${t}</li>`; });
+            html += `</ol></div>`;
+        }
+
+        // Personas
+        html += `<div class="ut-summary-section">`;
+        html += `<div class="ut-summary-section-title">Personas</div>`;
+        html += `<div class="ut-persona-grid">`;
+        testData.personas.forEach(p => {
+            const reactionCount = (p.reactions || []).length;
+            html += `<div class="ut-persona-card-lg" data-persona="${p.id}" onclick="openPersonaRail('${p.id}')">`;
+            html += `<div class="ut-persona-card-top">`;
+            html += `<div class="ut-persona-avatar-lg" style="background:${p.color || '#64748b'}">${p.avatar || p.name.charAt(0)}</div>`;
+            html += `<div>`;
+            html += `<div class="ut-persona-name-lg">${p.name}</div>`;
+            html += `<div class="ut-persona-archetype-lg">${p.archetype}</div>`;
+            html += `</div></div>`;
+            html += `<div class="ut-persona-title-lg">${p.title}</div>`;
+            html += `</div>`;
+        });
+        html += `</div></div>`;
+
+        document.getElementById('summary-content').innerHTML = html;
+    }
+
+    function openPersonaRail(personaId) {
+        const persona = testData.personas.find(p => p.id === personaId);
+        if (!persona) return;
+
+        // Highlight active card
+        document.querySelectorAll('.ut-persona-card-lg').forEach(c => {
+            c.classList.toggle('active', c.dataset.persona === personaId);
+        });
+
+        // Header
+        let headerHtml = '';
+        headerHtml += `<div class="ut-persona-avatar-lg" style="background:${persona.color || '#64748b'}">${persona.avatar}</div>`;
+        headerHtml += `<div>`;
+        headerHtml += `<div style="font-size:0.9375rem;font-weight:700;color:#0f172a;">${persona.name}</div>`;
+        headerHtml += `<div style="font-size:0.75rem;color:#64748b;">${persona.archetype} — ${persona.title}</div>`;
+        headerHtml += `</div>`;
+        headerHtml += `<button class="ut-persona-rail-close" onclick="closePersonaRail()"><i class="fas fa-times"></i></button>`;
+        document.getElementById('persona-rail-header').innerHTML = headerHtml;
+
+        // Body: persona profile sections
+        let bodyHtml = '';
+        const profile = persona.profile || {};
+        const sections = [
+            { key: 'background', label: 'Background' },
+            { key: 'roleAndScope', label: 'Role & Scope', isList: true },
+            { key: 'maturityLevel', label: 'Maturity Level' },
+            { key: 'toolEcosystem', label: 'Tool Ecosystem' },
+            { key: 'mentalModel', label: 'Mental Model of "Threat"' },
+            { key: 'riskRegister', label: 'Relationship to Risk Register' },
+            { key: 'painPoints', label: 'Key Pain Points', isList: true },
+            { key: 'expectations', label: 'Key Expectations', isList: true },
+            { key: 'researchGrounding', label: 'Research Grounding', isQuotes: true }
+        ];
+        sections.forEach(({ key, label, isList, isQuotes }) => {
+            const val = profile[key];
+            if (!val) return;
+            bodyHtml += `<div class="ut-persona-rail-section">`;
+            bodyHtml += `<div class="ut-persona-rail-section-title">${label}</div>`;
+            if (isQuotes && Array.isArray(val)) {
+                val.forEach(q => { bodyHtml += `<div class="ut-persona-rail-quote">${q}</div>`; });
+            } else if (isList && Array.isArray(val)) {
+                bodyHtml += `<ul class="ut-persona-rail-list">`;
+                val.forEach(item => { bodyHtml += `<li>${item}</li>`; });
+                bodyHtml += `</ul>`;
+            } else {
+                bodyHtml += `<div class="ut-persona-rail-section-text">${val}</div>`;
+            }
+            bodyHtml += `</div>`;
+        });
+        if (!bodyHtml) bodyHtml = `<div style="color:#94a3b8;font-size:0.875rem;">No profile data available.</div>`;
+        document.getElementById('persona-rail-body').innerHTML = bodyHtml;
+
+        document.getElementById('persona-rail').classList.add('open');
+    }
+
+    function closePersonaRail() {
+        document.getElementById('persona-rail').classList.remove('open');
+        document.querySelectorAll('.ut-persona-card-lg').forEach(c => c.classList.remove('active'));
+    }
+
+    // ============================================
+    // PAGE: SCREENS (list rendering)
+    // ============================================
+    function renderScreensList() {
+        let html = '';
+        testData.screens.forEach(s => {
+            const count = (s.annotations || []).length;
+            html += `<button class="ut-screen-btn" data-screen="${s.id}" onclick="switchPage('screens'); switchScreen('${s.id}');">
+                <i class="fas fa-desktop" style="color:#94a3b8;font-size:0.75rem;"></i>
+                ${s.name}
+                <span class="ut-screen-count">${count}</span>
+            </button>`;
+        });
+        document.getElementById('screen-list-body').innerHTML = html;
+    }
+
+    // ============================================
+    // SCREENS: RIGHT RAIL RENDERING
+    // ============================================
+    function renderRightRailForScreen(screenId) {
+        const screen = testData.screens.find(s => s.id === screenId);
+        if (!screen) return;
+
+        document.getElementById('right-header-title').textContent = screen.name;
+        document.getElementById('right-header-subtitle').textContent =
+            `${(screen.annotations || []).length} annotations on this screen`;
+
+        let html = '';
+        (screen.annotations || []).forEach(ann => {
+            const findings = testData.findings.filter(f => (f.annotationIds || []).includes(ann.id));
+            const finding = findings[0];
+            const sev = ann.severity;
+
+            html += `<div class="ut-commentary-card" id="commentary-${ann.id}" data-annotation="${ann.id}">`;
+            html += `<div class="ut-commentary-header" onclick="selectAnnotation('${ann.id}')">`;
+            html += `<span class="ut-annotation-number ut-ann-${sev}">${ann.number}</span>`;
+            html += `<span class="ut-commentary-label">${ann.label}</span>`;
+            html += `<span class="ut-commentary-sev-tag ut-sev-tag-${sev}">${sev}</span>`;
+            html += `</div>`;
+
+            // Expandable detail
+            html += `<div class="ut-commentary-detail">`;
+            if (finding) {
+                // Finding text (primary — shown first)
+                html += `<div class="ut-detail-section">`;
+                html += `<div class="ut-detail-text" style="font-weight:500;color:#1e293b;">${finding.finding}</div>`;
+                html += `</div>`;
+
+                if (finding.evidence) {
+                    html += `<div class="ut-detail-section">`;
+                    html += `<div class="ut-detail-label">Evidence</div>`;
+                    html += `<div class="ut-detail-text">${finding.evidence}</div>`;
+                    html += `</div>`;
+                }
+
+                if (finding.recommendation) {
+                    html += `<div class="ut-detail-section">`;
+                    html += `<div class="ut-detail-label">Recommendation</div>`;
+                    html += `<div class="ut-detail-text">${finding.recommendation}</div>`;
+                    html += `</div>`;
+                }
+
+                if (finding.codeRef) {
+                    html += `<div class="ut-detail-section">`;
+                    html += `<div class="ut-detail-label">Code Reference</div>`;
+                    html += `<div class="ut-detail-text"><code>${finding.codeRef}</code></div>`;
+                    html += `</div>`;
+                }
+
+                // Persona reactions — collapsed by default
+                const reactions = [];
+                testData.personas.forEach(p => {
+                    (p.reactions || []).forEach(r => {
+                        if (r.screenId === screenId && (r.annotationIds || []).includes(ann.id)) {
+                            reactions.push({ persona: p, reaction: r });
+                        }
+                    });
+                });
+                if (reactions.length) {
+                    html += `<div class="ut-detail-section">`;
+                    html += `<div class="ut-reactions-toggle" onclick="event.stopPropagation(); this.classList.toggle('open');">`;
+                    html += `<div class="ut-reactions-avatars">`;
+                    reactions.forEach(({ persona }) => {
+                        html += `<span class="ut-reactions-avatar-sm" style="background:${persona.color}">${persona.avatar}</span>`;
+                    });
+                    html += `</div>`;
+                    html += `<span class="ut-reactions-toggle-label">${reactions.length} reaction${reactions.length > 1 ? 's' : ''}</span>`;
+                    html += `<i class="fas fa-chevron-down ut-reactions-toggle-chevron"></i>`;
+                    html += `</div>`;
+                    html += `<div class="ut-reactions-body">`;
+                    reactions.forEach(({ persona, reaction }) => {
+                        html += `<div class="ut-persona-reaction">
+                            <div class="ut-persona-reaction-header">
+                                <div class="ut-persona-reaction-avatar" style="background:${persona.color}">${persona.avatar}</div>
+                                <span class="ut-persona-reaction-name">${persona.name}</span>
+                            </div>
+                            <div class="ut-persona-reaction-text">${reaction.detail || reaction.summary}</div>
+                        </div>`;
+                    });
+                    html += `</div></div>`;
+                }
+            }
+            html += `</div>`; // end detail
+            html += `</div>`; // end card
+        });
+
+        document.getElementById('right-body').innerHTML = html;
+    }
+
+    // ============================================
+    // INTERACTION: ANNOTATION SELECTION
+    // ============================================
+    function selectAnnotation(annotationId) {
+        // Toggle behavior: clicking selected annotation deselects it
+        if (selectedAnnotationId === annotationId) {
+            deselectAnnotation();
+            return;
+        }
+
+        selectedAnnotationId = annotationId;
+
+        document.querySelectorAll('.ut-commentary-card').forEach(c => {
+            c.classList.toggle('selected', c.dataset.annotation === annotationId);
+        });
+
+        const card = document.getElementById(`commentary-${annotationId}`);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        selectAnnotationInIframe(annotationId);
+    }
+
+    function deselectAnnotation() {
+        selectedAnnotationId = null;
+        document.querySelectorAll('.ut-commentary-card').forEach(c => c.classList.remove('selected'));
+        selectAnnotationInIframe(null);
+    }
+
+    // ============================================
+    // PAGE: FINDINGS
+    // ============================================
+    function renderFindingsPage() {
+        const patternsCount = (testData.crossPersonaPatterns || []).length;
+        const questionsCount = (testData.openQuestions || []).length;
+
+        // Render tabs
+        let tabsHtml = '';
+        tabsHtml += `<button class="ut-findings-tab active" data-tab="findings" onclick="switchFindingsTab('findings')">Findings <span class="tab-count">${testData.findings.length}</span></button>`;
+        tabsHtml += `<button class="ut-findings-tab" data-tab="patterns" onclick="switchFindingsTab('patterns')">Cross-Persona Patterns <span class="tab-count">${patternsCount}</span></button>`;
+        tabsHtml += `<button class="ut-findings-tab" data-tab="questions" onclick="switchFindingsTab('questions')">Open Questions <span class="tab-count">${questionsCount}</span></button>`;
+        document.getElementById('findings-tabs').innerHTML = tabsHtml;
+
+        // Findings table
+        const order = ['critical', 'high', 'medium', 'low', 'positive'];
+        const sorted = [...testData.findings].sort((a, b) => order.indexOf(a.severity) - order.indexOf(b.severity));
+
+        let tableHtml = '';
+        tableHtml += `<table class="ut-findings-table">`;
+        tableHtml += `<thead><tr>`;
+        tableHtml += `<th class="col-severity">Severity</th>`;
+        tableHtml += `<th>Finding</th>`;
+        tableHtml += `<th class="col-screen">Screen</th>`;
+        tableHtml += `<th class="col-personas">Personas</th>`;
+        tableHtml += `<th>Recommendation</th>`;
+        tableHtml += `</tr></thead><tbody>`;
+        sorted.forEach(f => {
+            const screen = testData.screens.find(s => s.id === f.screenId);
+            tableHtml += `<tr>`;
+            tableHtml += `<td><span class="ut-sev-badge ut-sev-badge-${f.severity}"><span class="ut-sev-dot ut-sev-dot-${f.severity}"></span> ${f.severity}</span></td>`;
+            tableHtml += `<td>${f.finding}</td>`;
+            tableHtml += `<td style="font-size:0.8125rem;color:#64748b;">${screen ? screen.name : '—'}</td>`;
+            tableHtml += `<td>`;
+            if (f.affectedPersonas && f.affectedPersonas.length) {
+                tableHtml += `<div class="ut-table-personas">`;
+                f.affectedPersonas.forEach(pid => {
+                    const p = testData.personas.find(x => x.id === pid);
+                    if (p) tableHtml += `<span class="ut-table-persona-dot" style="background:${p.color}" title="${p.name}">${p.avatar}</span>`;
+                });
+                tableHtml += `</div>`;
+            }
+            tableHtml += `</td>`;
+            tableHtml += `<td><div class="ut-table-rec">${f.recommendation || '—'}</div></td>`;
+            tableHtml += `</tr>`;
+        });
+        tableHtml += `</tbody></table>`;
+        document.getElementById('findings-table-content').innerHTML = tableHtml;
+
+        // Cross-Persona Patterns
+        let patternsHtml = '';
+        if (testData.crossPersonaPatterns && testData.crossPersonaPatterns.length) {
+            testData.crossPersonaPatterns.forEach((p, i) => {
+                patternsHtml += `<div class="ut-pattern-item">`;
+                patternsHtml += `<span class="ut-pattern-num">${i + 1}</span>`;
+                patternsHtml += `<div>`;
+                patternsHtml += `<div>${p.pattern}</div>`;
+                if (p.affectedPersonas && p.affectedPersonas.length) {
+                    patternsHtml += `<div class="ut-pattern-personas">`;
+                    p.affectedPersonas.forEach(pid => {
+                        const persona = testData.personas.find(x => x.id === pid);
+                        if (persona) patternsHtml += `<span class="ut-table-persona-dot" style="background:${persona.color}" title="${persona.name}">${persona.avatar}</span>`;
+                    });
+                    patternsHtml += `</div>`;
+                }
+                patternsHtml += `</div></div>`;
+            });
+        } else {
+            patternsHtml = `<div style="color:#94a3b8;font-size:0.875rem;">No patterns identified.</div>`;
+        }
+        document.getElementById('patterns-content').innerHTML = patternsHtml;
+
+        // Open Questions
+        let questionsHtml = '';
+        if (testData.openQuestions && testData.openQuestions.length) {
+            testData.openQuestions.forEach(q => {
+                questionsHtml += `<div class="ut-oq-item">${q}</div>`;
+            });
+        } else {
+            questionsHtml = `<div style="color:#94a3b8;font-size:0.875rem;">No open questions.</div>`;
+        }
+        document.getElementById('questions-content').innerHTML = questionsHtml;
+    }
+
+    function switchFindingsTab(tabId) {
+        document.querySelectorAll('.ut-findings-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
+        document.querySelectorAll('.ut-findings-tab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+    }
+
+    // ============================================
+    // USER IFRAME (second iframe for Insights by User)
+    // ============================================
+    function onUserIframeLoad() {
+        const iframe = document.getElementById('user-prototype-frame');
+        userIframeReady = true;
+        injectAnnotationStylesInto(iframe);
+        scaleUserIframe();
+    }
+
+    function injectAnnotationStylesInto(iframe) {
+        try {
+            const doc = iframe.contentWindow.document;
+            if (doc.getElementById('ut-annotation-styles')) return;
+            const style = doc.createElement('style');
+            style.id = 'ut-annotation-styles';
+            style.textContent = `
+                .ut-marker {
+                    position: absolute;
+                    width: 28px; height: 28px; border-radius: 50%;
+                    display: flex; align-items: center; justify-content: center;
+                    font-size: 12px; font-weight: 700; color: #ffffff;
+                    z-index: 10000; cursor: pointer;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+                    transition: transform 0.15s, box-shadow 0.15s;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    line-height: 1; pointer-events: auto;
+                }
+                .ut-marker:hover { transform: scale(1.15); box-shadow: 0 4px 14px rgba(0,0,0,0.35); }
+                .ut-marker.ut-selected { transform: scale(1.25); box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 4px 14px rgba(0,0,0,0.35); }
+                .ut-highlight-outline { outline: 2px dashed currentColor !important; outline-offset: 3px !important; }
+            `;
+            doc.head.appendChild(style);
+        } catch (e) {}
+    }
+
+    function switchUserScreen(screenId) {
+        if (!userIframeReady) return;
+        const iframe = document.getElementById('user-prototype-frame');
+        const screen = testData.screens.find(s => s.id === screenId);
+        if (!screen) return;
+        if (userCurrentScreenId === screenId) return;
+
+        userCurrentScreenId = screenId;
+        try { iframe.contentWindow.eval(screen.showFn); } catch (e) {}
+
+        // Clear and re-inject annotations
+        try {
+            const doc = iframe.contentWindow.document;
+            doc.querySelectorAll('.ut-marker').forEach(m => m.remove());
+            doc.querySelectorAll('.ut-highlight-outline').forEach(el => {
+                el.classList.remove('ut-highlight-outline');
+                el.style.removeProperty('--ut-highlight-color');
+            });
+        } catch (e) {}
+
+        const hasCompound = screen.showFn.includes('setTimeout');
+        const delay = hasCompound ? 600 : 200;
+        setTimeout(() => {
+            try {
+                const doc = iframe.contentWindow.document;
+                doc.querySelectorAll('.ut-marker').forEach(m => m.remove());
+                doc.querySelectorAll('.ut-highlight-outline').forEach(el => {
+                    el.classList.remove('ut-highlight-outline');
+                });
+            } catch (e) {}
+            injectAnnotationsInto(iframe, screenId);
+        }, delay);
+    }
+
+    function injectAnnotationsInto(iframe, screenId) {
+        if (!userIframeReady) return;
+        const screen = testData.screens.find(s => s.id === screenId);
+        if (!screen || !screen.annotations) return;
+        const doc = iframe.contentWindow.document;
+
+        screen.annotations.forEach(ann => {
+            const sev = sevColors[ann.severity] || sevColors.low;
+            const marker = doc.createElement('div');
+            marker.className = 'ut-marker';
+            marker.id = `ut-marker-${ann.id}`;
+            marker.textContent = ann.number;
+            marker.style.backgroundColor = sev.marker;
+
+            let target = null;
+            try { target = doc.querySelector(ann.selector); } catch (e) {}
+            if (target) {
+                const cs = iframe.contentWindow.getComputedStyle(target);
+                if (cs.position === 'static') target.style.position = 'relative';
+                marker.style.top = '-8px';
+                marker.style.right = '-8px';
+                target.appendChild(marker);
+                target.classList.add('ut-highlight-outline');
+                target.style.color = sev.marker;
+            } else if (ann.fallbackPosition) {
+                marker.style.position = 'fixed';
+                marker.style.top = ann.fallbackPosition.top;
+                marker.style.left = ann.fallbackPosition.left;
+                doc.body.appendChild(marker);
+            }
+        });
+    }
+
+    function highlightAnnotationInUserIframe(annotationId) {
+        const iframe = document.getElementById('user-prototype-frame');
+        if (!userIframeReady) return;
+        try {
+            const doc = iframe.contentWindow.document;
+            doc.querySelectorAll('.ut-marker').forEach(m => m.classList.remove('ut-selected'));
+            if (annotationId) {
+                const marker = doc.getElementById(`ut-marker-${annotationId}`);
+                if (marker) {
+                    marker.classList.add('ut-selected');
+                    marker.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        } catch (e) {}
+    }
+
+    // ============================================
+    // PAGE: INSIGHTS BY USER
+    // ============================================
+    function renderUserPage() {
+        // Persona selector pills
+        let selectorHtml = '';
+        testData.personas.forEach(p => {
+            if (!p.steps || !p.steps.length) return;
+            selectorHtml += `<button class="ut-user-persona-pill" data-persona="${p.id}" style="--pill-color:${p.color}" onclick="selectUserPersona('${p.id}')">`;
+            selectorHtml += `<span class="pill-avatar" style="background:${p.color}">${p.avatar}</span>`;
+            selectorHtml += `${p.name}`;
+            selectorHtml += `</button>`;
+        });
+        if (!selectorHtml) {
+            selectorHtml = '<span style="color:#94a3b8;font-size:0.8125rem;">No persona journey data available.</span>';
+        }
+        document.getElementById('user-persona-selector').innerHTML = selectorHtml;
+
+        // Auto-select first persona with steps
+        const firstWithSteps = testData.personas.find(p => p.steps && p.steps.length);
+        if (firstWithSteps) selectUserPersona(firstWithSteps.id);
+    }
+
+    function selectUserPersona(personaId) {
+        currentPersonaId = personaId;
+        activeStepIndex = 0;
+
+        // Update pill selection
+        document.querySelectorAll('.ut-user-persona-pill').forEach(p => {
+            p.classList.toggle('active', p.dataset.persona === personaId);
+        });
+
+        const persona = testData.personas.find(p => p.id === personaId);
+        if (!persona || !persona.steps) return;
+
+        renderUserTimeline(persona);
+        // Select first step
+        if (persona.steps.length) selectStep(0);
+    }
+
+    function renderUserTimeline(persona) {
+        const steps = persona.steps || [];
+        let html = '';
+        let lastScreenId = null;
+
+        steps.forEach((step, i) => {
+            // Insert screen label when screen changes
+            if (step.screenId !== lastScreenId) {
+                const screen = testData.screens.find(s => s.id === step.screenId);
+                const screenName = screen ? screen.name : step.screenId;
+                html += `<div class="ut-timeline-screen-label"><i class="fas fa-desktop"></i> ${screenName}</div>`;
+                lastScreenId = step.screenId;
+            }
+
+            const isThought = step.type === 'thought';
+            const typeClass = isThought ? 'ut-timeline-step-thought' : 'ut-timeline-step-action';
+            const dotClass = isThought ? 'ut-timeline-dot-thought' : 'ut-timeline-dot-action';
+            const icon = isThought ? 'fa-eye' : 'fa-mouse-pointer';
+
+            html += `<div class="ut-timeline-step ${typeClass}" data-step="${i}" onclick="selectStep(${i})">`;
+            html += `<div class="ut-timeline-dot ${dotClass}"><i class="fas ${icon}"></i></div>`;
+            html += `<div class="ut-timeline-step-num">Step ${i + 1} — ${isThought ? 'Thought' : 'Action'}`;
+
+            // Annotation badge if present
+            if (step.annotationId) {
+                const screen = testData.screens.find(s => s.id === step.screenId);
+                if (screen) {
+                    const ann = (screen.annotations || []).find(a => a.id === step.annotationId);
+                    if (ann) {
+                        const sev = sevColors[ann.severity] || sevColors.low;
+                        html += ` <span class="ut-timeline-step-ann-badge" style="background:${sev.marker}">${ann.number}</span>`;
+                    }
+                }
+            }
+            html += `</div>`;
+            html += `<div class="ut-timeline-step-text">${step.text}</div>`;
+            html += `</div>`;
+        });
+
+        if (!steps.length) {
+            html = '<div style="color:#94a3b8;font-size:0.875rem;padding:1rem;">No journey steps recorded for this persona.</div>';
+        }
+
+        document.getElementById('user-timeline').innerHTML = html;
+    }
+
+    function selectStep(index) {
+        const persona = testData.personas.find(p => p.id === currentPersonaId);
+        if (!persona || !persona.steps || !persona.steps[index]) return;
+
+        activeStepIndex = index;
+        const step = persona.steps[index];
+
+        // Highlight active step card
+        document.querySelectorAll('.ut-timeline-step').forEach(s => {
+            s.classList.toggle('active', parseInt(s.dataset.step) === index);
+        });
+
+        // Scroll step into view
+        const stepEl = document.querySelector(`.ut-timeline-step[data-step="${index}"]`);
+        if (stepEl) stepEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        // Switch user iframe to this step's screen
+        switchUserScreen(step.screenId);
+
+        // Highlight annotation if referenced
+        setTimeout(() => {
+            highlightAnnotationInUserIframe(step.annotationId || null);
+        }, step.screenId !== userCurrentScreenId ? 700 : 100);
+    }
+
+    // ============================================
+    // HEATMAP
+    // ============================================
+    function populateHeatmapPersonaSelect() {
+        const select = document.getElementById('heatmap-persona-select');
+        let html = '<option value="_aggregate">All Personas</option>';
+        testData.personas.forEach(p => {
+            html += `<option value="${p.id}">${p.name}</option>`;
+        });
+        select.innerHTML = html;
+    }
+
+    function toggleHeatmap() {
+        heatmapEnabled = !heatmapEnabled;
+        const btn = document.getElementById('toggle-heatmap');
+        const select = document.getElementById('heatmap-persona-select');
+        const disclaimer = document.getElementById('heatmap-disclaimer');
+
+        btn.classList.toggle('active', heatmapEnabled);
+        select.style.display = heatmapEnabled ? 'inline-block' : 'none';
+        disclaimer.classList.toggle('visible', heatmapEnabled);
+
+        if (heatmapEnabled) {
+            drawHeatmapForScreen('heatmap-canvas', currentScreenId, heatmapPersonaFilter);
+        } else {
+            const canvas = document.getElementById('heatmap-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    function setHeatmapPersona(filter) {
+        heatmapPersonaFilter = filter;
+        if (heatmapEnabled) {
+            drawHeatmapForScreen('heatmap-canvas', currentScreenId, heatmapPersonaFilter);
+        }
+    }
+
+    function drawHeatmapForScreen(canvasId, screenId, personaFilter) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (!testData.heatmapData) return;
+        const screenData = testData.heatmapData.find(h => h.screenId === screenId);
+        if (!screenData || !screenData.personas) return;
+
+        const points = screenData.personas[personaFilter] || [];
+        if (!points.length) return;
+
+        points.forEach(p => {
+            const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+            gradient.addColorStop(0, `rgba(255, 0, 0, ${p.intensity * 0.6})`);
+            gradient.addColorStop(0.4, `rgba(255, 165, 0, ${p.intensity * 0.35})`);
+            gradient.addColorStop(1, 'rgba(255, 255, 0, 0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
+        });
+    }
+
+    // Redraw heatmap when screen changes (hook into switchScreen)
+    const _origSwitchScreen = switchScreen;
+    switchScreen = function(screenId) {
+        _origSwitchScreen(screenId);
+        if (heatmapEnabled) {
+            setTimeout(() => drawHeatmapForScreen('heatmap-canvas', screenId, heatmapPersonaFilter), 300);
+        }
+    };
+
+    </script>
+</body>
+</html>

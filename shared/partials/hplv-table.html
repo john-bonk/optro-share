@@ -1,0 +1,434 @@
+<!--
+    ============================================================
+    PARTIAL: High-Performance List View (HPLV) table
+    ============================================================
+    Drop this block into any page where you need an HPLV table
+    (e.g. a detail page "Related records" section, a modal, a
+    dashboard card expansion). The full list-view.html template
+    already contains this block baked in — this partial is for
+    use OUTSIDE that template.
+
+    REQUIREMENTS (the page must already include these):
+      - shared/styles/layout.css       — provides all HPLV CSS
+      - shared/assets/icons/luna-icons.js — for icon rendering
+      - shared/scripts/component-overlay.js — for overlay labels
+
+    USAGE:
+      1. Copy this entire file (HTML + script) into your page
+         where the HPLV should appear.
+      2. At the top of the script, customize:
+           - columnDefs      (field keys, labels, types, widths)
+           - badgeMappings   (value → luna-badge class per column)
+           - rows            (sample data matching columnDefs keys)
+           - data-table-name (unique identifier on .SchemaTable)
+      3. The script's IDs use the prefix `hplv-` by default. If
+         you place MULTIPLE HPLVs on one page, rename all `hplv-*`
+         IDs (and the JS references) with a unique prefix per table.
+
+    TRANSLATION TARGET:
+      Component: <SchemaTable> with @identifier (HPLV mode)
+      Service:   SchemaTableService.fromCustomTemplate()
+      Engine:    SchemaTableEngine (columns, pagination,
+                 filtering, sorting, selection, inline editing)
+      Virtual:   VerticalCollection (@html-next/vertical-collection)
+
+    See the list-view.html template for the full annotated
+    reference, and .claude/skills/prototype-creation/page-patterns.md
+    for the section → Ember mapping.
+    ============================================================
+-->
+<div class="SchemaTable"
+     data-pattern="hplv-list"
+     data-table-name="hplv_partial_table"
+     data-new-aesthetic="true"
+     data-has-header-blocks="true"
+     data-component="Table"
+     data-scaffold="HPLV">
+
+    <!-- HEADER BAR — <:left-header> / <:right-header> yield blocks -->
+    <div class="hplv-header-bar" data-component="XStack">
+        <div class="left-header" data-qid-schema-table-left-header>
+            <input type="text"
+                   class="luna-input hplv-search-input"
+                   id="hplv-search"
+                   placeholder="Search..."
+                   oninput="handleSearch()"
+                   data-component="Input">
+            <button class="luna-btn" data-component="Button">
+                <span class="luna-icon" data-icon="filter"></span> Add Filter
+            </button>
+            <div class="hplv-active-filters" id="hplv-active-filters"></div>
+        </div>
+        <div class="right-header" data-qid-schema-table-right-header>
+            <div class="column-manager-trigger">
+                <button class="luna-btn" data-component="Button" data-qid-column-manager-select-column>
+                    <span class="luna-icon" data-icon="gear"></span> Manage Columns
+                </button>
+            </div>
+            <button class="luna-btn" data-component="Button" title="More actions">
+                <span class="luna-icon" data-icon="more-horizontal"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- TABLE CONTAINER — VerticalCollection target -->
+    <div class="table-container"
+         data-qid-table-container
+         data-border="y"
+         data-can-select-rows="true"
+         data-has-row-actions="false"
+         data-selected-rows="0">
+        <div class="table-scroll-container"
+             data-qid-table-scroll-container="hplv_partial_table">
+            <!-- ========================================================
+                 HORIZONTAL OVERFLOW & COLUMN SIZING (HPLV)
+                 ========================================================
+                 The outer `.table-scroll-container` already has
+                 `overflow-x: auto` (see layout.css). HPLV uses
+                 `table-layout: fixed`, so column widths come from the
+                 <th> `style="width: …"` values below — they do NOT
+                 auto-size to content.
+
+                 Size each column using Luna **CellWidth tokens** (ref:
+                 auditboard-frontend/libraries/schema-table/package/src/
+                 const.ts:10-17):
+
+                   xs   = 3.75rem   (60px)   — icon-only / checkbox
+                   sm   = 7.5rem    (120px)  — short text, dates
+                   md   = 10rem     (160px)  — DEFAULT — status, tags
+                   lg   = 13.75rem  (220px)  — long names, titles
+                   xl   = 18.75rem  (300px)  — descriptions
+                   2xl  = 25rem     (400px)  — multi-line text
+
+                 With fixed layout, the table itself needs a `min-width`
+                 equal to the sum of column widths to trigger horizontal
+                 scroll — set that on the <table> via `min-width` inline
+                 style or a per-prototype class rule.
+
+                 Each <th> needs:
+                   - data-qid-table-column-header="<key>"
+                   - onclick="setSort('<key>')"
+                   - style="width: <token>rem"
+                 ======================================================== -->
+            <table class="hplv-table"
+                   data-qid-datatable="hplv_partial_table"
+                   data-component="Table"
+                   style="min-width: 50rem;">
+                <thead>
+                    <tr>
+                        <th class="checkbox-cell">
+                            <input type="checkbox"
+                                   id="hplv-select-all"
+                                   data-qid-datatable-checkbox
+                                   onchange="toggleSelectAll(this)">
+                        </th>
+                        <!-- Column headers — customize to match your columnDefs.
+                             Sizes use CellWidth tokens (see comment above). -->
+                        <th data-qid-table-column-header="name" onclick="setSort('name')" style="width: 13.75rem;"><!-- lg -->
+                            Name <span class="luna-icon sort-icon" data-icon="arrow-down"></span>
+                            <div class="resize-handle"></div>
+                        </th>
+                        <th data-qid-table-column-header="description" onclick="setSort('description')" style="width: 18.75rem;"><!-- xl -->
+                            Description <span class="luna-icon sort-icon" data-icon="arrow-down"></span>
+                            <div class="resize-handle"></div>
+                        </th>
+                        <th data-qid-table-column-header="status" onclick="setSort('status')" style="width: 10rem;"><!-- md -->
+                            Status <span class="luna-icon sort-icon" data-icon="arrow-down"></span>
+                            <div class="resize-handle"></div>
+                        </th>
+                        <th data-qid-table-column-header="updatedAt" onclick="setSort('updatedAt')" style="width: 7.5rem;"><!-- sm -->
+                            Last Updated <span class="luna-icon sort-icon" data-icon="arrow-down"></span>
+                            <div class="resize-handle"></div>
+                        </th>
+                        <!-- Optional row-actions column:
+                        <th class="row-actions-cell" data-qid-datatable-row-actions-head-cell></th>
+                        -->
+                    </tr>
+                </thead>
+                <tbody id="hplv-table-body">
+                    <!-- Rows rendered by JavaScript below -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PAGINATION — SchemaTablePagination -->
+    <div class="hplv-pagination" id="hplv-pagination" data-qid-datatable-pagination>
+        <div class="hplv-selection-summary" id="hplv-selection-summary">
+            <span class="luna-icon selection-icon" data-icon="return"></span>
+            <span class="selection-text" id="hplv-bulk-count" data-qid-datatable-pagination-update-text>0 selected</span>
+            <button class="luna-btn" data-component="Button" data-qid-select-all>Select All Records</button>
+            <button class="luna-btn" data-component="Button" onclick="clearSelection()" data-qid-clear-selection>Deselect all</button>
+            <div class="hplv-pagination-divider"></div>
+            <div class="hplv-bulk-actions visible" id="hplv-bulk-actions" data-component="XStack">
+                <!-- Customize bulk action buttons per prototype -->
+                <button class="luna-btn primary" data-component="Button">Start</button>
+                <button class="luna-btn danger" data-component="Button">Delete</button>
+            </div>
+        </div>
+        <div class="hplv-rows-per-page" style="margin-left: auto;">
+            <span>Rows per page</span>
+            <select class="luna-select hplv-rows-select" id="hplv-rows-select" onchange="handleRowsChange()" data-component="Select" data-qid-datatable-pagination-select-limit>
+                <option value="25">25</option>
+                <option value="50" selected>50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+        <div class="hplv-pagination-nav">
+            <span class="hplv-pagination-range" id="hplv-pagination-range" data-qid-datatable-pagination-details>1-0 of 0</span>
+            <button class="luna-btn" data-component="Button" data-size="xs" id="hplv-prev" onclick="prevPage()" disabled data-qid-datatable-pagination-previous>
+                <span class="luna-icon" data-icon="chevron-left"></span>
+            </button>
+            <button class="luna-btn" data-component="Button" data-size="xs" id="hplv-next" onclick="nextPage()" disabled data-qid-datatable-pagination-next>
+                <span class="luna-icon" data-icon="chevron-right"></span>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ==================================================================
+// HPLV PARTIAL — JavaScript (customize the config section only)
+//
+// Provides working search, sort, pagination, row selection, and
+// column resizing. In production Ember, SchemaTableEngine +
+// VerticalCollection handle all of this. Pagination here simulates
+// virtual scrolling via slicing.
+// ==================================================================
+
+// ---- CONFIGURATION (customize per prototype) ----
+const columnDefs = [
+    { key: 'name',        label: 'Name',         type: 'link' },
+    { key: 'description', label: 'Description',  type: 'text' },
+    { key: 'status',      label: 'Status',       type: 'badge' },
+    { key: 'updatedAt',   label: 'Last Updated', type: 'date' },
+];
+
+const badgeMappings = {
+    status: {
+        'Active':      'luna-badge green weak',
+        'In Progress': 'luna-badge blue normal',
+        'Pending':     'luna-badge yellow weak',
+        'Draft':       'luna-badge gray weak',
+        'Closed':      'luna-badge gray weak',
+    },
+};
+
+const rows = [
+    { id: 1, name: 'Record one',   description: 'Short description here', status: 'Active',      updatedAt: '2024-03-15' },
+    { id: 2, name: 'Record two',   description: 'Short description here', status: 'In Progress', updatedAt: '2024-03-12' },
+    { id: 3, name: 'Record three', description: 'Short description here', status: 'Pending',     updatedAt: '2024-03-10' },
+];
+
+// ---- STATE ----
+let searchQuery = '';
+let sortKey = null;
+let sortDir = 'asc';
+let pageIndex = 0;
+let rowsPerPage = 50;
+let selectedIds = new Set();
+
+// ---- FILTERING & SORTING ----
+function getFilteredRows() {
+    let filtered = rows;
+    if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        filtered = filtered.filter(r =>
+            columnDefs.some(col => {
+                const val = r[col.key];
+                return val && String(val).toLowerCase().includes(q);
+            })
+        );
+    }
+    if (sortKey) {
+        filtered = [...filtered].sort((a, b) => {
+            const aVal = a[sortKey] ?? '';
+            const bVal = b[sortKey] ?? '';
+            const cmp = String(aVal).localeCompare(String(bVal), undefined, { numeric: true });
+            return sortDir === 'asc' ? cmp : -cmp;
+        });
+    }
+    return filtered;
+}
+
+// ---- RENDERING ----
+function renderTable() {
+    const filtered = getFilteredRows();
+    const start = pageIndex * rowsPerPage;
+    const pageItems = filtered.slice(start, start + rowsPerPage);
+    const tbody = document.getElementById('hplv-table-body');
+
+    if (pageItems.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="${columnDefs.length + 2}" class="hplv-empty-state">No results found</td></tr>`;
+    } else {
+        tbody.innerHTML = pageItems.map(row => `
+            <tr class="row" data-selected="${selectedIds.has(row.id)}" data-qid-datatable-row="${row.id}">
+                <td class="checkbox-cell">
+                    <input type="checkbox" ${selectedIds.has(row.id) ? 'checked' : ''} onchange="toggleRowSelect(${row.id}, this)">
+                </td>
+                ${columnDefs.map(col => renderCell(row, col)).join('')}
+            </tr>
+        `).join('');
+    }
+
+    const end = Math.min(start + rowsPerPage, filtered.length);
+    document.getElementById('hplv-pagination-range').textContent =
+        filtered.length === 0 ? '0 of 0' : `${start + 1}-${end} of ${filtered.length}`;
+    document.getElementById('hplv-prev').disabled = pageIndex === 0;
+    document.getElementById('hplv-next').disabled = end >= filtered.length;
+
+    if (typeof window.renderLunaIcons === 'function') {
+        window.renderLunaIcons(tbody);
+    }
+    updateBulkBar();
+}
+
+function renderCell(row, col) {
+    const val = row[col.key];
+    if (val == null || val === '') {
+        return `<td class="cell-muted" data-qid-datatable-cell="${col.key}">&mdash;</td>`;
+    }
+    switch (col.type) {
+        case 'link':
+            return `<td data-qid-datatable-cell="${col.key}"><span class="cell-link">${val}</span></td>`;
+        case 'badge':
+            const cls = (badgeMappings[col.key] && badgeMappings[col.key][val]) || 'luna-badge gray weak';
+            return `<td data-qid-datatable-cell="${col.key}"><span class="${cls}" data-component="Badge">${val}</span></td>`;
+        case 'date':
+            return `<td class="cell-date" data-qid-datatable-cell="${col.key}">${formatDate(val)}</td>`;
+        default:
+            return `<td data-qid-datatable-cell="${col.key}">${val}</td>`;
+    }
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// ---- SEARCH ----
+function handleSearch() {
+    searchQuery = document.getElementById('hplv-search').value.trim();
+    pageIndex = 0;
+    renderTable();
+}
+
+// ---- SORTING ----
+function setSort(key) {
+    if (sortKey === key) {
+        sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortKey = key;
+        sortDir = 'asc';
+    }
+    pageIndex = 0;
+    renderTable();
+
+    document.querySelectorAll('.hplv-table thead th').forEach(th => {
+        th.classList.remove('sorted');
+        const icon = th.querySelector('.sort-icon');
+        if (icon) {
+            icon.setAttribute('data-icon', 'arrow-down');
+            icon.innerHTML = '';
+        }
+    });
+    const activeTh = document.querySelector(`[data-qid-table-column-header="${key}"]`);
+    if (activeTh) {
+        activeTh.classList.add('sorted');
+        const icon = activeTh.querySelector('.sort-icon');
+        if (icon) {
+            icon.setAttribute('data-icon', sortDir === 'asc' ? 'arrow-up' : 'arrow-down');
+            icon.innerHTML = '';
+        }
+    }
+    if (typeof window.renderLunaIcons === 'function') {
+        window.renderLunaIcons(document.querySelector('.hplv-table thead'));
+    }
+}
+
+// ---- PAGINATION ----
+function handleRowsChange() {
+    rowsPerPage = parseInt(document.getElementById('hplv-rows-select').value);
+    pageIndex = 0;
+    renderTable();
+}
+function prevPage() { if (pageIndex > 0) { pageIndex--; renderTable(); } }
+function nextPage() {
+    const filtered = getFilteredRows();
+    if ((pageIndex + 1) * rowsPerPage < filtered.length) { pageIndex++; renderTable(); }
+}
+
+// ---- SELECTION ----
+function toggleSelectAll(checkbox) {
+    const filtered = getFilteredRows();
+    const start = pageIndex * rowsPerPage;
+    const pageItems = filtered.slice(start, start + rowsPerPage);
+    if (checkbox.checked) pageItems.forEach(r => selectedIds.add(r.id));
+    else pageItems.forEach(r => selectedIds.delete(r.id));
+    renderTable();
+}
+
+function toggleRowSelect(id, checkbox) {
+    if (checkbox.checked) selectedIds.add(id);
+    else selectedIds.delete(id);
+    updateBulkBar();
+    const row = document.querySelector(`[data-qid-datatable-row="${id}"]`);
+    if (row) row.setAttribute('data-selected', checkbox.checked);
+    const filtered = getFilteredRows();
+    const start = pageIndex * rowsPerPage;
+    const pageItems = filtered.slice(start, start + rowsPerPage);
+    const allSelected = pageItems.every(r => selectedIds.has(r.id));
+    document.getElementById('hplv-select-all').checked = allSelected;
+}
+
+function clearSelection() {
+    selectedIds.clear();
+    document.getElementById('hplv-select-all').checked = false;
+    renderTable();
+}
+
+function updateBulkBar() {
+    const summary = document.getElementById('hplv-selection-summary');
+    const count = document.getElementById('hplv-bulk-count');
+    const tableContainer = document.querySelector('[data-qid-table-container]');
+    if (selectedIds.size > 0) {
+        summary.classList.add('visible');
+        count.textContent = `${selectedIds.size} selected`;
+        if (tableContainer) tableContainer.setAttribute('data-selected-rows', selectedIds.size);
+    } else {
+        summary.classList.remove('visible');
+        if (tableContainer) tableContainer.setAttribute('data-selected-rows', '0');
+    }
+}
+
+// ---- COLUMN RESIZING ----
+(function initColumnResize() {
+    document.querySelectorAll('.resize-handle').forEach(handle => {
+        let startX, startWidth, th;
+        handle.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            th = handle.parentElement;
+            startX = e.pageX;
+            startWidth = th.offsetWidth;
+            handle.classList.add('resizing');
+            const onMouseMove = (e) => {
+                const newWidth = Math.max(60, startWidth + (e.pageX - startX));
+                th.style.width = newWidth + 'px';
+            };
+            const onMouseUp = () => {
+                handle.classList.remove('resizing');
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+    });
+})();
+
+// ---- INIT ----
+document.addEventListener('DOMContentLoaded', () => { renderTable(); });
+</script>

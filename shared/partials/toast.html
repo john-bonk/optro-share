@@ -1,0 +1,62 @@
+<!--
+    ============================================================
+    PARTIAL: Luna Toast (Growl)
+    ============================================================
+    Production-faithful toast notification. Matches the Luna React
+    <Growl> component and the Ember NotificationService.
+
+    SOURCE:
+      libraries/luna-react/package/src/components/growl/growl.module.css
+      libraries/notifications/package/src/services/notifications.ts
+
+    TRANSLATION TARGETS:
+      DOM   → <Growl::Viewport> containing <Growl::Item data-type="…">
+      Fire  → this.notifications.show(successNotification('Title', 'Message'))
+              or this.notifications.show(errorNotification(...)) etc.
+
+    REQUIREMENTS (page must include):
+      - shared/styles/layout.css           (Growl CSS)
+      - shared/assets/icons/luna-icons.js  (for icons)
+      - shared/scripts/luna-toast.js       (this helper)
+
+    HOW TO FIRE (from any prototype JS):
+      LunaToast.success('Success', 'Threat moved to Library as Active');
+      LunaToast.error('Error', 'Could not save changes');
+      LunaToast.warning('Warning', 'Unsaved changes will be lost');
+      LunaToast.info('Info', 'Indexing has started');
+
+      // Advanced:
+      LunaToast.show({
+          type: 'success',            // success | error | warning | info | broadcast
+          title: 'Success',
+          message: 'Done.',
+          sticky: false,              // true disables auto-dismiss
+          duration: 7000              // ms (default 7000 — matches production)
+      });
+
+    DO NOT hand-build toast DOM. Always fire via LunaToast.* so:
+      - Stacking, positioning, and timing match production
+      - Variants stay consistent (icon + top highlight bar + color)
+      - Ember translation stays clean (one <Growl::Item> per toast)
+
+    RENDERED DOM (for reference — do not hand-author):
+      <div class="luna-growl-viewport">
+          <div class="luna-growl visible" data-type="success">
+              <div class="luna-growl-content">
+                  <div class="luna-growl-item" data-type="success">
+                      <span class="luna-growl-icon" data-type="success">
+                          <span class="luna-icon" data-icon="circle-check-fill" data-size="md"></span>
+                      </span>
+                      <div class="luna-growl-body">
+                          <h3 class="luna-growl-header">Success</h3>
+                          <p class="luna-growl-message">Threat moved to Library as Active</p>
+                      </div>
+                      <button class="luna-growl-close" aria-label="Dismiss">
+                          <span class="luna-icon" data-icon="close" data-size="sm"></span>
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
+    ============================================================
+-->
