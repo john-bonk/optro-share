@@ -1,0 +1,1714 @@
+{
+  "meta": {
+    "id": "default",
+    "name": "Default \u2014 SOX / GRC baseline",
+    "description": "Verbatim extraction of the assistant proto's original content. Serves as the reference for a new TPRM manifest with 100% feature parity.",
+    "version": 1,
+    "extractedFrom": "prototypes/tprm-workflow/v03/assistant.html"
+  },
+  "personas": [
+    {
+      "id": "optro-assistant",
+      "name": "Optro Assistant",
+      "shortName": "Assistant",
+      "initials": "OA",
+      "description": "General-purpose GRC chat across the suite.",
+      "icon": "stars",
+      "color": "var(--luna-teal-500, #266c92)"
+    },
+    {
+      "id": "optro-field-agent",
+      "name": "Optro Field Agent",
+      "shortName": "Field Agent",
+      "initials": "FA",
+      "description": "Fieldwork & control testing context.",
+      "icon": "clipboard-check",
+      "color": "var(--luna-purple-500, #6931e3)"
+    },
+    {
+      "id": "optro-evidence-collector",
+      "name": "Optro Evidence Collector",
+      "shortName": "Evidence Collector",
+      "initials": "EC",
+      "description": "Evidence gathering, mapping, and freshness.",
+      "icon": "archive",
+      "color": "var(--luna-green-500, #36844a)"
+    },
+    {
+      "id": "optro-data-privacy-agent",
+      "name": "Data Privacy Agent",
+      "shortName": "Data Privacy",
+      "initials": "DP",
+      "description": "Privacy framework expertise, scoped to your data-privacy program.",
+      "icon": "shield-lock",
+      "color": "var(--luna-indigo-500, #4338ca)"
+    },
+    {
+      "id": "optro-sox-101-agent",
+      "name": "SOX 101 Agent",
+      "shortName": "SOX 101",
+      "initials": "SX",
+      "description": "PCAOB & SOX guidance, grounded in your uploaded auditing standards.",
+      "icon": "journal-text",
+      "color": "var(--luna-orange-500, #c2410c)"
+    }
+  ],
+  "defaultPersonaId": "optro-assistant",
+  "quickActions": [
+    {
+      "icon": "module-controls",
+      "text": "Draft a control for this module",
+      "scriptId": "draft-control"
+    },
+    {
+      "icon": "module-opsaudit",
+      "text": "Summarize recent audit findings",
+      "scriptId": "summarize-audit"
+    },
+    {
+      "icon": "module-risk",
+      "text": "Help me write a risk description",
+      "scriptId": "risk-description"
+    },
+    {
+      "icon": "module-issues-fill",
+      "text": "Triage open issues by severity",
+      "scriptId": "triage-issues"
+    }
+  ],
+  "prompts": [
+    {
+      "id": "pbc-reminder",
+      "title": "Send PBC request reminder",
+      "category": "PBC",
+      "description": "Remind a control owner about an outstanding PBC item.",
+      "template": "Send a PBC reminder to {{person}} for the {{file}} they need to provide for our SOX testing."
+    },
+    {
+      "id": "control-status",
+      "title": "Summarize control testing status",
+      "category": "Reporting",
+      "description": "Quick read on which controls are passing, failing, or in-flight.",
+      "template": "Summarize the testing status for all SOX controls scoped this quarter."
+    },
+    {
+      "id": "finding-draft",
+      "title": "Draft finding from exception",
+      "category": "Findings",
+      "description": "Generate a finding write-up from an exception in evidence.",
+      "template": "Draft a finding for an exception in {{control}} based on the evidence at {{file}}."
+    },
+    {
+      "id": "access-review",
+      "title": "Build a quarterly access review",
+      "category": "ITGC",
+      "description": "Set up an access review for a system, including owners and entitlements.",
+      "template": "Set up a quarterly access review for {{system}}. Include all privileged users and grant entitlements."
+    },
+    {
+      "id": "risk-summary",
+      "title": "Top 5 risks right now",
+      "category": "Risk",
+      "description": "Snapshot of the highest-priority risks in the auditable universe.",
+      "template": "Give me a quick read on the top 5 risks in our auditable universe right now."
+    }
+  ],
+  "savedPlans": [
+    {
+      "id": "stripe-invoice-audit",
+      "title": "Stripe Invoice Audit",
+      "description": "Fetch quarterly invoices, flag duplicates, email finance.",
+      "stepsId": "stripe-invoice-audit-steps"
+    },
+    {
+      "id": "quarterly-access-review",
+      "title": "Quarterly Access Review",
+      "description": "Cross-check IAM against HR and open remediation issues.",
+      "stepsId": "quarterly-access-review-steps"
+    }
+  ],
+  "planStepDefinitions": {
+    "stripe-invoice-audit-steps": [
+      {
+        "id": "fetch",
+        "title": "Fetch Q3 invoices from Stripe",
+        "result": "Retrieved 142 invoices \u00b7 3s",
+        "status": "queued"
+      },
+      {
+        "id": "detect",
+        "title": "Detect duplicate charges",
+        "result": "Found 3 duplicates \u00b7 $4,320 at risk",
+        "status": "queued"
+      },
+      {
+        "id": "draft",
+        "title": "Draft summary email",
+        "result": "Draft ready \u00b7 184 words",
+        "status": "queued"
+      },
+      {
+        "id": "send",
+        "title": "Send email to finance team",
+        "status": "queued",
+        "writeForm": {
+          "modalTitle": "Send summary email",
+          "submitLabel": "Send email",
+          "fields": [
+            {
+              "key": "to",
+              "label": "To",
+              "kind": "email",
+              "defaultValue": "finance@auditboard.com"
+            },
+            {
+              "key": "subject",
+              "label": "Subject",
+              "kind": "text",
+              "defaultValue": "Q3 Stripe Invoice Audit: 3 Duplicate Charges Flagged"
+            },
+            {
+              "key": "body",
+              "label": "Body",
+              "kind": "textarea",
+              "rows": 8,
+              "defaultValue": "Team,\n\nCompleted a Q3 audit of the 142 Stripe invoices and surfaced 3 duplicate charges totalling $4,320. Details attached. Please confirm receipt and route to AP for reversal.\n\nOptro Assistant"
+            }
+          ]
+        }
+      }
+    ],
+    "quarterly-access-review-steps": [
+      {
+        "id": "iam",
+        "title": "Import IAM access table",
+        "result": "Imported 1,284 users",
+        "status": "queued"
+      },
+      {
+        "id": "hr",
+        "title": "Import HR roster",
+        "result": "Imported 1,302 employees",
+        "status": "queued"
+      },
+      {
+        "id": "join",
+        "title": "Join on email address",
+        "result": "Matched 1,268 \u00b7 16 unmatched",
+        "status": "queued"
+      },
+      {
+        "id": "filter",
+        "title": "Filter for HR-inactive / IAM-active",
+        "result": "Flagged 7 users",
+        "status": "queued"
+      },
+      {
+        "id": "issue",
+        "title": "Open remediation issue",
+        "status": "queued",
+        "writeForm": {
+          "modalTitle": "Open remediation issue",
+          "submitLabel": "Create issue",
+          "fields": [
+            {
+              "key": "title",
+              "label": "Title",
+              "kind": "text",
+              "defaultValue": "Access still active in IAM after HR offboarding: 7 users"
+            },
+            {
+              "key": "severity",
+              "label": "Severity",
+              "kind": "text",
+              "defaultValue": "Medium"
+            },
+            {
+              "key": "owner",
+              "label": "Owner",
+              "kind": "text",
+              "defaultValue": "Mei Lin Park"
+            },
+            {
+              "key": "description",
+              "label": "Description",
+              "kind": "textarea",
+              "rows": 6,
+              "defaultValue": "Seven users marked inactive in HR still have active IAM access. Full list attached. Suggested remediation: deprovision within 5 business days per the Quarterly User Access Review control."
+            }
+          ]
+        }
+      }
+    ],
+    "top-5-risks-steps": [
+      {
+        "id": "fetch",
+        "title": "Fetch all active audits",
+        "result": "Retrieved 31 active audits",
+        "status": "queued"
+      },
+      {
+        "id": "pastdue",
+        "title": "Filter for past end date",
+        "result": "11 past their end date",
+        "status": "queued"
+      },
+      {
+        "id": "incomp",
+        "title": "Filter for not complete",
+        "result": "7 of those still incomplete",
+        "status": "queued"
+      },
+      {
+        "id": "pct",
+        "title": "Calculate the percentage",
+        "result": "23% of active audits (7 of 31)",
+        "status": "queued"
+      },
+      {
+        "id": "list",
+        "title": "Compile the overdue list",
+        "result": "7 audits listed with owners",
+        "status": "queued"
+      },
+      {
+        "id": "remind",
+        "title": "Send reminder emails",
+        "status": "queued",
+        "writeForm": {
+          "modalTitle": "Send reminder emails",
+          "submitLabel": "Send 7 emails",
+          "fields": [
+            {
+              "key": "to",
+              "label": "To",
+              "kind": "email",
+              "defaultValue": "7 audit owners (individually addressed)"
+            },
+            {
+              "key": "subject",
+              "label": "Subject",
+              "kind": "text",
+              "defaultValue": "Reminder: your audit is past its end date"
+            },
+            {
+              "key": "body",
+              "label": "Body",
+              "kind": "textarea",
+              "rows": 6,
+              "defaultValue": "Hi,\n\nYour audit is showing as active but past its end date, and the completion checklist is still open. Could you post a status update or a revised end date by Friday?\n\nReply here or update the audit record directly.\n\nOptro Assistant"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "chatScripts": {
+    "draft-control": [
+      {
+        "kind": "user",
+        "text": "Can you help me draft a control for SOX compliance around user access reviews?"
+      },
+      {
+        "kind": "commentary",
+        "text": "Searching your control library\u2026"
+      },
+      {
+        "kind": "external-sources",
+        "sources": [
+          {
+            "label": "SOX ITGC Framework",
+            "url": "#",
+            "domain": "pcaobus.org"
+          },
+          {
+            "label": "COSO Internal Controls",
+            "url": "#",
+            "domain": "coso.org"
+          }
+        ]
+      },
+      {
+        "kind": "assistant",
+        "text": "Sure! Here's a draft control for periodic user access reviews:\n\n**Control: Quarterly User Access Review**\n\nAll privileged and sensitive system access must be reviewed quarterly by the responsible system owner. Accounts that are no longer needed must be revoked within 5 business days of review completion.\n\nThis aligns with SOX ITGC requirements for logical access management."
+      },
+      {
+        "kind": "entity-card",
+        "title": "Quarterly User Access Review",
+        "description": "All privileged and sensitive system access must be reviewed quarterly by the responsible system owner.",
+        "entityType": "Control",
+        "actionLabel": "Create Control"
+      }
+    ],
+    "summarize-audit": [
+      {
+        "kind": "user",
+        "text": "Summarize recent audit findings"
+      },
+      {
+        "kind": "commentary",
+        "text": "Querying audits closed in the last 90 days\u2026"
+      },
+      {
+        "kind": "assistant",
+        "text": "Your last quarter closed **14 findings across 7 controls**. Three themes dominate: access provisioning lag (5 findings), two-approver gaps in production change management (4), and overdue vendor risk reviews (3). The remaining 2 are one-off documentation gaps."
+      },
+      {
+        "kind": "chart",
+        "chartType": "bar",
+        "title": "Findings by Theme",
+        "valueLabel": "Findings",
+        "data": [
+          {
+            "label": "Access provisioning",
+            "value": 5
+          },
+          {
+            "label": "Change mgmt approvals",
+            "value": 4
+          },
+          {
+            "label": "Vendor risk reviews",
+            "value": 3
+          },
+          {
+            "label": "Documentation",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "kind": "suggestion-buttons",
+        "intro": "Want to take it further?",
+        "options": [
+          {
+            "label": "Draft remediation tickets",
+            "primary": true,
+            "icon": "plus-circle"
+          },
+          {
+            "label": "Compare to prior quarter"
+          },
+          {
+            "label": "Export as report"
+          }
+        ]
+      }
+    ],
+    "risk-description": [
+      {
+        "kind": "user",
+        "text": "Help me write a risk description"
+      },
+      {
+        "kind": "assistant",
+        "text": "Happy to. A strong risk description names the threat, the asset, and the business impact. Three quick questions first:"
+      },
+      {
+        "kind": "wizard",
+        "intro": "A few details about the risk:",
+        "summaryText": "Got it. Drafting your risk description with these answers.",
+        "steps": [
+          {
+            "kind": "choice",
+            "question": "Which area does this risk live in?",
+            "options": [
+              "Access Management",
+              "Third-Party Vendors",
+              "Financial Reporting",
+              "Data Privacy"
+            ]
+          },
+          {
+            "kind": "choice",
+            "question": "What's the nature of the threat?",
+            "options": [
+              "Unauthorized access",
+              "Process failure",
+              "Data loss",
+              "Regulatory exposure"
+            ]
+          },
+          {
+            "kind": "text",
+            "question": "Name the system or process at stake.",
+            "placeholder": "e.g., Production AWS accounts, quarterly close process\u2026"
+          }
+        ],
+        "followUp": [
+          {
+            "kind": "assistant",
+            "text": "Here's a draft based on your answers:"
+          },
+          {
+            "kind": "entity-card",
+            "entityType": "Risk",
+            "title": "Unauthorized access to production systems",
+            "description": "There is a risk that terminated or transferred employees retain active access to production systems, allowing unauthorized changes or data exposure that could result in financial misstatement and regulatory penalties.",
+            "actionLabel": "Create Risk"
+          }
+        ]
+      }
+    ],
+    "triage-issues": [
+      {
+        "kind": "user",
+        "text": "Triage open issues by severity"
+      },
+      {
+        "kind": "commentary",
+        "text": "Pulling open issues from the Issues module\u2026"
+      },
+      {
+        "kind": "assistant",
+        "text": "You have **9 open issues**. Two are Critical and both relate to terminated-user access, so I'd start there. Severity-ranked:"
+      },
+      {
+        "kind": "data-table",
+        "title": "Open Issues by Severity",
+        "columns": [
+          {
+            "key": "severity",
+            "label": "Severity",
+            "width": "100px",
+            "noWrap": true
+          },
+          {
+            "key": "id",
+            "label": "Issue",
+            "type": "link",
+            "width": "100px",
+            "noWrap": true
+          },
+          {
+            "key": "title",
+            "label": "Title"
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "width": "140px",
+            "noWrap": true
+          },
+          {
+            "key": "age",
+            "label": "Age (days)",
+            "type": "number",
+            "width": "110px"
+          }
+        ],
+        "rows": [
+          {
+            "severity": "Critical",
+            "id": "ISS-801",
+            "title": "Terminated users retain active IAM access",
+            "owner": "Mei Lin Park",
+            "age": 12
+          },
+          {
+            "severity": "Critical",
+            "id": "ISS-797",
+            "title": "Root account MFA disabled in legacy AWS org",
+            "owner": "Unassigned",
+            "age": 9
+          },
+          {
+            "severity": "High",
+            "id": "ISS-784",
+            "title": "Vendor SOC 2 report 60 days overdue (DataBridge)",
+            "owner": "Jordan Cole",
+            "age": 21
+          },
+          {
+            "severity": "High",
+            "id": "ISS-779",
+            "title": "Production change missing second approver",
+            "owner": "David Park",
+            "age": 17
+          },
+          {
+            "severity": "High",
+            "id": "ISS-771",
+            "title": "Stale firewall rules on finance subnet",
+            "owner": "Asha Patel",
+            "age": 26
+          },
+          {
+            "severity": "Medium",
+            "id": "ISS-768",
+            "title": "Quarterly access review 1 week behind schedule",
+            "owner": "Mei Lin Park",
+            "age": 8
+          },
+          {
+            "severity": "Medium",
+            "id": "ISS-754",
+            "title": "Backup restore test not documented for Q1",
+            "owner": "Liam Chen",
+            "age": 33
+          },
+          {
+            "severity": "Medium",
+            "id": "ISS-749",
+            "title": "Shared service account in reporting pipeline",
+            "owner": "Priya Shah",
+            "age": 41
+          },
+          {
+            "severity": "Low",
+            "id": "ISS-731",
+            "title": "Policy doc references retired ticketing system",
+            "owner": "Jordan Cole",
+            "age": 55
+          }
+        ]
+      },
+      {
+        "kind": "suggestion-buttons",
+        "intro": "How do you want to act on these?",
+        "options": [
+          {
+            "label": "Assign the Critical pair",
+            "primary": true,
+            "icon": "person"
+          },
+          {
+            "label": "Draft remediation plan"
+          },
+          {
+            "label": "Download CSV"
+          }
+        ]
+      }
+    ],
+    "quarterly-access-review": [
+      {
+        "kind": "user",
+        "text": "What percentage of active audits are past their end date and not complete, and can we send them an email reminder?"
+      },
+      {
+        "kind": "commentary",
+        "text": "Drafting a plan\u2026"
+      },
+      {
+        "kind": "plan",
+        "description": {
+          "intro": "Got it. Two parts: a metric (how much of the active audit load is overdue and incomplete) and an action (nudge the owners). Here's how I'd tackle it:",
+          "bullets": [
+            {
+              "label": "Fetch all active audits",
+              "detail": "Pull every audit currently marked active so we have the full set to measure against."
+            },
+            {
+              "label": "Filter for past end date",
+              "detail": "Keep only the audits whose end date has already passed."
+            },
+            {
+              "label": "Filter for not complete",
+              "detail": "Of those, keep the ones whose completion checklist is still open."
+            },
+            {
+              "label": "Calculate the percentage",
+              "detail": "Overdue-and-incomplete count over the active total, so you have the number for reporting."
+            },
+            {
+              "label": "Compile the overdue list",
+              "detail": "Name, owner, end date, and percent complete for each audit that needs a nudge."
+            },
+            {
+              "label": "Send reminder emails",
+              "detail": "I'll draft one reminder per owner and show you the email in a modal so you can confirm before anything goes out."
+            }
+          ],
+          "outro": "Look right? Hit **Run plan** to kick it off, or **Revise** if you want me to rework the approach first."
+        },
+        "steps": [
+          {
+            "id": "fetch",
+            "title": "Fetch all active audits",
+            "result": "Retrieved 31 active audits",
+            "status": "queued"
+          },
+          {
+            "id": "pastdue",
+            "title": "Filter for past end date",
+            "result": "11 past their end date",
+            "status": "queued"
+          },
+          {
+            "id": "incomp",
+            "title": "Filter for not complete",
+            "result": "7 of those still incomplete",
+            "status": "queued"
+          },
+          {
+            "id": "pct",
+            "title": "Calculate the percentage",
+            "result": "23% of active audits (7 of 31)",
+            "status": "queued"
+          },
+          {
+            "id": "list",
+            "title": "Compile the overdue list",
+            "result": "7 audits listed with owners",
+            "status": "queued"
+          },
+          {
+            "id": "remind",
+            "title": "Send reminder emails",
+            "status": "queued",
+            "writeForm": {
+              "modalTitle": "Send reminder emails",
+              "submitLabel": "Send 7 emails",
+              "fields": [
+                {
+                  "key": "to",
+                  "label": "To",
+                  "kind": "email",
+                  "defaultValue": "7 audit owners (individually addressed)"
+                },
+                {
+                  "key": "subject",
+                  "label": "Subject",
+                  "kind": "text",
+                  "defaultValue": "Reminder: your audit is past its end date"
+                },
+                {
+                  "key": "body",
+                  "label": "Body",
+                  "kind": "textarea",
+                  "rows": 6,
+                  "defaultValue": "Hi,\n\nYour audit is showing as active but past its end date, and the completion checklist is still open. Could you post a status update or a revised end date by Friday?\n\nReply here or update the audit record directly.\n\nOptro Assistant"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "quarterly-access-follow-up": [
+      {
+        "kind": "user",
+        "text": "Find users in our HR system marked inactive who still have active access in IAM, and open a remediation issue."
+      },
+      {
+        "kind": "commentary",
+        "text": "Drafting a plan\u2026"
+      },
+      {
+        "kind": "plan",
+        "description": {
+          "intro": "Got it. Sounds like a quarterly access review across HR and IAM, ending with a remediation issue. Here's how I'd tackle it:",
+          "bullets": [
+            {
+              "label": "Import IAM access table",
+              "detail": "Pull the current 1,284-user access table out of IAM."
+            },
+            {
+              "label": "Import HR roster",
+              "detail": "Pull the matching HR roster (about 1,302 employees)."
+            },
+            {
+              "label": "Join on email address",
+              "detail": "Match users across both systems by email so we have one row per person."
+            },
+            {
+              "label": "Filter for HR-inactive / IAM-active",
+              "detail": "Surface anyone marked inactive in HR but still active in IAM. These are the access-still-live offboarding gaps."
+            },
+            {
+              "label": "Open remediation issue",
+              "detail": "I'll show you a draft issue (title, severity, owner, deprovision deadline) so you can review before I file it."
+            }
+          ],
+          "outro": "Look right? Hit **Run plan** to kick it off, or **Revise** to tweak the approach."
+        },
+        "steps": [
+          {
+            "id": "iam",
+            "title": "Import IAM access table",
+            "result": "Imported 1,284 users",
+            "status": "queued"
+          },
+          {
+            "id": "hr",
+            "title": "Import HR roster",
+            "result": "Imported 1,302 employees",
+            "status": "queued"
+          },
+          {
+            "id": "join",
+            "title": "Join on email address",
+            "result": "Matched 1,268 \u00b7 16 unmatched",
+            "status": "queued"
+          },
+          {
+            "id": "filter",
+            "title": "Filter for HR-inactive / IAM-active",
+            "result": "Flagged 7 users",
+            "status": "queued"
+          },
+          {
+            "id": "issue",
+            "title": "Open remediation issue",
+            "status": "queued",
+            "writeForm": {
+              "modalTitle": "Open remediation issue",
+              "submitLabel": "Create issue",
+              "fields": [
+                {
+                  "key": "title",
+                  "label": "Title",
+                  "kind": "text",
+                  "defaultValue": "Access still active in IAM after HR offboarding: 7 users"
+                },
+                {
+                  "key": "severity",
+                  "label": "Severity",
+                  "kind": "text",
+                  "defaultValue": "Medium"
+                },
+                {
+                  "key": "owner",
+                  "label": "Owner",
+                  "kind": "text",
+                  "defaultValue": "Mei Lin Park"
+                },
+                {
+                  "key": "description",
+                  "label": "Description",
+                  "kind": "textarea",
+                  "rows": 6,
+                  "defaultValue": "Seven users marked inactive in HR still have active IAM access. Full list attached. Suggested remediation: deprovision within 5 business days per the Quarterly User Access Review control."
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "top-5-risks": [
+      {
+        "kind": "user",
+        "text": "What percentage of active audits are past their end date and not complete, and can we send them an email reminder?"
+      },
+      {
+        "kind": "commentary",
+        "text": "Fetching all active audits\u2026",
+        "gapMs": 1300
+      },
+      {
+        "kind": "commentary",
+        "text": "Filtering for audits past their end date\u2026",
+        "gapMs": 1300
+      },
+      {
+        "kind": "commentary",
+        "text": "Filtering for audits not complete\u2026",
+        "gapMs": 1300
+      },
+      {
+        "kind": "commentary",
+        "text": "Calculating the percentage\u2026",
+        "gapMs": 1300
+      },
+      {
+        "kind": "commentary",
+        "text": "Compiling the overdue list and drafting reminders\u2026",
+        "gapMs": 1300
+      },
+      {
+        "kind": "assistant",
+        "text": "**23%** of your active audits are past their end date and not complete. That's 7 of 31. Here they are, oldest overdue first:"
+      },
+      {
+        "kind": "data-table",
+        "title": "Active Audits Past End Date and Not Complete",
+        "columns": [
+          {
+            "key": "id",
+            "label": "Audit",
+            "type": "link",
+            "width": "110px",
+            "noWrap": true
+          },
+          {
+            "key": "title",
+            "label": "Title"
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "width": "130px",
+            "noWrap": true
+          },
+          {
+            "key": "endDate",
+            "label": "End date",
+            "type": "datetime",
+            "dateFormat": "date",
+            "width": "130px"
+          },
+          {
+            "key": "complete",
+            "label": "% complete",
+            "type": "number",
+            "width": "110px"
+          }
+        ],
+        "rows": [
+          {
+            "id": "AUD-118",
+            "title": "Q4 SOX ITGC walkthroughs",
+            "owner": "Liam Chen",
+            "endDate": "2026-03-31T00:00:00Z",
+            "complete": 62
+          },
+          {
+            "id": "AUD-124",
+            "title": "Vendor risk annual review",
+            "owner": "Jordan Cole",
+            "endDate": "2026-04-15T00:00:00Z",
+            "complete": 48
+          },
+          {
+            "id": "AUD-131",
+            "title": "Payroll change management audit",
+            "owner": "Asha Patel",
+            "endDate": "2026-04-30T00:00:00Z",
+            "complete": 71
+          },
+          {
+            "id": "AUD-135",
+            "title": "Cloud access provisioning review",
+            "owner": "Mei Lin Park",
+            "endDate": "2026-05-09T00:00:00Z",
+            "complete": 55
+          },
+          {
+            "id": "AUD-140",
+            "title": "Revenue recognition controls test",
+            "owner": "David Park",
+            "endDate": "2026-05-18T00:00:00Z",
+            "complete": 80
+          },
+          {
+            "id": "AUD-143",
+            "title": "Data privacy DSAR process audit",
+            "owner": "Priya Shah",
+            "endDate": "2026-05-26T00:00:00Z",
+            "complete": 36
+          },
+          {
+            "id": "AUD-147",
+            "title": "Expense report sampling Q2",
+            "owner": "Noah Brooks",
+            "endDate": "2026-06-01T00:00:00Z",
+            "complete": 64
+          }
+        ]
+      },
+      {
+        "kind": "write-modal",
+        "intro": "Reminder email drafted for the 7 audit owners.",
+        "form": {
+          "modalTitle": "Send reminder emails",
+          "submitLabel": "Send 7 emails",
+          "fields": [
+            {
+              "key": "to",
+              "label": "To",
+              "kind": "email",
+              "defaultValue": "7 audit owners (individually addressed)"
+            },
+            {
+              "key": "subject",
+              "label": "Subject",
+              "kind": "text",
+              "defaultValue": "Reminder: your audit is past its end date"
+            },
+            {
+              "key": "body",
+              "label": "Body",
+              "kind": "textarea",
+              "rows": 6,
+              "defaultValue": "Hi,\n\nYour audit is showing as active but past its end date, and the completion checklist is still open. Could you post a status update or a revised end date by Friday?\n\nReply here or update the audit record directly.\n\nOptro Assistant"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "fragments": {
+    "followUpPromptText": "What percentage of active audits are past their end date and not complete, and can we send them an email reminder?",
+    "remindersEmailWriteForm": {
+      "modalTitle": "Send reminder emails",
+      "submitLabel": "Send 7 emails",
+      "fields": [
+        {
+          "key": "to",
+          "label": "To",
+          "kind": "email",
+          "defaultValue": "7 audit owners (individually addressed)"
+        },
+        {
+          "key": "subject",
+          "label": "Subject",
+          "kind": "text",
+          "defaultValue": "Reminder: your audit is past its end date"
+        },
+        {
+          "key": "body",
+          "label": "Body",
+          "kind": "textarea",
+          "rows": 6,
+          "defaultValue": "Hi,\n\nYour audit is showing as active but past its end date, and the completion checklist is still open. Could you post a status update or a revised end date by Friday?\n\nReply here or update the audit record directly.\n\nOptro Assistant"
+        }
+      ]
+    },
+    "quarterlyAccessPlanIntro": {
+      "intro": "Got it. Sounds like a quarterly access review across HR and IAM, ending with a remediation issue. Here's how I'd tackle it:",
+      "bullets": [
+        {
+          "label": "Import IAM access table",
+          "detail": "Pull the current 1,284-user access table out of IAM."
+        },
+        {
+          "label": "Import HR roster",
+          "detail": "Pull the matching HR roster (about 1,302 employees)."
+        },
+        {
+          "label": "Join on email address",
+          "detail": "Match users across both systems by email so we have one row per person."
+        },
+        {
+          "label": "Filter for HR-inactive / IAM-active",
+          "detail": "Surface anyone marked inactive in HR but still active in IAM. These are the access-still-live offboarding gaps."
+        },
+        {
+          "label": "Open remediation issue",
+          "detail": "I'll show you a draft issue (title, severity, owner, deprovision deadline) so you can review before I file it."
+        }
+      ],
+      "outro": "Look right? Hit **Run plan** to kick it off, or **Revise** to tweak the approach."
+    },
+    "followUpAuditPlanIntro": {
+      "intro": "Got it. Two parts: a metric (how much of the active audit load is overdue and incomplete) and an action (nudge the owners). Here's how I'd tackle it:",
+      "bullets": [
+        {
+          "label": "Fetch all active audits",
+          "detail": "Pull every audit currently marked active so we have the full set to measure against."
+        },
+        {
+          "label": "Filter for past end date",
+          "detail": "Keep only the audits whose end date has already passed."
+        },
+        {
+          "label": "Filter for not complete",
+          "detail": "Of those, keep the ones whose completion checklist is still open."
+        },
+        {
+          "label": "Calculate the percentage",
+          "detail": "Overdue-and-incomplete count over the active total, so you have the number for reporting."
+        },
+        {
+          "label": "Compile the overdue list",
+          "detail": "Name, owner, end date, and percent complete for each audit that needs a nudge."
+        },
+        {
+          "label": "Send reminder emails",
+          "detail": "I'll draft one reminder per owner and show you the email in a modal so you can confirm before anything goes out."
+        }
+      ],
+      "outro": "Look right? Hit **Run plan** to kick it off, or **Revise** if you want me to rework the approach first."
+    }
+  },
+  "abilities": [
+    {
+      "id": "AA01",
+      "name": "Floating Panel",
+      "category": "Layout",
+      "isDesigned": true,
+      "isInProd": true,
+      "description": "Detached, draggable chat overlay that floats above content.",
+      "action": {
+        "kind": "set-mode",
+        "mode": "floating"
+      },
+      "defaultEnabled": true,
+      "lockedOn": true
+    },
+    {
+      "id": "AA02",
+      "name": "Clear Assistant",
+      "category": "Conversation",
+      "isDesigned": true,
+      "isInProd": true,
+      "description": "Resets the conversation and returns to the empty state.",
+      "action": {
+        "kind": "clear"
+      },
+      "defaultEnabled": true,
+      "lockedOn": true
+    },
+    {
+      "id": "AA03",
+      "name": "Side Car Right",
+      "category": "Layout",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Docks the chat into a column on the right edge of the workspace.",
+      "action": {
+        "kind": "set-mode",
+        "mode": "sidecar"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA04",
+      "name": "Side Car Left",
+      "category": "Layout",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Docks the chat into a column on the left edge of the workspace.",
+      "action": {
+        "kind": "set-mode",
+        "mode": "sidecar-left"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA05",
+      "name": "Confirm Tool",
+      "category": "Tool",
+      "isDesigned": true,
+      "isInProd": true,
+      "description": "Asks for explicit Allow / Deny before the assistant performs a tool action.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "confirm-tool"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA06",
+      "name": "Entity Card Suggestion",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": true,
+      "description": "Structured preview of a draft entity (Issue, Control, Risk) the assistant suggests creating, with a primary \"Create\" action.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "create-issue"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA07",
+      "name": "Entity Reference",
+      "category": "Input",
+      "isDesigned": true,
+      "isInProd": true,
+      "description": "Pill in the input area representing an attached entity. Can be pinned or removed.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "entity-reference"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA08",
+      "name": "Context Entity Picker",
+      "category": "Input",
+      "isDesigned": true,
+      "isInProd": true,
+      "inProdNote": "Partial: some elements shipped",
+      "description": "Floating menu for picking an entity type to attach. Triggered by `@` or the at-button.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "context-picker"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA09",
+      "name": "External Sources",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": true,
+      "description": "Lists web or internal sources cited alongside the assistant's response.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "external-sources"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA10",
+      "name": "Message Action Bar",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": true,
+      "description": "Per-message row of copy, like, and dislike actions on assistant replies.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "feedback"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA11",
+      "name": "Message Queue",
+      "category": "Conversation",
+      "isDesigned": true,
+      "isInProd": true,
+      "description": "Holds follow-up questions submitted while the assistant is still working on a complex one.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "message-queue"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA12",
+      "name": "Arrival State",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": true,
+      "description": "Empty-state landing view shown on arrival, with starter prompts contextual to the current Optro module.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "suggestions"
+      },
+      "defaultEnabled": true,
+      "lockedOn": true
+    },
+    {
+      "id": "AA13",
+      "name": "Show Error State",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": null,
+      "description": "Surfaces tool/connector failures inline with a red Notice.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "error-state"
+      },
+      "defaultEnabled": true,
+      "lockedOn": true
+    },
+    {
+      "id": "AA14",
+      "name": "Attach Files",
+      "category": "Input",
+      "isDesigned": true,
+      "isInProd": true,
+      "description": "Opens the OS file picker and attaches selected files as Entity Reference chips above the input.",
+      "action": {
+        "kind": "pick-files"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA15",
+      "name": "Plan Mode",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "The assistant drafts a plan, runs through its steps for you, and pauses at the end for a quick review before any write goes out. Click again to cycle through demos. Dev tip: type any question with the Plan checkbox OFF to see the same work run as streamed thinking with no plan card.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "plan-mode"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA16",
+      "name": "Follow-Up Wizard",
+      "category": "Conversation",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Asks clarifying questions one at a time before producing a final answer. Useful when the request is ambiguous.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "follow-up-wizard"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA17",
+      "name": "Draft a Control",
+      "category": "Tool",
+      "isDesigned": true,
+      "isInProd": null,
+      "description": "Drafts a SOX-aligned control with description and produces an entity card.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "draft-control"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA18",
+      "name": "Create an Issue",
+      "category": "Tool",
+      "isDesigned": true,
+      "isInProd": null,
+      "description": "Generates a tracked Issue from a finding and lets you create it inline.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "create-issue"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA19",
+      "name": "Inline Citations",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Cite sources inline within the body text as small numbered chips that link out to each reference.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "inline-citations"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA20",
+      "name": "Suggestion Buttons",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Follow-up prompt chips that appear under a response to suggest the next step.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "suggestion-buttons"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA21",
+      "name": "Saved Prompts",
+      "category": "Input",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Trigger a \"/\" typeahead to insert from a library of saved prompts. Also holds saved Plans; picking one stages a reviewable plan preview.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "saved-prompts"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA22",
+      "name": "Diff View",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Show a side-by-side or inline diff when the assistant suggests edits.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "diff-view"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA23",
+      "name": "Collapsible Message",
+      "category": "Output",
+      "isDesigned": false,
+      "isInProd": false,
+      "description": "Show more / show less toggle for very long responses.",
+      "action": {
+        "kind": "coming-soon",
+        "ability": "Collapsible Message"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA24",
+      "name": "File Drop Zone",
+      "category": "Input",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Drag-and-drop files anywhere on the panel to attach them.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "file-drop-zone"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA25",
+      "name": "Data Table",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Inline markdown-style data table with a semantic <table>, header and footer (with metadata), datetime formatting, status/badge cell types, horizontal scroll for wide tables, and progressive row streaming. a11y: scope=col, captions, focusable scroll region.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "data-table"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA26",
+      "name": "Entity Card Reference",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": true,
+      "description": "Pulls up one or more existing entities for review, each with an \"Add to Context\" action.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "entity-card-reference"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA27",
+      "name": "Abort Process",
+      "category": "Conversation",
+      "isDesigned": true,
+      "isInProd": true,
+      "description": "Stop button in the input area that halts an in-flight streaming response.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "abort-process"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA28",
+      "name": "Persona Switcher",
+      "category": "Conversation",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Switch the assistant's persona (Field Agent or Evidence Collector) to scope its context to a specific role. The persona pins as context for the rest of the session.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "persona-switcher"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA29",
+      "name": "Chart Output",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Renders charts inline in the chat from data in the user's Optro model: pie for distributions, bar for rankings, line for trends. Each chart has a Download-as-PNG action.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "chart-output"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA30",
+      "name": "Knowledge Base for Agents",
+      "category": "Conversation",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Each agent persona has a private file repository (uploaded in Settings \u2192 AI \u2192 Agent Settings). When that agent is active, the assistant grounds its responses in those files and surfaces a source citation for each answer.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "knowledge-base"
+      },
+      "defaultEnabled": true
+    },
+    {
+      "id": "AA31",
+      "name": "Plan Mode: Supervised",
+      "category": "Output",
+      "isDesigned": true,
+      "isInProd": false,
+      "description": "Same plan flow, but you can flag any step for review before it runs, edit or skip steps, and save the plan as a template. Saved plans can be re-run from the Saved Prompts picker.",
+      "action": {
+        "kind": "run-demo",
+        "demo": "plan-mode-supervised"
+      },
+      "defaultEnabled": true
+    }
+  ],
+  "aiToggles": {
+    "master": [
+      {
+        "id": "optro-ai",
+        "label": "Optro AI",
+        "help": "Master switch for all Optro AI services.",
+        "defaultOn": true
+      },
+      {
+        "id": "optro-ai-core-generative",
+        "label": "Optro AI Core Generative",
+        "help": "Underlying generative model layer that powers Drafting and Suggestions.",
+        "defaultOn": true
+      },
+      {
+        "id": "core-intelligent-recs",
+        "label": "Core Intelligent Recommendations",
+        "help": "Surface AI recommendations across records (Controls, Risks, Issues).",
+        "defaultOn": false
+      },
+      {
+        "id": "optro-assistant",
+        "label": "Optro Assistant",
+        "help": "The conversational chat assistant available across modules.",
+        "defaultOn": true
+      }
+    ],
+    "features": [
+      {
+        "id": "intelligent-staffing",
+        "label": "Intelligent Staffing",
+        "help": "AI-powered staffing recommendations for audit engagements.",
+        "defaultOn": true
+      },
+      {
+        "id": "cross-audit-summaries",
+        "label": "Cross Audit Summaries",
+        "help": "Generate executive summaries across multiple audits.",
+        "defaultOn": true
+      },
+      {
+        "id": "scoping-memo",
+        "label": "Scoping Memo",
+        "help": "Draft scoping memos using prior-year context.",
+        "defaultOn": true
+      },
+      {
+        "id": "automated-suggestions",
+        "label": "Automated Suggestions",
+        "help": "Proactive AI suggestions inside record forms.",
+        "defaultOn": false
+      },
+      {
+        "id": "narratives-flowcharts",
+        "label": "Narratives and Flowcharts",
+        "help": "Generate process narratives and flowcharts from inputs.",
+        "defaultOn": true
+      },
+      {
+        "id": "ccm-ai-suggestions",
+        "label": "Continuous Control Monitoring: AI Suggestions",
+        "help": "AI-suggested control improvements based on CCM signals.",
+        "defaultOn": true
+      },
+      {
+        "id": "ccm-evidence-summary",
+        "label": "Continuous Control Monitoring: Evidence Summary",
+        "help": "Summarize evidence collected by CCM into a digest.",
+        "defaultOn": true
+      }
+    ]
+  },
+  "abilitiesPageNav": [
+    {
+      "id": "abilities",
+      "label": "Assistant Abilities"
+    },
+    {
+      "id": "agent-comments",
+      "label": "Agent Comments"
+    },
+    {
+      "id": "design-notes",
+      "label": "Design Notes"
+    }
+  ],
+  "abilitiesPageMeta": [
+    {
+      "name": "Assistant Abilities",
+      "desc": "The source-of-truth table. Click any row to run that ability live in the panel. Toggle the new Enabled? column to simulate shipping with a behavior turned off. Disabled abilities also disappear from the panel UI."
+    },
+    {
+      "name": "Agent Comments",
+      "desc": "Templates for the comments our agents leave on GRC objects. Five focus-area sections (SOX Control Testing, Pre-IPO Work, Risk Assessments, Evidence Collection, Third-Party Risk Mgmt). Devs working on real comments are asked to drop screenshots. See the sticky note on that page."
+    },
+    {
+      "name": "Design Notes",
+      "desc": "This page. The why behind the prototype."
+    }
+  ],
+  "freetextTriggers": [
+    {
+      "match": [
+        "draft a control",
+        "control for"
+      ],
+      "scriptId": "draft-control"
+    },
+    {
+      "match": [
+        "summarize audit",
+        "recent findings"
+      ],
+      "scriptId": "summarize-audit"
+    },
+    {
+      "match": [
+        "risk description",
+        "write a risk"
+      ],
+      "scriptId": "risk-description"
+    },
+    {
+      "match": [
+        "triage issues",
+        "open issues"
+      ],
+      "scriptId": "triage-issues"
+    },
+    {
+      "match": [
+        "access review",
+        "quarterly access"
+      ],
+      "scriptId": "quarterly-access-review"
+    },
+    {
+      "match": [
+        "top 5 risks",
+        "top risks"
+      ],
+      "scriptId": "top-5-risks"
+    }
+  ],
+  "knowledgeBase": [
+    {
+      "id": "kb-icfr",
+      "question": "How does management's ICFR assessment process work, and what must be documented to support it?",
+      "answerMarkdown": "**Management's ICFR assessment process** involves obtaining a sufficient understanding of each component of internal control, identifying potential misstatements, assessing risk factors, and designing appropriate procedures. The process should follow a top-down, risk-based approach: identify significant accounts and disclosures, understand the flow of transactions, assess entity-level and process-level controls, evaluate design and operating effectiveness, and document conclusions.",
+      "sources": [
+        {
+          "label": "PCAOB AS 2201 \u00b7 Auditing Internal Control",
+          "domain": "pcaobus.org"
+        },
+        {
+          "label": "SEC \u00b7 Management's Report on ICFR",
+          "domain": "sec.gov"
+        }
+      ]
+    }
+  ],
+  "referenceEntities": [
+    {
+      "type": "Vendor",
+      "icon": "module-tprm",
+      "items": [
+        {
+          "id": "vend-acme",
+          "title": "Acme Cloud Services",
+          "meta": "Tier 1 \u00b7 Infrastructure"
+        },
+        {
+          "id": "vend-snow",
+          "title": "Snowflake Inc.",
+          "meta": "Tier 1 \u00b7 Data warehouse"
+        },
+        {
+          "id": "vend-okta",
+          "title": "Okta Identity",
+          "meta": "Tier 1 \u00b7 Identity"
+        },
+        {
+          "id": "vend-ddog",
+          "title": "Datadog Monitoring",
+          "meta": "Tier 2 \u00b7 Observability"
+        },
+        {
+          "id": "vend-pd",
+          "title": "PagerDuty",
+          "meta": "Tier 2 \u00b7 Incident"
+        }
+      ]
+    },
+    {
+      "type": "System",
+      "icon": "hdd-network",
+      "items": [
+        {
+          "id": "sys-aws",
+          "title": "AWS Production VPC",
+          "meta": "Owned by David Park"
+        },
+        {
+          "id": "sys-okta",
+          "title": "Okta",
+          "meta": "Owned by Mei Lin Park"
+        },
+        {
+          "id": "sys-snow",
+          "title": "Snowflake",
+          "meta": "Owned by Asha Patel"
+        },
+        {
+          "id": "sys-github",
+          "title": "GitHub Enterprise",
+          "meta": "Owned by Jordan Cole"
+        }
+      ]
+    },
+    {
+      "type": "Control",
+      "icon": "shield-check",
+      "items": [
+        {
+          "id": "CTRL-204",
+          "title": "Quarterly User Access Review",
+          "meta": "SOX ITGC \u00b7 Owner Sarah Chen"
+        },
+        {
+          "id": "CTRL-317",
+          "title": "Two-approver production changes",
+          "meta": "SOX ITGC \u00b7 Owner James Park"
+        }
+      ]
+    },
+    {
+      "type": "Issue",
+      "icon": "exclamation-triangle-fill",
+      "items": [
+        {
+          "id": "ISS-318",
+          "title": "Terminated-user access remaining active",
+          "meta": "Critical \u00b7 Owner Sarah Chen"
+        },
+        {
+          "id": "ISS-322",
+          "title": "Overdue vendor risk review \u00b7 Snowflake",
+          "meta": "High \u00b7 Owner Asha Patel"
+        }
+      ]
+    },
+    {
+      "type": "Risk",
+      "icon": "module-risk",
+      "items": [
+        {
+          "id": "RSK-101",
+          "title": "Terminated-user access risk",
+          "meta": "ICFR \u00b7 Inherent High"
+        }
+      ]
+    },
+    {
+      "type": "Person",
+      "icon": "person",
+      "items": [
+        {
+          "id": "P-scha",
+          "title": "Sarah Chen",
+          "meta": "Audit Lead"
+        },
+        {
+          "id": "P-jpar",
+          "title": "James Park",
+          "meta": "Audit Admin"
+        }
+      ]
+    }
+  ],
+  "defaultFreetextResponse": "This is the archived SOX / GRC assistant content \u2014 reference only. The active panel uses the TPRM manifest."
+}
