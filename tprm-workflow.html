@@ -28528,7 +28528,14 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         // Timestamp text — plain "Completed · <time>" or "Working now"
         // for in-progress agents/automation. No redundant action label
         // (e.g. "Accept Tier 2") — the substep title already conveys it.
-        const timeText = status === 'in_progress' ? ('Working now · started ' + t) : ('Completed · ' + t);
+        // For agentic in-progress steps, append "by John B." so the
+        // row makes clear that a human initiated the agent (Start
+        // Assessment, etc.). Automated steps stay unattributed since
+        // they're triggered by upstream state, not a user gesture.
+        const isAgenticInFlight = status === 'in_progress' && effectiveType === 'agentic';
+        const timeText = status === 'in_progress'
+            ? ('Working now · started ' + t + (isAgenticInFlight ? ' by John B.' : ''))
+            : ('Completed · ' + t);
         return `<div class="lc-substep-actor">
             <div class="lc-substep-actor-avatar ${actorKind}">${avatarInner}</div>
             <div class="lc-substep-actor-info">
