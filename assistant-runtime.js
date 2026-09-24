@@ -1268,6 +1268,139 @@
     return w;
   };
 
+  // create-report-card — confirm/dismiss card for generating a new
+  // report from the assistant. Reuses the suggested-edit visual
+  // language (eyebrow + body + foot) so it reads as part of the
+  // same tool family. On confirm, posts `optro-create-report-from-
+  // assistant` to the parent; parent appends to generatedReports
+  // and (if not already on the Reports tab for Acme) navigates
+  // there.
+  //   Schema:
+  //     { kind: 'create-report-card',
+  //       templateId: 'third-party-risk-report' | ...,
+  //       templateLabel: 'Executive Summary Report',
+  //       lens: 'executive-summary' | 'risk-summary',
+  //       lensLabel: 'Executive summary lens' | 'Risk summary lens',
+  //       description: 'One-line summary of what will be created' }
+  Renderers['create-report-card'] = (m) => {
+    ensureSuggestedEditStyles();
+    const w = el('div');
+    const card = el('div', { class: 'tprm-suggested-edit' });
+    card.innerHTML = `
+      <div class="tprm-se-eyebrow">
+        <span class="tprm-se-eyebrow-label">Create Report</span>
+      </div>
+      <div class="tprm-se-body">
+        <div class="tprm-se-field">${escapeHtml(m.templateLabel || 'New report')}</div>
+        <div class="tprm-se-section">
+          <div class="tprm-se-label">Lens</div>
+          <div class="tprm-se-suggested"><span class="tprm-se-add">${escapeHtml(m.lensLabel || m.lens || 'Executive summary')}</span></div>
+        </div>
+        ${m.description ? `<div class="tprm-se-section">
+          <div class="tprm-se-label">Summary</div>
+          <div style="font-size:0.8125rem;color:#334155;line-height:1.5">${escapeHtml(m.description)}</div>
+        </div>` : ''}
+      </div>
+      <div class="tprm-se-foot"></div>
+    `;
+    const foot = card.querySelector('.tprm-se-foot');
+    const dismissBtn = lunaButton(m.dismissLabel || 'Dismiss', {
+      variant: 'white', size: 'sm',
+      onClick: () => {
+        foot.remove();
+        card.appendChild(el('div', { class: 'tprm-se-dismissed', text: 'Report creation cancelled.' }));
+      },
+    });
+    const applyBtn = lunaButton(m.applyLabel || 'Create report', {
+      variant: 'blue', size: 'sm',
+      onClick: () => {
+        try {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({
+              type: 'optro-create-report-from-assistant',
+              templateId: m.templateId || 'third-party-risk-report',
+              templateLabel: m.templateLabel || 'New Report',
+              lens: m.lens || null,
+            }, '*');
+          }
+        } catch (e) {}
+        foot.remove();
+        card.appendChild(el('div', {
+          class: 'tprm-se-applied',
+          text: `Applied · ${m.templateLabel || 'Report'} created and opened in the Reports tab.`,
+        }));
+      },
+    });
+    foot.appendChild(dismissBtn);
+    foot.appendChild(applyBtn);
+    w.appendChild(card);
+    return w;
+  };
+
+  // edit-report-section-card — confirm/dismiss card for previewing an
+  // edit to a specific section of the vendor risk report. On confirm,
+  // posts `optro-preview-report-edit` to the parent; parent opens
+  // the fullscreen report viewer with the edit staged, and a
+  // confirm/discard bar overlays the viewer so the reviewer sees
+  // the change in the document context before committing.
+  //   Schema:
+  //     { kind: 'edit-report-section-card',
+  //       section: 'executive-summary' | 'recommendations' | 'findings' | ...,
+  //       sectionLabel: 'Executive Summary',
+  //       currentPreview: 'One-line current-content preview',
+  //       newContent: 'Full replacement paragraph text' }
+  Renderers['edit-report-section-card'] = (m) => {
+    ensureSuggestedEditStyles();
+    const w = el('div');
+    const card = el('div', { class: 'tprm-suggested-edit' });
+    card.innerHTML = `
+      <div class="tprm-se-eyebrow">
+        <span class="tprm-se-eyebrow-label">Report Edit</span>
+      </div>
+      <div class="tprm-se-body">
+        <div class="tprm-se-field">${escapeHtml(m.sectionLabel || 'Report section')}</div>
+        <div class="tprm-se-section">
+          <div class="tprm-se-suggested">
+            ${m.currentPreview ? `<span class="tprm-se-strike">${escapeHtml(m.currentPreview)}</span> ` : ''}<span class="tprm-se-add">${escapeHtml(m.newContent || '')}</span>
+          </div>
+        </div>
+      </div>
+      <div class="tprm-se-foot"></div>
+    `;
+    const foot = card.querySelector('.tprm-se-foot');
+    const dismissBtn = lunaButton(m.dismissLabel || 'Dismiss', {
+      variant: 'white', size: 'sm',
+      onClick: () => {
+        foot.remove();
+        card.appendChild(el('div', { class: 'tprm-se-dismissed', text: 'Edit dismissed.' }));
+      },
+    });
+    const applyBtn = lunaButton(m.applyLabel || 'Preview in report', {
+      variant: 'blue', size: 'sm',
+      onClick: () => {
+        try {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({
+              type: 'optro-preview-report-edit',
+              section: m.section || 'executive-summary',
+              sectionLabel: m.sectionLabel || 'Section',
+              newContent: m.newContent || '',
+            }, '*');
+          }
+        } catch (e) {}
+        foot.remove();
+        card.appendChild(el('div', {
+          class: 'tprm-se-applied',
+          text: 'Opened preview in the fullscreen report — confirm or discard from the bar there.',
+        }));
+      },
+    });
+    foot.appendChild(dismissBtn);
+    foot.appendChild(applyBtn);
+    w.appendChild(card);
+    return w;
+  };
+
   // Field-update parser — catches "Update [FIELD] to [INPUT]" phrasings
   // in the freetext send flow and emits a suggested-field-update card.
   // Registry lists each supported field, its state key on the parent,

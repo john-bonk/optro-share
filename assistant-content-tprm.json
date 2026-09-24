@@ -79,6 +79,11 @@
       "icon": "bar-chart-line",
       "text": "Show me my top vendors by risk",
       "scriptId": "top-vendor-risks"
+    },
+    {
+      "icon": "file-earmark-text",
+      "text": "Create an executive summary report for Acme",
+      "scriptId": "create-exec-summary-report"
     }
   ],
   "prompts": [
@@ -1526,6 +1531,56 @@
             "icon": "file-earmark-arrow-down"
           }
         ]
+      }
+    ],
+    "create-exec-summary-report": [
+      { "kind": "user", "text": "Create an executive summary report for Acme" },
+      { "kind": "commentary", "text": "Assembling Acme's onboarding record — tier, findings, questionnaires, sign-offs — into an executive-summary lens…" },
+      { "kind": "assistant", "text": "Ready to draft. This creates a **new report** on Acme with an executive-summary framing: cover facts, disposition, headline findings, and reviewer sign-offs. Confirm to generate and open it in the Reports tab." },
+      {
+        "kind": "create-report-card",
+        "templateId": "third-party-risk-report",
+        "templateLabel": "Executive Summary Report",
+        "lens": "executive-summary",
+        "lensLabel": "Executive summary",
+        "description": "One-page executive summary: tier, disposition, key findings, and sign-offs. Sourced from Acme's onboarding workflow."
+      }
+    ],
+    "create-risk-summary-report": [
+      { "kind": "user", "text": "Create a risk summary report for Acme" },
+      { "kind": "commentary", "text": "Pulling Acme's residual risk posture, open findings, and monitoring signals into a risk-summary framing…" },
+      { "kind": "assistant", "text": "Ready to draft. This creates a **new report** on Acme with a risk-summary framing: tier, residual-risk drivers, open findings, and monitoring posture. Confirm to generate and open it in the Reports tab." },
+      {
+        "kind": "create-report-card",
+        "templateId": "third-party-risk-report",
+        "templateLabel": "Risk Summary Report",
+        "lens": "risk-summary",
+        "lensLabel": "Risk summary",
+        "description": "Risk-posture report: tier, residual risk drivers, open findings, monitoring signals. Sourced from Acme's onboarding + live intel."
+      }
+    ],
+    "edit-report-executive-summary": [
+      { "kind": "user", "text": "Edit the executive summary of the report" },
+      { "kind": "commentary", "text": "Reading the current executive summary paragraph on Acme's report…" },
+      { "kind": "assistant", "text": "Here's a tighter rewrite — sharper on disposition, cleaner on the AI-vs-vendor split. Preview it in the report to see the change in place, then confirm or discard from the bar there." },
+      {
+        "kind": "edit-report-section-card",
+        "section": "executive-summary",
+        "sectionLabel": "Executive Summary",
+        "currentPreview": "Acme Cloud Co. has completed the Optro TPRM onboarding workflow as a Tier 2 — Standard vendor …",
+        "newContent": "Acme Cloud Co. completed onboarding at Tier 2 — Standard (AI-classified, 87% confidence, four policy signals). AI drafted answers to all 172 questions across three questionnaires; vendor closed all 8 gaps within 28 hours. Three reviewers approved the package. Recommendation: Approve with Conditions."
+      }
+    ],
+    "edit-report-recommendations": [
+      { "kind": "user", "text": "Edit the recommendations section of the report" },
+      { "kind": "commentary", "text": "Reading Acme's current recommendations block…" },
+      { "kind": "assistant", "text": "Here's a tightened version — same substance, cleaner ordering, explicit re-check dates. Preview it in the report to compare before you confirm." },
+      {
+        "kind": "edit-report-section-card",
+        "section": "recommendations",
+        "sectionLabel": "Recommendations & Conditions",
+        "currentPreview": "Approve at Tier 2 · sub-processor addendum · BCP/DR re-check · 24-month cadence…",
+        "newContent": "Approve at Tier 2 — Standard. Require sub-processor 30-day-notice addendum before MSA execution (policy §6.3). Re-verify CS-leadership participation in the BCP/DR tabletop by Q3 2026. Schedule the next full reassessment for May 18, 2028 (Tier 2 cadence)."
       }
     ],
     "ddq-scope-preview": [
@@ -6497,6 +6552,52 @@
         "my top vendors by risk"
       ],
       "scriptId": "top-vendor-risks"
+    },
+    {
+      "match": [
+        "create an executive summary report",
+        "create executive summary report",
+        "new executive summary report",
+        "create a new executive summary",
+        "generate executive summary report",
+        "executive summary report for acme",
+        "make an executive summary"
+      ],
+      "scriptId": "create-exec-summary-report"
+    },
+    {
+      "match": [
+        "create a risk summary report",
+        "create risk summary report",
+        "new risk summary report",
+        "risk summary report for acme",
+        "generate risk summary report",
+        "create a risk summary",
+        "make a risk summary report"
+      ],
+      "scriptId": "create-risk-summary-report"
+    },
+    {
+      "match": [
+        "edit the executive summary",
+        "edit executive summary",
+        "rewrite the executive summary",
+        "update the executive summary",
+        "revise the executive summary",
+        "tighten the executive summary"
+      ],
+      "scriptId": "edit-report-executive-summary"
+    },
+    {
+      "match": [
+        "edit the recommendations",
+        "edit recommendations section",
+        "rewrite the recommendations",
+        "update the recommendations",
+        "revise the recommendations",
+        "tighten the recommendations"
+      ],
+      "scriptId": "edit-report-recommendations"
     },
     {
       "match": [
