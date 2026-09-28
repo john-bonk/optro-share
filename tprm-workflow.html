@@ -9017,11 +9017,9 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .intel-mvp .signal { margin-bottom: 0.5rem; overflow: hidden;
             border-radius: 8px; }
         .intel-mvp .signal { position: relative; }
-        .intel-mvp .signal::before { content: ''; position: absolute;
-            left: 0; top: 0; bottom: 0; width: 3px; background: transparent;
-            border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
-        .intel-mvp .signal.sev-critical::before { background: var(--luna-red-500); }
-        .intel-mvp .signal.sev-high::before     { background: var(--luna-red-500); opacity: 0.7; }
+        /* Left-edge severity adornment intentionally omitted — the
+           severity is already carried by the pill in the signal-lead
+           slot, so a repeated left bar would be visual redundancy. */
         .intel-mvp .signal-head { display: flex; align-items: center; gap: 0.875rem;
             padding: 0.875rem 1rem 0.875rem 1.125rem; cursor: pointer; user-select: none;
             transition: background 0.12s ease; }
@@ -9385,6 +9383,38 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             display: flex; gap: 0.5rem; align-items: center; animation: intelMvpToastIn 160ms ease-out; }
         .intel-mvp-shell .toast .tick { color: #c6fdd9; }
         @keyframes intelMvpToastIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        /* ─── Open Issue · recommended attachments section ─────
+           Three grouped checklists (risks / controls / action plans)
+           each rendered as compact rows. Sits inside the Open Issue
+           modal body between description and related-signal toggle. */
+        .intel-mvp-shell .im-attach-section { margin: 0.375rem 0 1rem;
+            padding: 0.875rem 1rem; background: #fafbfc;
+            border: 1px solid #e2e8f0; border-radius: 8px; }
+        .intel-mvp-shell .im-attach-header { display: flex;
+            align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .intel-mvp-shell .im-attach-eyebrow { font-size: 0.6875rem;
+            font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+            color: #266c92; }
+        .intel-mvp-shell .im-attach-note { font-size: 0.6875rem; color: #94a3b8;
+            font-weight: 500; }
+        .intel-mvp-shell .im-attach-group { margin-top: 0.625rem; }
+        .intel-mvp-shell .im-attach-group:first-of-type { margin-top: 0.25rem; }
+        .intel-mvp-shell .im-attach-title { font-size: 0.75rem; font-weight: 600;
+            color: #475569; margin-bottom: 0.3125rem; }
+        .intel-mvp-shell .im-attach-list { display: flex; flex-direction: column;
+            gap: 0.1875rem; }
+        .intel-mvp-shell .im-attach-row { display: flex; align-items: flex-start;
+            gap: 0.5rem; padding: 0.3125rem 0.375rem; border-radius: 4px;
+            cursor: pointer; }
+        .intel-mvp-shell .im-attach-row:hover { background: #ffffff; }
+        .intel-mvp-shell .im-attach-cb { accent-color: #266c92;
+            margin-top: 0.1875rem; flex: none; }
+        .intel-mvp-shell .im-attach-body { flex: 1; min-width: 0; }
+        .intel-mvp-shell .im-attach-label { font-size: 0.8125rem;
+            color: #0f172a; font-weight: 500; line-height: 1.35; }
+        .intel-mvp-shell .im-attach-ref { font-size: 0.6875rem; color: #64748b;
+            margin-top: 0.0625rem; }
+
         /* ─── Intelligence settings modal ─────────────────────── */
         .intel-mvp-shell .im-set-section { padding: 1rem 0; border-top: 1px solid #e2e8f0; }
         .intel-mvp-shell .im-set-section:first-child { padding-top: 0; border-top: 0; }
@@ -29962,7 +29992,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             <div class="rh-row-icon ${s.on ? '' : 'inactive'}"><span class="im-src-pulse${s.on ? '' : ' off'}"></span></div>
             <div class="rh-row-body">
                 <div class="rh-row-title">${esc(s.name)}</div>
-                <div class="rh-row-meta">${s.on ? 'Active · last sweep ' + esc(s.last) : 'Not connected'}</div>
+                <div class="rh-row-meta">${s.on ? 'Active · last update ' + esc(s.last) : 'Not connected'}</div>
             </div>
             <span class="luna-badge ${s.on ? 'teal' : 'gray'} weak" data-component="Badge">${s.on ? 'Active' : 'Idle'}</span>
         </article>`).join('');
@@ -29979,7 +30009,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <span class="im-footer-pulse"></span>
                     <span class="vendor-history-label">Optro Intelligence · Monitoring on</span>
                     <span class="luna-badge gray weak" data-component="Badge">${activeCount} sources</span>
-                    <span class="im-footer-meta">Last sweep 08:52 · next ~14:00</span>
+                    <span class="im-footer-meta">Last update 08:52 · next ~14:00</span>
                     <span class="luna-icon vendor-history-chev" data-icon="${expanded ? 'chevron-down' : 'chevron-up'}" data-size="sm"></span>
                 </button>
                 <div class="vendor-history-spacer"></div>
@@ -31738,7 +31768,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 </div>
                 <div class="di-kpi">
                     <div class="di-kpi-label">New today</div>
-                    <div class="di-kpi-value">${todayCount}<span class="di-kpi-sub">last sweep 08:52</span></div>
+                    <div class="di-kpi-value">${todayCount}<span class="di-kpi-sub">last update 08:52</span></div>
                 </div>
             </div>`;
         // Derive filter option lists from the source data so a new
@@ -31852,7 +31882,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         // is the source of truth; behaviors in the IntelMvp namespace
         // write to it, and this render function reads from it.
         const s = window.IntelMvpState = window.IntelMvpState || {
-            expanded: { 'sig-8k': true, 'sig-leak': false,
+            expanded: { 'sig-8k': false, 'sig-leak': false,
                         'proc-cadence': false, 'match-court': false,
                         'quiet-soc2': false, 'quiet-exec': false },
             statuses: {},
@@ -31915,20 +31945,11 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                         <li><span class="ev-when">7:03 AM</span><span>Vendor trust page updated with an incident banner; no customer notice posted. <a class="cite" onclick="return IntelMvp.openCite('trust.acme.co')"><span class="src-ico"></span>Trust page</a></span></li>
                         <li><span class="ev-when">Aug 11</span><span>Related: leak-site listing referencing acme.co, now linked to this incident (96% confidence). <a href="#sig-leak" class="cite internal"><span class="src-ico"></span>Related signal below</a></span></li>
                     </ul>
-
-                    <div class="section-label">Review record</div>
-                    <ul class="trail" data-trail="8k">
-                        <li>Detected and graded <strong>Critical</strong> by Optro Intelligence · today, 6:58 AM</li>
-                        <li>Linked to the Aug 11 leak-site listing as one incident · today, 6:58 AM</li>
-                        <li><strong>Unreviewed.</strong> Assigned to the TPRM queue.</li>
-                        ${extraTrail('8k')}
-                    </ul>
-
                     <div class="actionbar">
-                        <button class="btn primary sm" onclick="IntelMvp.act('inquiry','8k')">Send inquiry</button>
-                        <button class="btn sm" onclick="IntelMvp.act('notify','8k')">Notify owner</button>
-                        <button class="btn sm" onclick="IntelMvp.act('issue','8k')">Open issue</button>
-                        <button class="btn sm" onclick="IntelMvp.act('accept','8k')">Accept risk</button>
+                        <button class="btn sm" onclick="IntelMvp.act('inquiry','8k')">Send Inquiry</button>
+                        <button class="btn sm" onclick="IntelMvp.act('notify','8k')">Notify Owner</button>
+                        <button class="btn sm" onclick="IntelMvp.act('issue','8k')">Open Issue</button>
+                        <button class="btn sm" onclick="IntelMvp.act('accept','8k')">Accept Risk</button>
                         <button class="btn sm" onclick="IntelMvp.act('watch','8k')">Watch</button>
                         <button class="btn transparent sm" onclick="IntelMvp.act('dismiss','8k')">Dismiss</button>
                         <span class="spacer"></span>
@@ -31971,20 +31992,11 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                         <li><span class="ev-when">Aug 11</span><span>Listing appeared on the cl0p leak site claiming 2.1 TB from "acme.co". <a class="cite" onclick="return IntelMvp.openCite('Leak-site capture, Aug 11 (archived)')"><span class="src-ico"></span>Archived capture</a></span></li>
                         <li><span class="ev-when">Today</span><span>8-K filed by the vendor, corroborating the listing. <a class="cite" onclick="return IntelMvp.openCite('SEC EDGAR 8-K')"><span class="src-ico"></span>EDGAR filing</a></span></li>
                     </ul>
-
-                    <div class="section-label">Review record</div>
-                    <ul class="trail" data-trail="leak">
-                        <li>Detected and graded <strong>High</strong> by Optro Intelligence · Aug 11, 4:20 PM</li>
-                        <li><strong>Watching</strong> set by Priya Shah, note: "Single-source claim, wait for corroboration" · Aug 12</li>
-                        <li><strong>Auto-resurfaced</strong> by Optro Intelligence: corroborating 8-K filed · today, 6:58 AM</li>
-                        ${extraTrail('leak')}
-                    </ul>
-
                     <div class="actionbar">
-                        <button class="btn primary sm" onclick="IntelMvp.act('inquiry','leak')">Send inquiry</button>
-                        <button class="btn sm" onclick="IntelMvp.act('notify','leak')">Notify owner</button>
-                        <button class="btn sm" onclick="IntelMvp.act('issue','leak')">Open issue</button>
-                        <button class="btn sm" onclick="IntelMvp.act('accept','leak')">Accept risk</button>
+                        <button class="btn sm" onclick="IntelMvp.act('inquiry','leak')">Send Inquiry</button>
+                        <button class="btn sm" onclick="IntelMvp.act('notify','leak')">Notify Owner</button>
+                        <button class="btn sm" onclick="IntelMvp.act('issue','leak')">Open Issue</button>
+                        <button class="btn sm" onclick="IntelMvp.act('accept','leak')">Accept Risk</button>
                         <button class="btn sm" onclick="IntelMvp.act('watch','leak')">Watch</button>
                         <button class="btn transparent sm" onclick="IntelMvp.act('dismiss','leak')">Dismiss</button>
                     </div>
@@ -36434,7 +36446,21 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 inquiryContext: 'Questions drafted by Optro Intelligence from the 8-K filing, your questionnaire answers (Q4.2), and DPA clause 9.3. Edit freely before sending.',
                 notifyDraft: 'Hi Dana, flagging a developing situation with Acme Cloud Co. (your vendor for core cloud infrastructure). They filed an SEC 8-K this morning reporting a material cybersecurity incident. We have sent them a formal inquiry about whether our data is affected and will keep you updated here. No action needed from you yet; please hold off on escalating to them directly so we keep one channel.',
                 issueTitle: 'Acme Cloud Co.: reported cybersecurity incident (SEC 8-K, Aug 18 2026)',
-                issueDesc: 'Acme Cloud Co. filed an 8-K (Item 1.05) on Aug 18, 2026 disclosing a material cybersecurity incident. Acme is Tier 1 and hosts our core production infrastructure — customer databases, API secrets, and access tokens all sit inside their environment (Questionnaire 2026, Q4.2). A related leak-site listing was observed on Aug 11. Awaiting vendor response to ad hoc inquiry.'
+                issueDesc: 'Acme Cloud Co. filed an 8-K (Item 1.05) on Aug 18, 2026 disclosing a material cybersecurity incident. Acme is Tier 1 and hosts our core production infrastructure — customer databases, API secrets, and access tokens all sit inside their environment (Questionnaire 2026, Q4.2). A related leak-site listing was observed on Aug 11. Awaiting vendor response to ad hoc inquiry.',
+                issueRisks: [
+                    { id: 'R-104', label: 'Third-party incident response gap', ref: 'Risk register · R-104' },
+                    { id: 'R-118', label: 'Regulatory disclosure obligations',   ref: 'Risk register · R-118' },
+                    { id: 'R-122', label: 'Data breach containment (Tier 1 vendors)', ref: 'Risk register · R-122' },
+                ],
+                issueControls: [
+                    { id: 'COR.IR.ESC-03', label: 'Vendor incident escalation SOP',      ref: 'Control · COR.IR.ESC-03' },
+                    { id: 'COR.CR.DPA-09', label: 'DPA §9.3 · 72-hour breach notification', ref: 'Control · COR.CR.DPA-09' },
+                    { id: 'COR.AC.MFA-01', label: 'Admin-console MFA enforcement',       ref: 'Control · COR.AC.MFA-01' },
+                ],
+                issueActionPlans: [
+                    { id: 'AP-71', label: 'Vendor breach response playbook · Tier 1', ref: 'Action plan · AP-71' },
+                    { id: 'AP-88', label: '72-hour DPA notification workflow',        ref: 'Action plan · AP-88' },
+                ]
             },
             'leak': {
                 short: 'Leak-site listing referencing acme.co',
@@ -36447,7 +36473,20 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 inquiryContext: 'Questions drafted by Optro Intelligence from the leak-site observation and the related 8-K filing. Edit freely before sending.',
                 notifyDraft: 'Hi Dana, heads up that a leak-site listing referencing Acme Cloud Co. appeared last week and now appears connected to the incident in their SEC filing today. We are handling the vendor outreach; will update you here.',
                 issueTitle: 'Acme Cloud Co.: leak-site listing claiming exfiltrated data',
-                issueDesc: 'A listing on the cl0p leak site dated Aug 11, 2026 references acme.co with a claimed 2.1 TB of data. Corroborated by the vendor 8-K filed Aug 18, 2026.'
+                issueDesc: 'A listing on the cl0p leak site dated Aug 11, 2026 references acme.co with a claimed 2.1 TB of data. Corroborated by the vendor 8-K filed Aug 18, 2026.',
+                issueRisks: [
+                    { id: 'R-104', label: 'Third-party data exfiltration',       ref: 'Risk register · R-104' },
+                    { id: 'R-131', label: 'Extortion / ransomware exposure',     ref: 'Risk register · R-131' },
+                ],
+                issueControls: [
+                    { id: 'COR.DP.ENC-04', label: 'Data-at-rest encryption on tenant data', ref: 'Control · COR.DP.ENC-04' },
+                    { id: 'COR.MO.LKS-01', label: 'Leak-site monitoring · followed domains', ref: 'Control · COR.MO.LKS-01' },
+                    { id: 'COR.CR.DPA-09', label: 'DPA §9.3 · 72-hour breach notification',  ref: 'Control · COR.CR.DPA-09' },
+                ],
+                issueActionPlans: [
+                    { id: 'AP-72', label: 'Leak-site response playbook',       ref: 'Action plan · AP-72' },
+                    { id: 'AP-89', label: 'Sensitive-data verification workflow', ref: 'Action plan · AP-89' },
+                ]
             }
         };
         // Correlated signals — outbound actions (inquiry, notify, issue) can
@@ -36520,7 +36559,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         // update the DOM in place for immediate feedback.
         function ensureState() {
             return window.IntelMvpState = window.IntelMvpState || {
-                expanded: { 'sig-8k': true, 'sig-leak': false,
+                expanded: { 'sig-8k': false, 'sig-leak': false,
                             'proc-cadence': false, 'match-court': false,
                             'quiet-soc2': false, 'quiet-exec': false },
                 statuses: {},
@@ -36612,11 +36651,42 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <button class="btn primary" onclick="IntelMvp.finishNotify()">Send notification</button>`);
             }
             if (action === 'issue') {
+                // Render three grouped lists of AI-recommended
+                // attachments — associated risks, control mappings,
+                // and action plans. Each entry is a checkbox + label
+                // + subtle reference. Everything is pre-checked so the
+                // reviewer can uncheck rather than hunt-and-attach.
+                const attachGroup = (title, items) => {
+                    if (!items || !items.length) return '';
+                    const rows = items.map((it) => `<label class="im-attach-row">
+                        <input type="checkbox" class="im-attach-cb" data-attach-id="${esc(it.id)}" checked />
+                        <div class="im-attach-body">
+                            <div class="im-attach-label">${esc(it.label)}</div>
+                            <div class="im-attach-ref">${esc(it.ref)}</div>
+                        </div>
+                    </label>`).join('');
+                    return `<div class="im-attach-group">
+                        <div class="im-attach-title">${esc(title)}</div>
+                        <div class="im-attach-list">${rows}</div>
+                    </div>`;
+                };
+                const attachments = (s.issueRisks || s.issueControls || s.issueActionPlans)
+                    ? `<div class="im-attach-section">
+                        <div class="im-attach-header">
+                            <span class="im-attach-eyebrow">Recommended attachments</span>
+                            <span class="im-attach-note">Optro Intelligence · uncheck any to skip</span>
+                        </div>
+                        ${attachGroup('Associated risks', s.issueRisks)}
+                        ${attachGroup('Mapped controls', s.issueControls)}
+                        ${attachGroup('Action plans',    s.issueActionPlans)}
+                    </div>`
+                    : '';
                 openModal('Open issue', 'Creates a record in Issues on this vendor', `
                     <div class="field"><label>Title</label><input type="text" value="${esc(s.issueTitle)}"></div>
                     <div class="field"><label>Severity</label><select><option>High</option><option>Critical</option><option>Medium</option></select></div>
                     <div class="field"><label>Description <span class="hint">(drafted from signal, editable)</span></label>
                         <textarea rows="5">${esc(s.issueDesc)}</textarea></div>
+                    ${attachments}
                     ${relatedCheckboxHTML(signalId)}`, `
                     <button class="btn" onclick="IntelMvp.closeModal()">Cancel</button>
                     <button class="btn primary" onclick="IntelMvp.finishIssue()">Create issue</button>`);
