@@ -9033,18 +9033,37 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             padding: 0.625rem 0.875rem; background: var(--luna-gray-50); }
         .intel-mvp .actionbar .spacer { flex: 1; }
         .intel-mvp .seam-note { font-size: 0.6875rem; color: var(--luna-gray-400); }
-        .intel-mvp .cadence-card { display: flex; gap: 0.75rem; padding: 0.75rem 0.875rem;
-            align-items: flex-start; border-left: 3px solid var(--luna-teal-500);
-            margin-bottom: 0.75rem; }
-        .intel-mvp .cadence-card .ai-dot { width: 26px; height: 26px; border-radius: var(--luna-radius-full);
-            flex: none; background: var(--luna-teal-100); color: var(--luna-teal-700);
-            display: flex; align-items: center; justify-content: center; font-size: 0.8125rem; }
-        .intel-mvp .quarantine { border: 1px dashed var(--luna-gray-300); background: var(--luna-gray-50);
-            border-radius: var(--luna-radius-md); padding: 0.75rem 0.875rem; margin-bottom: 0.75rem;
-            display: flex; gap: 0.75rem; align-items: flex-start; }
-        .intel-mvp .quarantine .q-ico { width: 26px; height: 26px; border-radius: var(--luna-radius-sm);
-            flex: none; background: var(--luna-gray-200); color: var(--luna-gray-600);
-            display: flex; align-items: center; justify-content: center; font-size: 0.8125rem; }
+        /* Cadence + quarantine cards share the same visual grammar:
+           white surface, thin gray border, teal-tinted icon leading,
+           title + inline decision pills, actions right-anchored. Only
+           the icon differs (clock vs question-mark) so the two read
+           as a shared "advisory" card family under Process
+           recommendations / Potential matches. */
+        .intel-mvp .cadence-card,
+        .intel-mvp .quarantine { display: flex; gap: 0.75rem;
+            padding: 0.875rem 1rem; margin-bottom: 0.5rem;
+            background: var(--luna-white);
+            border: 1px solid var(--luna-gray-200);
+            border-radius: var(--luna-radius-md);
+            align-items: flex-start; }
+        .intel-mvp .cadence-card .ai-dot,
+        .intel-mvp .quarantine .q-ico { width: 28px; height: 28px;
+            border-radius: var(--luna-radius-full); flex: none;
+            background: var(--luna-teal-100); color: var(--luna-teal-700);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.8125rem; }
+        .intel-mvp .cadence-card .ai-dot svg { width: 15px; height: 15px; display: block; }
+        .intel-mvp .quarantine .q-ico { background: var(--luna-gray-100); color: var(--luna-gray-500); }
+        /* Shared advisory-card title / body / actions layout. */
+        .intel-mvp .cadence-hdr { display: flex; align-items: center;
+            gap: 0.5rem; flex-wrap: wrap; }
+        .intel-mvp .cadence-hdr strong { font-size: 0.875rem;
+            color: var(--luna-gray-900); font-weight: 600; }
+        .intel-mvp .cadence-detail { font-size: 0.8125rem;
+            color: var(--luna-gray-600); margin-top: 0.25rem; line-height: 1.5; }
+        .intel-mvp .cadence-actions { display: inline-flex;
+            gap: 0.375rem; flex: none; align-self: center;
+            margin-left: 0.5rem; }
         .intel-mvp .quiet-row { display: flex; align-items: center; gap: 0.5rem;
             padding: 0.5rem 0.875rem; cursor: pointer; }
         .intel-mvp .quiet-row:hover { background: var(--luna-gray-50); }
@@ -9117,9 +9136,24 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .di-icon-btn:hover { background: #f8fafc; color: #0f172a; border-color: #e2e8f0; }
         .di-icon-btn svg { width: 15px; height: 15px; display: block; }
         .di-title { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em;
-            color: #0f172a; margin: 0 0 0.375rem; }
-        .di-subtitle { font-size: 0.875rem; color: #64748b; margin: 0 0 1.5rem;
-            max-width: 42rem; line-height: 1.5; }
+            color: #0f172a; margin: 0 0 1.25rem; }
+        /* KPI cards — four-up grid of small stat cards. Label above,
+           value below with an optional sub-label context. Numeric-first
+           treatment so the reviewer's eye lands on the count. */
+        .di-kpis { display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.75rem; margin-bottom: 1.5rem; }
+        .di-kpi { background: #ffffff; border: 1px solid #e2e8f0;
+            border-radius: 8px; padding: 0.875rem 1rem; }
+        .di-kpi-label { font-size: 0.6875rem; font-weight: 700;
+            letter-spacing: 0.06em; text-transform: uppercase;
+            color: #94a3b8; }
+        .di-kpi-value { display: flex; align-items: baseline; gap: 0.5rem;
+            margin-top: 0.375rem; font-size: 1.75rem; font-weight: 600;
+            color: #0f172a; letter-spacing: -0.01em; line-height: 1; }
+        .di-kpi-value-critical { color: #8c1c1c; }
+        .di-kpi-sub { font-size: 0.75rem; color: #64748b; font-weight: 400;
+            letter-spacing: 0; }
         /* Bucket tabs — same treatment as Luna Tablist but tighter,
            with pill-count chips. */
         .di-tabs { display: flex; gap: 0.125rem; border-bottom: 1px solid #e2e8f0;
@@ -9279,9 +9313,69 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .intel-mvp-shell .im-rule-toggle input[type="checkbox"] { accent-color: #266c92; }
         .intel-mvp-shell .im-rule-body { flex: 1; min-width: 0; font-size: 0.8125rem;
             color: #334155; display: flex; flex-direction: column; gap: 0.125rem; }
-        .intel-mvp-shell .im-rule-lbl { display: inline-block; min-width: 2.5rem;
+        .intel-mvp-shell .im-rule-lbl { display: inline-block; min-width: 2.75rem;
             font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.06em;
             text-transform: uppercase; color: #94a3b8; margin-right: 0.25rem; }
+        .intel-mvp-shell .im-rule-scope { color: #64748b; font-size: 0.75rem; margin-top: 0.125rem; }
+        .intel-mvp-shell .im-rule-del { background: transparent; border: 0;
+            padding: 0.375rem; color: #94a3b8; cursor: pointer; border-radius: 4px;
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 1.75rem; height: 1.75rem; flex: none; align-self: flex-start;
+            margin-top: -0.125rem; }
+        .intel-mvp-shell .im-rule-del:hover { background: #ffe0e0; color: #db3535; }
+        .intel-mvp-shell .im-rule-del svg { width: 14px; height: 14px; display: block; }
+        /* Settings tabs — underline treatment, matches Luna Tablist. */
+        .intel-mvp-shell .im-tabs { display: flex; gap: 0.125rem;
+            border-bottom: 1px solid #e2e8f0; margin: -0.25rem 0 0.75rem; }
+        .intel-mvp-shell .im-tab { background: transparent; border: 0;
+            padding: 0.625rem 0.875rem; font: inherit; font-size: 0.8125rem;
+            color: #64748b; cursor: pointer; border-bottom: 2px solid transparent;
+            margin-bottom: -1px; }
+        .intel-mvp-shell .im-tab:hover { color: #0f172a; }
+        .intel-mvp-shell .im-tab.active { color: #266c92; font-weight: 600; border-bottom-color: #266c92; }
+        /* Sources list — one row per source, toggle + name + cadence
+           dropdown. Cleaner than the checkbox grid because cadence is
+           a real second-order tune the reviewer wants alongside on/off. */
+        .intel-mvp-shell .im-sources { display: flex; flex-direction: column; gap: 0.25rem; }
+        .intel-mvp-shell .im-source-row { display: grid;
+            grid-template-columns: 1.5rem 1fr 7rem; gap: 0.625rem;
+            align-items: center; padding: 0.4375rem 0.5rem;
+            border-radius: 6px; }
+        .intel-mvp-shell .im-source-row:hover { background: #f8fafc; }
+        .intel-mvp-shell .im-source-row.off { opacity: 0.55; }
+        .intel-mvp-shell .im-source-toggle input[type="checkbox"] { accent-color: #266c92; }
+        .intel-mvp-shell .im-source-name { font-size: 0.8125rem; color: #334155;
+            display: inline-flex; align-items: center; gap: 0.5rem; }
+        .intel-mvp-shell .im-source-tag { font-size: 0.6875rem; color: #94a3b8;
+            background: #f1f5f9; padding: 0.0625rem 0.375rem; border-radius: 999px;
+            font-weight: 500; letter-spacing: 0.02em; }
+        .intel-mvp-shell .im-source-cadence { height: 1.75rem;
+            padding: 0 1.5rem 0 0.5rem; font: inherit; font-size: 0.75rem;
+            color: #475569;
+            background: #ffffff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 16 16' fill='none' stroke='%2364748b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M4 6l4 4 4-4'/></svg>") no-repeat right 0.375rem center;
+            border: 1px solid #e2e8f0; border-radius: 4px; appearance: none; }
+        .intel-mvp-shell .im-source-cadence:disabled { color: #cbd5e1;
+            background-color: #f8fafc; cursor: not-allowed; }
+        /* Rule builder — labeled rows for When / Scope / Then / Note,
+           add-button anchored right. */
+        .intel-mvp-shell .im-rule-builder { display: flex; flex-direction: column;
+            gap: 0.5rem; padding: 0.75rem 0.875rem;
+            background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; }
+        .intel-mvp-shell .im-rule-builder-row { display: grid;
+            grid-template-columns: 5rem 1fr; gap: 0.625rem; align-items: center; }
+        .intel-mvp-shell .im-rb-lbl { font-size: 0.6875rem; font-weight: 700;
+            letter-spacing: 0.06em; text-transform: uppercase; color: #64748b; }
+        .intel-mvp-shell .im-rb-input { height: 2.125rem;
+            padding: 0 0.625rem; font: inherit; font-size: 0.8125rem;
+            color: #0f172a; background: #fff;
+            border: 1px solid #cbd5e1; border-radius: 6px; width: 100%; }
+        .intel-mvp-shell select.im-rb-input { padding-right: 1.75rem;
+            appearance: none;
+            background: #ffffff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16' fill='none' stroke='%2364748b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M4 6l4 4 4-4'/></svg>") no-repeat right 0.5rem center; }
+        .intel-mvp-shell .im-rb-input:focus { outline: 0; border-color: #266c92;
+            box-shadow: 0 0 0 3px rgba(38, 108, 146, 0.1); }
+        .intel-mvp-shell .im-rule-builder-actions { display: flex;
+            justify-content: flex-end; margin-top: 0.25rem; }
 
         /* ────────────────────────────────────────────────────────
            INTELLIGENCE TAB
@@ -31372,24 +31466,45 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
     // from the backend; here it's a curated set that exercises the
     // filter + sort UX and produces a realistic table density.
     const CROSS_VENDOR_SIGNALS = [
-        // Needs Attention
-        { id: 'x-8k',   vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Critical', bucket: 'attention',       title: 'SEC 8-K filed: material cybersecurity incident', source: 'SEC EDGAR',            when: 'Today · 06:42',   tier: 1, status: 'Needs review' },
-        { id: 'x-leak', vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'High',     bucket: 'attention',       title: 'Leak-site listing references acme.co',           source: 'Leak-site monitor',    when: 'Today · 07:03',   tier: 1, status: 'Watching · resurfaced' },
-        { id: 'x-sf',   vendor: 'Salesforce Inc.',      vendorId: 'salesforce', severity: 'High',     bucket: 'attention',       title: 'Adverse news · subprocessor breach disclosure',  source: 'News and media',       when: 'Today · 09:17',   tier: 1, status: 'Needs review' },
-        { id: 'x-ok',   vendor: 'Okta Inc.',            vendorId: 'okta',       severity: 'High',     bucket: 'attention',       title: 'Cert transparency: new *.customerX.okta.com',    source: 'Cert transparency',    when: 'Today · 10:04',   tier: 1, status: 'Needs review' },
-        { id: 'x-aws',  vendor: 'AWS',                  vendorId: 'aws',        severity: 'Medium',   bucket: 'attention',       title: 'Domain-health regression on trust portal',       source: 'Domain health',        when: 'Today · 11:22',   tier: 1, status: 'Watching' },
-        { id: 'x-cs',   vendor: 'CrowdStrike',          vendorId: 'crowdstrike',severity: 'Medium',   bucket: 'attention',       title: 'Executive: CFO departure reported',              source: 'News and media',       when: 'Yesterday',       tier: 1, status: 'Needs review' },
-        // Process recommendations (matcher-quarantined)
-        { id: 'x-p1',   vendor: 'Slack Technologies',   vendorId: 'slack',      severity: 'Info',     bucket: 'process',         title: 'Similar-name match: "Slack Community NL"',       source: 'Court records',        when: 'Aug 22',          tier: 3, status: 'Held for review' },
-        { id: 'x-p2',   vendor: 'Snowflake',            vendorId: 'snowflake',  severity: 'Info',     bucket: 'process',         title: 'Trust-page schema changed — needs re-verification', source: 'Vendor trust page', when: 'Aug 19',          tier: 1, status: 'Held for review' },
-        { id: 'x-p3',   vendor: 'Zoom',                 vendorId: 'zoom',       severity: 'Info',     bucket: 'process',         title: 'Sanction-list refresh cadence extended',         source: 'Sanctions lists',      when: 'Aug 12',          tier: 2, status: 'Held for review' },
-        // Other information (positive / dismissed / handled)
-        { id: 'x-o1',   vendor: 'Salesforce Inc.',      vendorId: 'salesforce', severity: 'Info',     bucket: 'other',           title: 'SOC 2 Type II renewed · report auto-attached',   source: 'Vendor trust page',    when: 'Jul 30',          tier: 1, status: 'Positive' },
-        { id: 'x-o2',   vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'other',           title: 'SOC 2 Type II renewed · report auto-attached',   source: 'Vendor trust page',    when: 'Jul 30',          tier: 1, status: 'Positive' },
-        { id: 'x-o3',   vendor: 'Datadog',              vendorId: 'datadog',    severity: 'Info',     bucket: 'other',           title: 'ISO 27001 recertified · certificate on file',    source: 'Vendor trust page',    when: 'Jul 22',          tier: 2, status: 'Positive' },
-        { id: 'x-o4',   vendor: 'GitHub',               vendorId: 'github',     severity: 'Info',     bucket: 'other',           title: 'Executive: CTO promotion reported',              source: 'News and media',       when: 'Jul 14',          tier: 1, status: 'Dismissed' },
-        { id: 'x-o5',   vendor: 'DocuSign',             vendorId: 'docusign',   severity: 'Info',     bucket: 'other',           title: 'Trust-page banner cleared · incident resolved',  source: 'Vendor trust page',    when: 'Jul 09',          tier: 2, status: 'Positive' },
-        { id: 'x-o6',   vendor: 'Twilio',               vendorId: 'twilio',     severity: 'Info',     bucket: 'other',           title: 'Cert transparency: renewed *.twilio.com',        source: 'Cert transparency',    when: 'Jul 02',          tier: 2, status: 'Positive' },
+        // ─── Needs attention (actionable) ────────────────────────
+        { id: 'x-8k',    vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Critical', bucket: 'attention', title: 'SEC 8-K filed: material cybersecurity incident',              source: 'SEC EDGAR',           when: 'Today · 06:42',   tier: 1, status: 'Needs review' },
+        { id: 'x-leak',  vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'High',     bucket: 'attention', title: 'Leak-site listing references acme.co',                        source: 'Leak-site monitor',   when: 'Today · 07:03',   tier: 1, status: 'Watching · resurfaced' },
+        { id: 'x-sf',    vendor: 'Salesforce Inc.',      vendorId: 'salesforce', severity: 'High',     bucket: 'attention', title: 'Adverse news · subprocessor breach disclosure',               source: 'News and media',      when: 'Today · 09:17',   tier: 1, status: 'Needs review' },
+        { id: 'x-ok',    vendor: 'Okta Inc.',            vendorId: 'okta',       severity: 'High',     bucket: 'attention', title: 'Cert transparency: new *.customerX.okta.com',                 source: 'Cert transparency',   when: 'Today · 10:04',   tier: 1, status: 'Needs review' },
+        { id: 'x-aws',   vendor: 'AWS',                  vendorId: 'aws',        severity: 'Medium',   bucket: 'attention', title: 'Domain-health regression on trust portal',                    source: 'Domain health',       when: 'Today · 11:22',   tier: 1, status: 'Watching' },
+        { id: 'x-cs',    vendor: 'CrowdStrike',          vendorId: 'crowdstrike',severity: 'Medium',   bucket: 'attention', title: 'Executive: CFO departure reported',                           source: 'News and media',      when: 'Yesterday',       tier: 1, status: 'Needs review' },
+        { id: 'x-wd',    vendor: 'Workday',              vendorId: 'workday',    severity: 'High',     bucket: 'attention', title: 'Breach registry entry: HR-Data-Pipeline exposure',            source: 'Breach registries',   when: 'Yesterday',       tier: 2, status: 'Needs review' },
+        { id: 'x-nx',    vendor: 'NetSuite',             vendorId: 'netsuite',   severity: 'Medium',   bucket: 'attention', title: 'Trust-page banner: brief incident, resolved',                 source: 'Vendor trust page',   when: 'Sep 24',          tier: 2, status: 'Watching' },
+        { id: 'x-az',    vendor: 'Microsoft Azure',      vendorId: 'azure',      severity: 'Medium',   bucket: 'attention', title: 'Sub-processor list changed · 3 additions',                    source: 'Vendor trust page',   when: 'Sep 23',          tier: 1, status: 'Needs review' },
+        { id: 'x-mb',    vendor: 'MongoDB Atlas',        vendorId: 'mongo',      severity: 'High',     bucket: 'attention', title: 'Adverse news · data-residency dispute in EU jurisdiction',   source: 'News and media',      when: 'Sep 22',          tier: 1, status: 'Inquiry sent' },
+        { id: 'x-pd',    vendor: 'PagerDuty',            vendorId: 'pagerduty',  severity: 'Medium',   bucket: 'attention', title: 'Cert transparency: unexpected wildcard issuance',             source: 'Cert transparency',   when: 'Sep 21',          tier: 2, status: 'Needs review' },
+        { id: 'x-gcp',   vendor: 'Google Cloud Platform',vendorId: 'gcp',        severity: 'Medium',   bucket: 'attention', title: 'Adverse news · regional outage impact analysis',              source: 'News and media',      when: 'Sep 20',          tier: 1, status: 'Watching' },
+
+        // ─── Process recommendations (cadence + governance) ─────
+        { id: 'x-r1',    vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'process',   title: 'Move next scheduled review from Feb 12, 2027 → Sep 15, 2026', source: 'Cadence rules',       when: 'Today · 07:02',   tier: 1, status: 'Awaiting decision' },
+        { id: 'x-r2',    vendor: 'Zoom',                 vendorId: 'zoom',       severity: 'Info',     bucket: 'process',   title: 'Reassessment overdue by 21 days · schedule now',              source: 'Cadence rules',       when: 'Sep 25',          tier: 2, status: 'Awaiting decision' },
+        { id: 'x-r3',    vendor: 'Slack Technologies',   vendorId: 'slack',      severity: 'Info',     bucket: 'process',   title: 'Downgrade cadence proposal: Tier 3 · biennial → triennial',   source: 'Cadence rules',       when: 'Sep 23',          tier: 3, status: 'Awaiting decision' },
+        { id: 'x-r4',    vendor: 'DocuSign',             vendorId: 'docusign',   severity: 'Info',     bucket: 'process',   title: 'Recontract renewal check-in — 60-day lead time reached',      source: 'Contract dates',      when: 'Sep 20',          tier: 2, status: 'Awaiting decision' },
+
+        // ─── Potential matches (matcher-quarantined) ─────────────
+        { id: 'x-m1',    vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'matches',   title: 'County court judgment: "Acme Cloud Services Ltd", Manchester UK', source: 'Court records',   when: 'Aug 29',          tier: 1, status: 'Held for review' },
+        { id: 'x-m2',    vendor: 'Slack Technologies',   vendorId: 'slack',      severity: 'Info',     bucket: 'matches',   title: 'Similar-name match: "Slack Community NL"',                    source: 'Court records',       when: 'Aug 22',          tier: 3, status: 'Held for review' },
+        { id: 'x-m3',    vendor: 'Twilio',               vendorId: 'twilio',     severity: 'Info',     bucket: 'matches',   title: 'Domain squatter match: twilio-status.io',                     source: 'Cert transparency',   when: 'Aug 18',          tier: 2, status: 'Held for review' },
+        { id: 'x-m4',    vendor: 'GitHub',               vendorId: 'github',     severity: 'Info',     bucket: 'matches',   title: 'Similar-name match: "GitHub Enterprise Advisors GmbH"',        source: 'Court records',       when: 'Aug 15',          tier: 1, status: 'Held for review' },
+
+        // ─── Other information (positive / dismissed / handled) ──
+        { id: 'x-o1',    vendor: 'Salesforce Inc.',      vendorId: 'salesforce', severity: 'Info',     bucket: 'other',     title: 'SOC 2 Type II renewed · report auto-attached',                source: 'Vendor trust page',   when: 'Jul 30',          tier: 1, status: 'Positive' },
+        { id: 'x-o2',    vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'other',     title: 'SOC 2 Type II renewed · report auto-attached',                source: 'Vendor trust page',   when: 'Jul 30',          tier: 1, status: 'Positive' },
+        { id: 'x-o3',    vendor: 'Datadog',              vendorId: 'datadog',    severity: 'Info',     bucket: 'other',     title: 'ISO 27001 recertified · certificate on file',                 source: 'Vendor trust page',   when: 'Jul 22',          tier: 2, status: 'Positive' },
+        { id: 'x-o4',    vendor: 'GitHub',               vendorId: 'github',     severity: 'Info',     bucket: 'other',     title: 'Executive: CTO promotion reported',                           source: 'News and media',      when: 'Jul 14',          tier: 1, status: 'Dismissed' },
+        { id: 'x-o5',    vendor: 'DocuSign',             vendorId: 'docusign',   severity: 'Info',     bucket: 'other',     title: 'Trust-page banner cleared · incident resolved',               source: 'Vendor trust page',   when: 'Jul 09',          tier: 2, status: 'Positive' },
+        { id: 'x-o6',    vendor: 'Twilio',               vendorId: 'twilio',     severity: 'Info',     bucket: 'other',     title: 'Cert transparency: renewed *.twilio.com',                     source: 'Cert transparency',   when: 'Jul 02',          tier: 2, status: 'Positive' },
+        { id: 'x-o7',    vendor: 'Zendesk',              vendorId: 'zendesk',    severity: 'Info',     bucket: 'other',     title: 'SOC 2 Type II renewed · report auto-attached',                source: 'Vendor trust page',   when: 'Jun 28',          tier: 2, status: 'Positive' },
+        { id: 'x-o8',    vendor: 'Snowflake',            vendorId: 'snowflake',  severity: 'Info',     bucket: 'other',     title: 'Executive: new CISO announced',                               source: 'News and media',      when: 'Jun 24',          tier: 1, status: 'Dismissed' },
+        { id: 'x-o9',    vendor: 'Okta Inc.',            vendorId: 'okta',       severity: 'Info',     bucket: 'other',     title: 'Sanctions-list clearance re-verified',                        source: 'Sanctions lists',     when: 'Jun 22',          tier: 1, status: 'Positive' },
+        { id: 'x-o10',   vendor: 'AWS',                  vendorId: 'aws',        severity: 'Info',     bucket: 'other',     title: 'FedRAMP High re-authorization renewed',                       source: 'Vendor trust page',   when: 'Jun 18',          tier: 1, status: 'Positive' },
+        { id: 'x-o11',   vendor: 'HubSpot',              vendorId: 'hubspot',    severity: 'Info',     bucket: 'other',     title: 'Executive: CRO transition · no service impact',               source: 'News and media',      when: 'Jun 12',          tier: 2, status: 'Dismissed' },
+        { id: 'x-o12',   vendor: 'Calendly',             vendorId: 'calendly',   severity: 'Info',     bucket: 'other',     title: 'SOC 2 Type II attestation received',                          source: 'Vendor trust page',   when: 'Jun 09',          tier: 3, status: 'Positive' },
     ];
 
     function renderDashboardIntelligence() {
@@ -31408,8 +31523,38 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         const bucketCounts = {
             attention: CROSS_VENDOR_SIGNALS.filter(s => s.bucket === 'attention').length,
             process:   CROSS_VENDOR_SIGNALS.filter(s => s.bucket === 'process').length,
+            matches:   CROSS_VENDOR_SIGNALS.filter(s => s.bucket === 'matches').length,
             other:     CROSS_VENDOR_SIGNALS.filter(s => s.bucket === 'other').length,
         };
+        // KPI stats — computed once, header-anchored strip of small
+        // cards giving the reviewer instant orientation: how many
+        // actionable, how many critical, how many vendors touched, how
+        // many new since yesterday.
+        const attentionSet = CROSS_VENDOR_SIGNALS.filter(s => s.bucket === 'attention');
+        const criticalCount = attentionSet.filter(s => s.severity === 'Critical').length;
+        const highCount = attentionSet.filter(s => s.severity === 'High').length;
+        const uniqueVendors = new Set(CROSS_VENDOR_SIGNALS.map(s => s.vendorId)).size;
+        const uniqueAttentionVendors = new Set(attentionSet.map(s => s.vendorId)).size;
+        const todayCount = CROSS_VENDOR_SIGNALS.filter(s => (s.when || '').toLowerCase().startsWith('today')).length;
+        const kpiHtml = `
+            <div class="di-kpis">
+                <div class="di-kpi">
+                    <div class="di-kpi-label">Needs attention</div>
+                    <div class="di-kpi-value">${attentionSet.length}<span class="di-kpi-sub">across ${uniqueAttentionVendors} vendors</span></div>
+                </div>
+                <div class="di-kpi">
+                    <div class="di-kpi-label">Critical</div>
+                    <div class="di-kpi-value di-kpi-value-critical">${criticalCount}<span class="di-kpi-sub">${highCount} high · unresolved</span></div>
+                </div>
+                <div class="di-kpi">
+                    <div class="di-kpi-label">Vendors monitored</div>
+                    <div class="di-kpi-value">${uniqueVendors}<span class="di-kpi-sub">10 signal sources active</span></div>
+                </div>
+                <div class="di-kpi">
+                    <div class="di-kpi-label">New today</div>
+                    <div class="di-kpi-value">${todayCount}<span class="di-kpi-sub">last sweep 08:52</span></div>
+                </div>
+            </div>`;
         // Derive filter option lists from the source data so a new
         // seed vendor auto-populates the dropdowns.
         const uniq = (arr) => Array.from(new Set(arr));
@@ -31456,8 +31601,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <div class="di-eyebrow">
                         <span class="di-eyebrow-dot"></span>
                         <span>Optro Intelligence Platform</span>
-                        <span class="di-eyebrow-sep">·</span>
-                        <span class="di-eyebrow-status">${CROSS_VENDOR_SIGNALS.length} signals across ${uniq(CROSS_VENDOR_SIGNALS.map(s=>s.vendorId)).length} vendors</span>
                     </div>
                     <div class="di-header-actions">
                         <button type="button" class="di-icon-btn" data-tooltip="Intelligence settings" data-action="di-open-settings" aria-label="Intelligence settings">
@@ -31465,11 +31608,12 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                         </button>
                     </div>
                 </header>
-                <h1 class="di-title">Intelligence</h1>
-                <p class="di-subtitle">Live signals across your monitored vendors. Filter and tune to focus on what's actionable now.</p>
+                <h1 class="di-title">Third Party Intelligence</h1>
+                ${kpiHtml}
                 <div class="di-tabs" role="tablist">
                     <button type="button" class="di-tab${f.bucket==='attention'?' active':''}" role="tab" data-action="di-set-bucket" data-bucket="attention">Needs attention <span class="di-tab-count">${bucketCounts.attention}</span></button>
                     <button type="button" class="di-tab${f.bucket==='process'?' active':''}" role="tab" data-action="di-set-bucket" data-bucket="process">Process recommendations <span class="di-tab-count">${bucketCounts.process}</span></button>
+                    <button type="button" class="di-tab${f.bucket==='matches'?' active':''}" role="tab" data-action="di-set-bucket" data-bucket="matches">Potential matches <span class="di-tab-count">${bucketCounts.matches}</span></button>
                     <button type="button" class="di-tab${f.bucket==='other'?' active':''}" role="tab" data-action="di-set-bucket" data-bucket="other">Other information <span class="di-tab-count">${bucketCounts.other}</span></button>
                 </div>
                 <div class="di-toolbar">
@@ -31568,11 +31712,9 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <span class="badge red xstrong">Critical</span>
                     <div>
                         <div class="signal-title">SEC 8-K filed: material cybersecurity incident</div>
-                        <div class="signal-src">SEC EDGAR · Item 1.05 · Filed today, 6:42 AM ET</div>
+                        <div class="signal-src">SEC EDGAR · Item 1.05 · Filed today, 6:42 AM ET · <span class="muted">1 related signal</span></div>
                     </div>
                     <div class="chips">
-                        <span class="badge gray outline">1 related signal</span>
-                        <span class="badge teal">Match verified</span>
                         ${pill('8k', 'teal strong', 'Needs review')}
                         <span class="chev">&#9660;</span>
                     </div>
@@ -31621,11 +31763,9 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <span class="badge red">High</span>
                     <div>
                         <div class="signal-title">Leak-site listing references acme.co</div>
-                        <div class="signal-src">Leak-site monitor · cl0p · First seen Aug 11 · resurfaced today</div>
+                        <div class="signal-src">Leak-site monitor · cl0p · First seen Aug 11 · resurfaced today · <span class="muted">related to the 8-K above</span></div>
                     </div>
                     <div class="chips">
-                        <span class="badge gray outline">Related to the 8-K above</span>
-                        <span class="badge teal">Match 92%</span>
                         ${pill('leak', 'gray', 'Watching · resurfaced')}
                         <span class="chev">&#9660;</span>
                     </div>
@@ -31665,44 +31805,44 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 </div>
             </div>
 
+            <div class="section-label">Process recommendations <span class="badge gray">1</span></div>
             <div class="card cadence-card">
-                <div class="ai-dot">&#10022;</div>
-                <div style="flex:1">
-                    <div style="display:flex;align-items:center;gap:0.5rem">
-                        <strong style="font-size:0.8125rem">Optro Intelligence proposes an earlier review</strong>
-                        ${pill('cadence', 'teal', 'Awaiting your decision')}
+                <div class="ai-dot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2 1.5"/></svg></div>
+                <div style="flex:1;min-width:0">
+                    <div class="cadence-hdr">
+                        <strong>Move the next scheduled review earlier</strong>
+                        ${pill('cadence', 'teal', 'Awaiting decision')}
                     </div>
-                    <div class="small" style="margin-top:0.125rem">
-                        Move the next scheduled review from <b>Feb 12, 2027</b> to <b>Sep 15, 2026</b>, based on one open critical incident and two attention signals in 30 days. The date changes only if you confirm.
+                    <div class="cadence-detail">
+                        From <b>Feb 12, 2027</b> to <b>Sep 15, 2026</b> · based on one open critical incident and two attention signals in the last 30 days.
                     </div>
                     <ul class="trail" data-trail="cadence" style="margin-top:0.375rem">
                         <li>Proposed by Optro Intelligence under your Tier 1 cadence rules · today, 7:02 AM <a class="cite internal" onclick="return IntelMvp.openCite('Cadence rules (Settings)')"><span class="src-ico"></span>Cadence rules</a></li>
                         ${extraTrail('cadence')}
                     </ul>
                 </div>
-                ${s.cadenceHidden ? '' : `<div style="display:flex;gap:0.5rem;flex:none" data-cadence-actions>
-                    <button class="btn primary sm" onclick="IntelMvp.cadenceConfirm()">Move to Sep 15</button>
+                ${s.cadenceHidden ? '' : `<div class="cadence-actions" data-cadence-actions>
                     <button class="btn sm" onclick="IntelMvp.cadenceKeep()">Keep Feb 12</button>
+                    <button class="btn primary sm" onclick="IntelMvp.cadenceConfirm()">Move to Sep 15</button>
                 </div>`}
             </div>
 
-            <div class="section-label">Process recommendations <span class="badge gray">1</span></div>
+            <div class="section-label">Potential matches <span class="badge gray">1</span></div>
             <div class="quarantine${dimCls('quar')}" data-signal-card="quar">
                 <div class="q-ico">?</div>
-                <div style="flex:1">
-                    <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
-                        <strong style="font-size:0.8125rem">County court judgment: "Acme Cloud Services Ltd", Manchester, UK</strong>
+                <div style="flex:1;min-width:0">
+                    <div class="cadence-hdr">
+                        <strong>County court judgment: "Acme Cloud Services Ltd", Manchester, UK</strong>
                         <span class="badge gray outline">Match 41%</span>
-                        ${pill('quar', 'gray', 'Held for review · not counted as a signal')}
                     </div>
-                    <div class="small muted" style="margin-top:0.125rem">
+                    <div class="cadence-detail">
                         Held out of the queue: name similarity only. No shared domain, registration, or jurisdiction. Your vendor is Acme Cloud Co., Inc., Denver, US.
-                        <a class="cite" onclick="return IntelMvp.openCite('UK court record')" style="margin-left:0.25rem"><span class="src-ico"></span>Court record</a>
+                        <a class="cite" onclick="return IntelMvp.openCite('UK court record')" style="margin-left:0.375rem"><span class="src-ico"></span>Court record</a>
                     </div>
                 </div>
-                ${s.quarActionsHidden ? '' : `<div style="display:flex;gap:0.5rem;flex:none">
-                    <button class="btn sm" onclick="IntelMvp.quarantineConfirm()">It is our vendor</button>
+                ${s.quarActionsHidden ? '' : `<div class="cadence-actions">
                     <button class="btn sm" onclick="IntelMvp.quarantineReject()">Not our vendor</button>
+                    <button class="btn primary sm" onclick="IntelMvp.quarantineConfirm()">It's our vendor</button>
                 </div>`}
             </div>
 
@@ -36441,55 +36581,81 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         }
 
         // ─── Settings modal ─────────────────────────────────────
-        // Opens on the gear icon in the intel header. Two panes:
-        //   1. Feed filters — severity threshold, source enable/disable,
-        //      keyword excludes
-        //   2. Automation rules — per-signal-type auto-actions (e.g.
-        //      auto-notify owner on Critical SEC filings)
-        // Rules are stored on window.IntelMvpSettings (per-session).
+        // Opens on the gear icon. Three tabs: Filters (severity /
+        // keywords), Sources (per-source enable + polling cadence),
+        // and Rules (list of active rules with edit affordances + a
+        // rule-builder to author new ones). Session-scoped.
+        const RULE_TRIGGERS = [
+            { id: 'sec-8k',          label: 'SEC 8-K filing — material cyber incident (Item 1.05)' },
+            { id: 'leak-site',       label: 'Leak-site listing references a followed domain' },
+            { id: 'breach-reg',      label: 'Breach registry entry for a followed entity' },
+            { id: 'sanctions-hit',   label: 'Sanctions-list hit on a followed entity or officer' },
+            { id: 'adverse-news',    label: 'Adverse news mention above impact threshold' },
+            { id: 'cert-new',        label: 'Cert transparency: new certificate observed' },
+            { id: 'trust-change',    label: 'Trust page schema or banner change' },
+            { id: 'exec-change',     label: 'Executive change (CFO / CISO / CEO)' },
+            { id: 'soc2-stale',      label: 'SOC 2 attestation > 12 months old' },
+        ];
+        const RULE_ACTIONS = [
+            { id: 'notify-owner',    label: 'Notify business owner' },
+            { id: 'send-inquiry',    label: 'Send inquiry to vendor' },
+            { id: 'open-issue',      label: 'Open Issue on the vendor' },
+            { id: 'proc-lock',       label: 'Open Issue + block procurement lock' },
+            { id: 'watch',           label: 'Watch · resurface on any new signal' },
+            { id: 'cert-reminder',   label: 'Auto-open certificate-refresh reminder' },
+            { id: 'route-tprm',      label: 'Route to TPRM queue for triage' },
+            { id: 'dismiss-low',     label: 'Auto-dismiss (low-signal training)' },
+        ];
+        const RULE_SCOPES = [
+            { id: 'all',       label: 'All vendors' },
+            { id: 'tier-1',    label: 'Tier 1 only' },
+            { id: 'tier-1-2',  label: 'Tier 1 + Tier 2' },
+            { id: 'followed',  label: 'Followed vendors only' },
+        ];
+        function ruleLabel(field, id) {
+            const src = field === 'trigger' ? RULE_TRIGGERS
+                      : field === 'action'  ? RULE_ACTIONS
+                      : field === 'scope'   ? RULE_SCOPES : [];
+            const m = src.find(o => o.id === id);
+            return m ? m.label : id;
+        }
         function openSettings() {
             ensureShell();
             const st = window.IntelMvpSettings = window.IntelMvpSettings || {
+                activeTab: 'filters',
                 severityFloor: 'medium',
-                sources: {
-                    'SEC EDGAR': true,
-                    'Leak-site monitors': true,
-                    'Breach registries': true,
-                    'News and media': true,
-                    'Sanctions lists': true,
-                    'Cert transparency': true,
-                    'Domain health': true,
-                    'Vendor trust page': true,
-                    'Court records': true,
-                    'Security ratings (BitSight)': false,
-                },
                 keywords: '',
+                dedup: true,
+                digest: 'daily',
+                sources: {
+                    'SEC EDGAR':                    { on: true,  cadence: 'realtime' },
+                    'Leak-site monitors':           { on: true,  cadence: 'hourly' },
+                    'Breach registries':            { on: true,  cadence: 'hourly' },
+                    'News and media':               { on: true,  cadence: 'hourly' },
+                    'Sanctions lists':              { on: true,  cadence: 'daily' },
+                    'Cert transparency':            { on: true,  cadence: 'hourly' },
+                    'Domain health':                { on: true,  cadence: 'daily' },
+                    'Vendor trust page':            { on: true,  cadence: 'daily' },
+                    'Court records':                { on: true,  cadence: 'daily' },
+                    'Security ratings (BitSight)':  { on: false, cadence: 'not connected' },
+                },
                 rules: [
-                    { trigger: 'SEC 8-K · Item 1.05 (material cyber incident)',   action: 'Open Issue + Notify business owner', on: true },
-                    { trigger: 'Leak-site listing referencing a followed domain', action: 'Send inquiry to vendor', on: true },
-                    { trigger: 'Sanctions-list hit (any list)',                   action: 'Open Issue · block procurement lock', on: true },
-                    { trigger: 'Executive departure (CFO/CISO/CEO)',              action: 'Watch · resurface on any new signal', on: false },
-                    { trigger: 'SOC 2 stale &gt; 12 months',                        action: 'Auto-open cert refresh reminder', on: false },
+                    { id: 'r1', on: true,  scope: 'tier-1',    trigger: 'sec-8k',        action: 'notify-owner',  note: '' },
+                    { id: 'r2', on: true,  scope: 'all',       trigger: 'leak-site',     action: 'send-inquiry',  note: '' },
+                    { id: 'r3', on: true,  scope: 'all',       trigger: 'sanctions-hit', action: 'proc-lock',     note: 'Auto-open Issue and block procurement lock' },
+                    { id: 'r4', on: true,  scope: 'tier-1-2',  trigger: 'breach-reg',    action: 'open-issue',    note: '' },
+                    { id: 'r5', on: false, scope: 'tier-1',    trigger: 'exec-change',   action: 'watch',         note: '' },
+                    { id: 'r6', on: false, scope: 'all',       trigger: 'soc2-stale',    action: 'cert-reminder', note: '' },
                 ],
             };
-            const sourceRows = Object.keys(st.sources).map((s) => `
-                <label class="im-set-row">
-                    <input type="checkbox" data-im-src="${esc(s)}" ${st.sources[s] ? 'checked' : ''} />
-                    <span>${esc(s)}</span>
-                </label>`).join('');
-            const ruleRows = st.rules.map((r, i) => `
-                <div class="im-rule">
-                    <label class="im-rule-toggle">
-                        <input type="checkbox" data-im-rule="${i}" ${r.on ? 'checked' : ''} />
-                    </label>
-                    <div class="im-rule-body">
-                        <div class="im-rule-when"><span class="im-rule-lbl">When</span> ${r.trigger}</div>
-                        <div class="im-rule-then"><span class="im-rule-lbl">Then</span> ${r.action}</div>
-                    </div>
-                </div>`).join('');
-            openModal('Intelligence settings', 'Filter the feed and set rules for automated actions', `
+            openSettingsInner(st);
+        }
+        function openSettingsInner(st) {
+            const tab = st.activeTab || 'filters';
+            const tabBtn = (id, label) => `<button type="button" class="im-tab${tab === id ? ' active' : ''}" onclick="IntelMvp.setSettingsTab('${id}')">${label}</button>`;
+            const filtersPane = `
                 <div class="im-set-section">
-                    <div class="im-set-section-title">Feed filters</div>
+                    <div class="im-set-section-title">Signal threshold</div>
                     <div class="field">
                         <label>Minimum severity to surface</label>
                         <select id="im-set-severity">
@@ -36500,39 +36666,185 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                         </select>
                     </div>
                     <div class="field">
-                        <label>Active sources</label>
-                        <div class="im-src-grid">${sourceRows}</div>
-                    </div>
-                    <div class="field">
-                        <label>Keyword excludes <span class="hint">(comma-separated · match against signal title)</span></label>
+                        <label>Keyword excludes <span class="hint">(comma-separated · matched against signal title)</span></label>
                         <input type="text" id="im-set-keywords" value="${esc(st.keywords)}" placeholder="e.g. beta, sandbox, non-production" />
                     </div>
                 </div>
                 <div class="im-set-section">
-                    <div class="im-set-section-title">Automation rules</div>
-                    <div class="im-set-sub">Rules fire the moment a matching signal is detected. Actions log to the signal's review record.</div>
-                    <div class="im-rule-list">${ruleRows}</div>
-                </div>`,
+                    <div class="im-set-section-title">Delivery</div>
+                    <label class="im-set-row">
+                        <input type="checkbox" id="im-set-dedup" ${st.dedup ? 'checked' : ''} />
+                        <span>Auto-dedupe related signals into one incident</span>
+                    </label>
+                    <div class="field" style="margin-top:0.625rem">
+                        <label>Portfolio digest</label>
+                        <select id="im-set-digest">
+                            <option value="off"${st.digest==='off'?' selected':''}>No digest</option>
+                            <option value="daily"${st.digest==='daily'?' selected':''}>Daily rollup</option>
+                            <option value="weekly"${st.digest==='weekly'?' selected':''}>Weekly rollup</option>
+                        </select>
+                    </div>
+                </div>`;
+            const cadenceOptions = ['realtime', 'hourly', 'daily', 'not connected'];
+            const sourcesPane = `
+                <div class="im-set-section">
+                    <div class="im-set-section-title">Monitored sources</div>
+                    <div class="im-set-sub">Toggle sources on / off and tune their polling cadence. Changes apply to all vendors.</div>
+                    <div class="im-sources">
+                        ${Object.keys(st.sources).map((name) => {
+                            const cfg = st.sources[name];
+                            const isDisconnected = cfg.cadence === 'not connected';
+                            return `<div class="im-source-row${cfg.on ? '' : ' off'}">
+                                <label class="im-source-toggle"><input type="checkbox" data-im-src-on="${esc(name)}" ${cfg.on ? 'checked' : ''} ${isDisconnected ? 'disabled' : ''} /></label>
+                                <div class="im-source-name">${esc(name)}${isDisconnected ? '<span class="im-source-tag">not connected</span>' : ''}</div>
+                                <select class="im-source-cadence" data-im-src-cad="${esc(name)}" ${isDisconnected ? 'disabled' : ''}>
+                                    ${cadenceOptions.filter(c => c !== 'not connected').map(c => `<option value="${c}"${cfg.cadence === c ? ' selected' : ''}>${c === 'realtime' ? 'Realtime' : c === 'hourly' ? 'Hourly' : 'Daily'}</option>`).join('')}
+                                </select>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                </div>`;
+            const rulesPane = `
+                <div class="im-set-section">
+                    <div class="im-set-section-title">Active rules · ${st.rules.length}</div>
+                    <div class="im-set-sub">Rules fire the moment a matching signal is detected. Each action logs to the signal's review record.</div>
+                    <div class="im-rule-list">
+                        ${st.rules.map((r) => `
+                            <div class="im-rule">
+                                <label class="im-rule-toggle">
+                                    <input type="checkbox" data-im-rule-on="${esc(r.id)}" ${r.on ? 'checked' : ''} />
+                                </label>
+                                <div class="im-rule-body">
+                                    <div class="im-rule-when"><span class="im-rule-lbl">When</span> ${esc(ruleLabel('trigger', r.trigger))}</div>
+                                    <div class="im-rule-then"><span class="im-rule-lbl">Then</span> ${esc(ruleLabel('action', r.action))}</div>
+                                    <div class="im-rule-scope"><span class="im-rule-lbl">Scope</span> ${esc(ruleLabel('scope', r.scope))}${r.note ? ` · <span class="muted">${esc(r.note)}</span>` : ''}</div>
+                                </div>
+                                <button type="button" class="im-rule-del" data-im-rule-del="${esc(r.id)}" aria-label="Delete rule" title="Delete rule">
+                                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h10"/><path d="M5.5 4V3a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1"/><path d="M4.5 4l0.5 8.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1L11.5 4"/></svg>
+                                </button>
+                            </div>`).join('')}
+                    </div>
+                </div>
+                <div class="im-set-section">
+                    <div class="im-set-section-title">Create a new rule</div>
+                    <div class="im-rule-builder">
+                        <div class="im-rule-builder-row">
+                            <label class="im-rb-lbl">When</label>
+                            <select id="im-rb-trigger" class="im-rb-input">
+                                ${RULE_TRIGGERS.map(t => `<option value="${t.id}">${esc(t.label)}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="im-rule-builder-row">
+                            <label class="im-rb-lbl">And scope</label>
+                            <select id="im-rb-scope" class="im-rb-input">
+                                ${RULE_SCOPES.map(s => `<option value="${s.id}">${esc(s.label)}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="im-rule-builder-row">
+                            <label class="im-rb-lbl">Then</label>
+                            <select id="im-rb-action" class="im-rb-input">
+                                ${RULE_ACTIONS.map(a => `<option value="${a.id}">${esc(a.label)}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="im-rule-builder-row">
+                            <label class="im-rb-lbl">Note</label>
+                            <input type="text" id="im-rb-note" class="im-rb-input" placeholder="Optional context for reviewers" />
+                        </div>
+                        <div class="im-rule-builder-actions">
+                            <button type="button" class="btn primary" onclick="IntelMvp.addRule()">Add rule</button>
+                        </div>
+                    </div>
+                </div>`;
+            const activePane = tab === 'sources' ? sourcesPane
+                             : tab === 'rules'   ? rulesPane
+                             :                     filtersPane;
+            openModal('Intelligence settings', 'Filter the feed, tune monitored sources, and set rules for automated actions', `
+                <div class="im-tabs">
+                    ${tabBtn('filters', 'Filters')}
+                    ${tabBtn('sources', 'Sources')}
+                    ${tabBtn('rules',   `Rules · ${st.rules.length}`)}
+                </div>
+                ${activePane}`,
                 `<span class="foot-note">Session-scoped · resets on refresh.</span>
-                <button class="btn" onclick="IntelMvp.closeModal()">Cancel</button>
+                <button class="btn" onclick="IntelMvp.closeModal()">Close</button>
                 <button class="btn primary" onclick="IntelMvp.saveSettings()">Save settings</button>`);
+        }
+        function setSettingsTab(id) {
+            const st = window.IntelMvpSettings || {};
+            captureSettingsInPlace(st);
+            st.activeTab = id;
+            openSettingsInner(st);
+        }
+        function captureSettingsInPlace(st) {
+            const sev = document.getElementById('im-set-severity');
+            const kw = document.getElementById('im-set-keywords');
+            const dd = document.getElementById('im-set-dedup');
+            const dg = document.getElementById('im-set-digest');
+            if (sev) st.severityFloor = sev.value;
+            if (kw) st.keywords = kw.value;
+            if (dd) st.dedup = dd.checked;
+            if (dg) st.digest = dg.value;
+            document.querySelectorAll('[data-im-src-on]').forEach((c) => {
+                const k = c.getAttribute('data-im-src-on');
+                if (st.sources[k]) st.sources[k].on = c.checked;
+            });
+            document.querySelectorAll('[data-im-src-cad]').forEach((c) => {
+                const k = c.getAttribute('data-im-src-cad');
+                if (st.sources[k]) st.sources[k].cadence = c.value;
+            });
+            document.querySelectorAll('[data-im-rule-on]').forEach((c) => {
+                const k = c.getAttribute('data-im-rule-on');
+                const r = st.rules.find(x => x.id === k);
+                if (r) r.on = c.checked;
+            });
+        }
+        function addRule() {
+            const st = window.IntelMvpSettings || {};
+            captureSettingsInPlace(st);
+            const t = document.getElementById('im-rb-trigger');
+            const s = document.getElementById('im-rb-scope');
+            const a = document.getElementById('im-rb-action');
+            const n = document.getElementById('im-rb-note');
+            if (!t || !s || !a) return;
+            st.rules = st.rules || [];
+            st.rules.push({
+                id: 'r' + (st.rules.length + Math.floor(Math.random() * 900) + 100),
+                on: true,
+                trigger: t.value,
+                scope: s.value,
+                action: a.value,
+                note: (n && n.value.trim()) || '',
+            });
+            st.activeTab = 'rules';
+            openSettingsInner(st);
+            toast('Rule added — active now.');
+        }
+        function deleteRule(id) {
+            const st = window.IntelMvpSettings || {};
+            captureSettingsInPlace(st);
+            st.rules = (st.rules || []).filter(r => r.id !== id);
+            openSettingsInner(st);
         }
         function saveSettings() {
             const st = window.IntelMvpSettings || {};
-            const sev = document.getElementById('im-set-severity');
-            const kw = document.getElementById('im-set-keywords');
-            if (sev) st.severityFloor = sev.value;
-            if (kw) st.keywords = kw.value;
-            document.querySelectorAll('[data-im-src]').forEach((c) => {
-                st.sources[c.getAttribute('data-im-src')] = c.checked;
-            });
-            document.querySelectorAll('[data-im-rule]').forEach((c) => {
-                const i = Number(c.getAttribute('data-im-rule'));
-                if (st.rules[i]) st.rules[i].on = c.checked;
-            });
+            captureSettingsInPlace(st);
             closeModal();
             toast('Intelligence settings saved for this session.');
         }
+
+        // Delete-rule click delegation — the modal body re-renders on
+        // tab switch / add rule, so binding directly to each trash
+        // icon is fragile. One listener on the modal-body catches
+        // clicks that bubble from any [data-im-rule-del].
+        document.addEventListener('click', (ev) => {
+            const t = ev.target;
+            if (!t || !t.closest) return;
+            const del = t.closest('[data-im-rule-del]');
+            if (del) {
+                ev.preventDefault();
+                deleteRule(del.getAttribute('data-im-rule-del'));
+            }
+        });
 
         window.IntelMvp = {
             act, closeModal, toggleExpand, openCite,
@@ -36540,7 +36852,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             finishAccept, finishWatch, finishDismiss,
             quarantineConfirm, quarantineReject, finishQuarantineReject,
             cadenceConfirm, cadenceKeep,
-            openSettings, saveSettings,
+            openSettings, setSettingsTab, addRule, deleteRule, saveSettings,
         };
     })();
     </script>
