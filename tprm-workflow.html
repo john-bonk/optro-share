@@ -8916,7 +8916,7 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             --luna-shadow-100:0 0.125rem 0.25rem hsl(214deg 98% 25% / 11%), 0 0 0.25rem hsl(210deg 98% 25% / 6%);
             --luna-border:1px solid var(--luna-gray-200);
             font-size: 0.8125rem; line-height: 1.5; color: var(--luna-gray-900);
-            max-width: 1000px; margin: 0 auto; padding: 1rem 0.25rem 3rem;
+            max-width: 1180px; margin: 0 auto; padding: 1rem 0 3rem;
         }
         .intel-mvp * { box-sizing: border-box; }
         /* Queue head with inline gear — the tab title lands here so
@@ -9154,6 +9154,22 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             flex: none; display: flex; align-items: center; justify-content: center; font-size: 0.6875rem; }
         .intel-mvp .quiet-ico.pos { background: var(--luna-teal-100); color: var(--luna-teal-700); }
         .intel-mvp .quiet-ico.dis { background: var(--luna-gray-100); color: var(--luna-gray-500); }
+        /* Process-rec + potential-match variants of the quiet-ico
+           column so Process Recs (clock) and Potential Matches (?)
+           read as their own visual affordances even in the same
+           collapsed pattern. */
+        .intel-mvp .quiet-ico.proc { background: var(--luna-teal-100); color: var(--luna-teal-700); }
+        .intel-mvp .quiet-ico.proc svg { width: 12px; height: 12px; display: block; }
+        .intel-mvp .quiet-ico.match { background: var(--luna-gray-100); color: var(--luna-gray-600);
+            font-weight: 700; font-size: 0.75rem; }
+        /* Body copy inside a quiet-detail (paragraph before the trail
+           or actions). Same font size as the trail so nothing jumps. */
+        .intel-mvp .quiet-body { font-size: 0.8125rem; color: var(--luna-gray-700);
+            line-height: 1.55; margin: 0 0 0.5rem; }
+        /* Actions inside a collapsed quiet-item — right-anchored,
+           only visible on expand. */
+        .intel-mvp .quiet-actions { display: flex; gap: 0.375rem;
+            justify-content: flex-end; margin-top: 0.75rem; }
         .intel-mvp .quiet-row .when { margin-left: auto; color: var(--luna-gray-400);
             font-size: 0.6875rem; white-space: nowrap; }
         .intel-mvp .dimmed { opacity: 0.55; }
@@ -9447,6 +9463,11 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             box-shadow: 0 0 0 3px rgba(38, 108, 146, 0.1); }
         .intel-mvp-shell .im-rule-builder-actions { display: flex;
             justify-content: flex-end; margin-top: 0.25rem; }
+        /* Field · operator · value triple for the concrete rule
+           builder. Grid so the three drop widths breathe together. */
+        .intel-mvp-shell .im-rb-triple { display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr) minmax(0, 1.2fr);
+            gap: 0.375rem; }
 
         /* ────────────────────────────────────────────────────────
            INTELLIGENCE TAB
@@ -31743,7 +31764,9 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         // is the source of truth; behaviors in the IntelMvp namespace
         // write to it, and this render function reads from it.
         const s = window.IntelMvpState = window.IntelMvpState || {
-            expanded: { 'sig-8k': true, 'sig-leak': false, 'quiet-soc2': false, 'quiet-exec': false },
+            expanded: { 'sig-8k': true, 'sig-leak': false,
+                        'proc-cadence': false, 'match-court': false,
+                        'quiet-soc2': false, 'quiet-exec': false },
             statuses: {},
             trails: { '8k': [], 'leak': [], 'cadence': [], 'soc2': [], 'exec': [] },
             dimmed: {},
@@ -31826,7 +31849,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                         <button class="btn sm" onclick="IntelMvp.act('watch','8k')">Watch</button>
                         <button class="btn transparent sm" onclick="IntelMvp.act('dismiss','8k')">Dismiss</button>
                         <span class="spacer"></span>
-                        <span class="seam-note">When Acme replies, Optro Intelligence's evaluation and a proposed close or escalate appear here.</span>
                     </div>
                 </div>
             </div>
@@ -31889,44 +31911,26 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             </div>
 
             <div class="section-label">Process recommendations <span class="badge gray">1</span></div>
-            <div class="card cadence-card">
-                <div class="ai-dot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2 1.5"/></svg></div>
-                <div style="flex:1;min-width:0">
-                    <div class="cadence-hdr">
-                        <strong>Move the next scheduled review earlier</strong>
+            <div class="card">
+                <div class="quiet-item${openCls('proc-cadence')}" id="proc-cadence">
+                    <div class="quiet-row" onclick="IntelMvp.toggleExpand('proc-cadence')">
+                        <span class="quiet-ico proc"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 5V8l1.75 1.25"/></svg></span>
+                        <span><b>Move the next scheduled review earlier</b> <span class="muted">· Feb 12, 2027 → Sep 15, 2026</span></span>
                         ${pill('cadence', 'teal', 'Awaiting decision')}
+                        <span class="when">Today · 7:02 AM</span>
                     </div>
-                    <div class="cadence-detail">
-                        From <b>Feb 12, 2027</b> to <b>Sep 15, 2026</b> · based on one open critical incident and two attention signals in the last 30 days.
-                    </div>
-                    <ul class="trail" data-trail="cadence" style="margin-top:0.375rem">
-                        <li>Proposed by Optro Intelligence under your Tier 1 cadence rules · today, 7:02 AM <a class="cite internal" onclick="return IntelMvp.openCite('Cadence rules (Settings)')"><span class="src-ico"></span>Cadence rules</a></li>
-                        ${extraTrail('cadence')}
-                    </ul>
-                </div>
-                ${s.cadenceHidden ? '' : `<div class="cadence-actions" data-cadence-actions>
-                    <button class="btn sm" onclick="IntelMvp.cadenceKeep()">Keep Feb 12</button>
-                    <button class="btn primary sm" onclick="IntelMvp.cadenceConfirm()">Move to Sep 15</button>
-                </div>`}
-            </div>
-
-            <div class="section-label">Potential matches <span class="badge gray">1</span></div>
-            <div class="quarantine${dimCls('quar')}" data-signal-card="quar">
-                <div class="q-ico">?</div>
-                <div style="flex:1;min-width:0">
-                    <div class="cadence-hdr">
-                        <strong>County court judgment: "Acme Cloud Services Ltd", Manchester, UK</strong>
-                        <span class="badge gray outline">Match 41%</span>
-                    </div>
-                    <div class="cadence-detail">
-                        Held out of the queue: name similarity only. No shared domain, registration, or jurisdiction. Your vendor is Acme Cloud Co., Inc., Denver, US.
-                        <a class="cite" onclick="return IntelMvp.openCite('UK court record')" style="margin-left:0.375rem"><span class="src-ico"></span>Court record</a>
+                    <div class="quiet-detail">
+                        <p class="quiet-body">Based on one open critical incident and two attention signals in the last 30 days. The date changes only if you confirm.</p>
+                        <ul class="trail" data-trail="cadence">
+                            <li>Proposed by Optro Intelligence under your Tier 1 cadence rules · today, 7:02 AM <a class="cite internal" onclick="return IntelMvp.openCite('Cadence rules (Settings)')"><span class="src-ico"></span>Cadence rules</a></li>
+                            ${extraTrail('cadence')}
+                        </ul>
+                        ${s.cadenceHidden ? '' : `<div class="quiet-actions" data-cadence-actions>
+                            <button class="btn sm" onclick="event.stopPropagation();IntelMvp.cadenceKeep()">Keep Feb 12</button>
+                            <button class="btn primary sm" onclick="event.stopPropagation();IntelMvp.cadenceConfirm()">Move to Sep 15</button>
+                        </div>`}
                     </div>
                 </div>
-                ${s.quarActionsHidden ? '' : `<div class="cadence-actions">
-                    <button class="btn sm" onclick="IntelMvp.quarantineReject()">Not our vendor</button>
-                    <button class="btn primary sm" onclick="IntelMvp.quarantineConfirm()">It's our vendor</button>
-                </div>`}
             </div>
 
             <div class="section-label">Other information · last 90 days <span class="badge gray">2</span></div>
@@ -31962,6 +31966,25 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                             <li>Grading tuned: similar leadership-change signals will rank lower for this vendor</li>
                             ${extraTrail('exec')}
                         </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-label">Potential matches <span class="badge gray">1</span></div>
+            <div class="card">
+                <div class="quiet-item${openCls('match-court')}${dimCls('quar')}" id="match-court" data-signal-card="quar">
+                    <div class="quiet-row" onclick="IntelMvp.toggleExpand('match-court')">
+                        <span class="quiet-ico match">?</span>
+                        <span><b>County court judgment: "Acme Cloud Services Ltd", Manchester UK</b></span>
+                        <span class="badge gray outline">Match 41%</span>
+                        <span class="when">Aug 29</span>
+                    </div>
+                    <div class="quiet-detail">
+                        <p class="quiet-body">Held out of the queue: name similarity only. No shared domain, registration, or jurisdiction. Your vendor is Acme Cloud Co., Inc., Denver, US. <a class="cite" onclick="return IntelMvp.openCite('UK court record')" style="margin-left:0.375rem"><span class="src-ico"></span>Court record</a></p>
+                        ${s.quarActionsHidden ? '' : `<div class="quiet-actions">
+                            <button class="btn sm" onclick="event.stopPropagation();IntelMvp.quarantineReject()">Not our vendor</button>
+                            <button class="btn primary sm" onclick="event.stopPropagation();IntelMvp.quarantineConfirm()">It's our vendor</button>
+                        </div>`}
                     </div>
                 </div>
             </div>
@@ -33775,12 +33798,12 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 render();
                 return;
             }
-            case 'di-set-filter': {
-                state.dashIntel = state.dashIntel || {};
-                state.dashIntel[trigger.dataset.filter] = trigger.value;
-                render();
-                return;
-            }
+            // NOTE: `di-set-filter` on <select> elements is handled by
+            // the delegated `change` listener, NOT here. Handling it in
+            // the click dispatcher fired render() the instant the user
+            // clicked the select, which destroyed the DOM node before
+            // the browser's native dropdown could open — a stealth bug
+            // that made the filters look like they were "flashing".
             case 'di-clear-filters': {
                 state.dashIntel = state.dashIntel || {};
                 Object.assign(state.dashIntel, { severity: 'all', tier: 'all', source: 'all', search: '' });
@@ -35556,7 +35579,9 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             return;
         }
         // Intelligence dashboard select-based filters (severity / tier
-        // / source) — no debounce needed since selects change once.
+        // / source) — hooked here on `input` AND via a dedicated
+        // `change` listener below because Safari doesn't fire `input`
+        // on <select> elements consistently.
         if (e.target && e.target.matches && e.target.matches('[data-action="di-set-filter"]')) {
             state.dashIntel = state.dashIntel || {};
             state.dashIntel[e.target.dataset.filter] = e.target.value;
@@ -35698,6 +35723,17 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
     });
 
     document.body.addEventListener('change', (e) => {
+        // Intelligence dashboard filter selects — Safari doesn't fire
+        // `input` on <select> reliably, so we mirror the handler here
+        // on `change`. Both fire in Chromium; the render() call is
+        // idempotent for the current value so the double-fire is a
+        // no-op there.
+        if (e.target && e.target.matches && e.target.matches('[data-action="di-set-filter"]')) {
+            state.dashIntel = state.dashIntel || {};
+            state.dashIntel[e.target.dataset.filter] = e.target.value;
+            render();
+            return;
+        }
         // Selects + radios in the Create-Vendor modal route through here (input event
         // doesn't fire on <select>). Same idea: write to draft state, no re-render.
         const cv = e.target && e.target.getAttribute && e.target.getAttribute('data-cv-field');
@@ -36432,7 +36468,9 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         // update the DOM in place for immediate feedback.
         function ensureState() {
             return window.IntelMvpState = window.IntelMvpState || {
-                expanded: { 'sig-8k': true, 'sig-leak': false, 'quiet-soc2': false, 'quiet-exec': false },
+                expanded: { 'sig-8k': true, 'sig-leak': false,
+                            'proc-cadence': false, 'match-court': false,
+                            'quiet-soc2': false, 'quiet-exec': false },
                 statuses: {},
                 trails: { '8k': [], 'leak': [], 'cadence': [], 'soc2': [], 'exec': [] },
                 dimmed: {},
@@ -36668,16 +36706,18 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         // keywords), Sources (per-source enable + polling cadence),
         // and Rules (list of active rules with edit affordances + a
         // rule-builder to author new ones). Session-scoped.
-        const RULE_TRIGGERS = [
-            { id: 'sec-8k',          label: 'SEC 8-K filing — material cyber incident (Item 1.05)' },
-            { id: 'leak-site',       label: 'Leak-site listing references a followed domain' },
-            { id: 'breach-reg',      label: 'Breach registry entry for a followed entity' },
-            { id: 'sanctions-hit',   label: 'Sanctions-list hit on a followed entity or officer' },
-            { id: 'adverse-news',    label: 'Adverse news mention above impact threshold' },
-            { id: 'cert-new',        label: 'Cert transparency: new certificate observed' },
-            { id: 'trust-change',    label: 'Trust page schema or banner change' },
-            { id: 'exec-change',     label: 'Executive change (CFO / CISO / CEO)' },
-            { id: 'soc2-stale',      label: 'SOC 2 attestation > 12 months old' },
+        // Rules are composed of concrete field · operator · value
+        // triples rather than scenario labels. The reviewer picks a
+        // FIELD (severity / source / tier / signal-age / keyword),
+        // an OPERATOR appropriate to that field, and a VALUE — same
+        // shape as any query builder. Then the ACTION fires when the
+        // resulting predicate matches, scoped by SCOPE.
+        const RULE_FIELDS = [
+            { id: 'severity', label: 'Severity',       operators: ['is', 'is at least'],       values: ['Critical', 'High', 'Medium', 'Low'] },
+            { id: 'source',   label: 'Signal source',  operators: ['is', 'is one of'],         values: ['SEC EDGAR', 'Leak-site monitors', 'Breach registries', 'News and media', 'Sanctions lists', 'Cert transparency', 'Domain health', 'Vendor trust page', 'Court records'] },
+            { id: 'tier',     label: 'Vendor tier',    operators: ['is', 'is at least'],       values: ['Tier 1', 'Tier 2', 'Tier 3'] },
+            { id: 'age',      label: 'Signal age',     operators: ['is at least'],             values: ['1 day', '3 days', '7 days', '14 days', '30 days'] },
+            { id: 'keyword',  label: 'Title contains', operators: ['contains'],                values: null /* free text */ },
         ];
         const RULE_ACTIONS = [
             { id: 'notify-owner',    label: 'Notify business owner' },
@@ -36685,7 +36725,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             { id: 'open-issue',      label: 'Open Issue on the vendor' },
             { id: 'proc-lock',       label: 'Open Issue + block procurement lock' },
             { id: 'watch',           label: 'Watch · resurface on any new signal' },
-            { id: 'cert-reminder',   label: 'Auto-open certificate-refresh reminder' },
             { id: 'route-tprm',      label: 'Route to TPRM queue for triage' },
             { id: 'dismiss-low',     label: 'Auto-dismiss (low-signal training)' },
         ];
@@ -36695,12 +36734,17 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             { id: 'tier-1-2',  label: 'Tier 1 + Tier 2' },
             { id: 'followed',  label: 'Followed vendors only' },
         ];
-        function ruleLabel(field, id) {
-            const src = field === 'trigger' ? RULE_TRIGGERS
-                      : field === 'action'  ? RULE_ACTIONS
-                      : field === 'scope'   ? RULE_SCOPES : [];
-            const m = src.find(o => o.id === id);
-            return m ? m.label : id;
+        function findField(id) { return RULE_FIELDS.find(f => f.id === id); }
+        function actionLabel(id) { const m = RULE_ACTIONS.find(a => a.id === id); return m ? m.label : id; }
+        function scopeLabel(id) { const m = RULE_SCOPES.find(s => s.id === id); return m ? m.label : id; }
+        // Compose a human-readable "When" clause from the rule's
+        // field/operator/value triple.
+        function whenClause(r) {
+            const f = findField(r.field);
+            const opLabel = r.op || (f && f.operators[0]) || 'is';
+            const val = r.value || '';
+            const fieldLabel = f ? f.label : r.field;
+            return `${fieldLabel} ${opLabel} ${val}`;
         }
         function openSettings() {
             ensureShell();
@@ -36723,12 +36767,12 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     'Security ratings (BitSight)':  { on: false, cadence: 'not connected' },
                 },
                 rules: [
-                    { id: 'r1', on: true,  scope: 'tier-1',    trigger: 'sec-8k',        action: 'notify-owner',  note: '' },
-                    { id: 'r2', on: true,  scope: 'all',       trigger: 'leak-site',     action: 'send-inquiry',  note: '' },
-                    { id: 'r3', on: true,  scope: 'all',       trigger: 'sanctions-hit', action: 'proc-lock',     note: 'Auto-open Issue and block procurement lock' },
-                    { id: 'r4', on: true,  scope: 'tier-1-2',  trigger: 'breach-reg',    action: 'open-issue',    note: '' },
-                    { id: 'r5', on: false, scope: 'tier-1',    trigger: 'exec-change',   action: 'watch',         note: '' },
-                    { id: 'r6', on: false, scope: 'all',       trigger: 'soc2-stale',    action: 'cert-reminder', note: '' },
+                    { id: 'r1', on: true,  scope: 'tier-1',   field: 'severity', op: 'is at least', value: 'Critical', action: 'notify-owner', note: '' },
+                    { id: 'r2', on: true,  scope: 'all',      field: 'source',   op: 'is',          value: 'Leak-site monitors', action: 'send-inquiry', note: '' },
+                    { id: 'r3', on: true,  scope: 'all',      field: 'source',   op: 'is',          value: 'Sanctions lists',    action: 'proc-lock',    note: 'Auto-open Issue and block procurement lock' },
+                    { id: 'r4', on: true,  scope: 'tier-1-2', field: 'severity', op: 'is at least', value: 'High',     action: 'open-issue',   note: '' },
+                    { id: 'r5', on: false, scope: 'tier-1',   field: 'age',      op: 'is at least', value: '3 days',   action: 'watch',        note: 'Watch signals sitting in queue' },
+                    { id: 'r6', on: false, scope: 'all',      field: 'severity', op: 'is',          value: 'Low',      action: 'dismiss-low',  note: '' },
                 ],
             };
             openSettingsInner(st);
@@ -36757,7 +36801,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <div class="im-set-section-title">Delivery</div>
                     <label class="im-set-row">
                         <input type="checkbox" id="im-set-dedup" ${st.dedup ? 'checked' : ''} />
-                        <span>Auto-dedupe related signals into one incident</span>
+                        <span>Consolidate related signals into one incident</span>
                     </label>
                     <div class="field" style="margin-top:0.625rem">
                         <label>Portfolio digest</label>
@@ -36787,10 +36831,18 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                         }).join('')}
                     </div>
                 </div>`;
+            // Rule builder — pick a field, then load its operators
+            // and values dynamically. Default to the first field
+            // (severity) if no partial selection is stashed in state.
+            const rbField = st.rbField || RULE_FIELDS[0].id;
+            const rbFieldDef = findField(rbField) || RULE_FIELDS[0];
+            const rbOp = st.rbOp || rbFieldDef.operators[0];
+            const rbValueOptions = rbFieldDef.values;
+            const rbValue = st.rbValue || (rbValueOptions ? rbValueOptions[0] : '');
             const rulesPane = `
                 <div class="im-set-section">
                     <div class="im-set-section-title">Active rules · ${st.rules.length}</div>
-                    <div class="im-set-sub">Rules fire the moment a matching signal is detected. Each action logs to the signal's review record.</div>
+                    <div class="im-set-sub">Rules fire the moment a signal matches the condition. Each action logs to the signal's review record.</div>
                     <div class="im-rule-list">
                         ${st.rules.map((r) => `
                             <div class="im-rule">
@@ -36798,9 +36850,9 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                                     <input type="checkbox" data-im-rule-on="${esc(r.id)}" ${r.on ? 'checked' : ''} />
                                 </label>
                                 <div class="im-rule-body">
-                                    <div class="im-rule-when"><span class="im-rule-lbl">When</span> ${esc(ruleLabel('trigger', r.trigger))}</div>
-                                    <div class="im-rule-then"><span class="im-rule-lbl">Then</span> ${esc(ruleLabel('action', r.action))}</div>
-                                    <div class="im-rule-scope"><span class="im-rule-lbl">Scope</span> ${esc(ruleLabel('scope', r.scope))}${r.note ? ` · <span class="muted">${esc(r.note)}</span>` : ''}</div>
+                                    <div class="im-rule-when"><span class="im-rule-lbl">When</span> ${esc(whenClause(r))}</div>
+                                    <div class="im-rule-then"><span class="im-rule-lbl">Then</span> ${esc(actionLabel(r.action))}</div>
+                                    <div class="im-rule-scope"><span class="im-rule-lbl">Scope</span> ${esc(scopeLabel(r.scope))}${r.note ? ` · <span class="muted">${esc(r.note)}</span>` : ''}</div>
                                 </div>
                                 <button type="button" class="im-rule-del" data-im-rule-del="${esc(r.id)}" aria-label="Delete rule" title="Delete rule">
                                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h10"/><path d="M5.5 4V3a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1"/><path d="M4.5 4l0.5 8.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1L11.5 4"/></svg>
@@ -36813,12 +36865,22 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <div class="im-rule-builder">
                         <div class="im-rule-builder-row">
                             <label class="im-rb-lbl">When</label>
-                            <select id="im-rb-trigger" class="im-rb-input">
-                                ${RULE_TRIGGERS.map(t => `<option value="${t.id}">${esc(t.label)}</option>`).join('')}
-                            </select>
+                            <div class="im-rb-triple">
+                                <select id="im-rb-field" class="im-rb-input" data-im-rb="field">
+                                    ${RULE_FIELDS.map(f => `<option value="${f.id}"${f.id === rbField ? ' selected' : ''}>${esc(f.label)}</option>`).join('')}
+                                </select>
+                                <select id="im-rb-op" class="im-rb-input" data-im-rb="op">
+                                    ${rbFieldDef.operators.map(o => `<option value="${esc(o)}"${o === rbOp ? ' selected' : ''}>${esc(o)}</option>`).join('')}
+                                </select>
+                                ${rbValueOptions
+                                    ? `<select id="im-rb-value" class="im-rb-input" data-im-rb="value">
+                                        ${rbValueOptions.map(v => `<option value="${esc(v)}"${v === rbValue ? ' selected' : ''}>${esc(v)}</option>`).join('')}
+                                    </select>`
+                                    : `<input type="text" id="im-rb-value" class="im-rb-input" data-im-rb="value" placeholder="e.g. cve, ransomware, acquisition" value="${esc(rbValue)}" />`}
+                            </div>
                         </div>
                         <div class="im-rule-builder-row">
-                            <label class="im-rb-lbl">And scope</label>
+                            <label class="im-rb-lbl">Scope</label>
                             <select id="im-rb-scope" class="im-rb-input">
                                 ${RULE_SCOPES.map(s => `<option value="${s.id}">${esc(s.label)}</option>`).join('')}
                             </select>
@@ -36884,23 +36946,41 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         function addRule() {
             const st = window.IntelMvpSettings || {};
             captureSettingsInPlace(st);
-            const t = document.getElementById('im-rb-trigger');
+            const f = document.getElementById('im-rb-field');
+            const op = document.getElementById('im-rb-op');
+            const v = document.getElementById('im-rb-value');
             const s = document.getElementById('im-rb-scope');
             const a = document.getElementById('im-rb-action');
             const n = document.getElementById('im-rb-note');
-            if (!t || !s || !a) return;
+            if (!f || !op || !v || !s || !a) return;
             st.rules = st.rules || [];
             st.rules.push({
                 id: 'r' + (st.rules.length + Math.floor(Math.random() * 900) + 100),
                 on: true,
-                trigger: t.value,
+                field: f.value,
+                op: op.value,
+                value: v.value,
                 scope: s.value,
                 action: a.value,
                 note: (n && n.value.trim()) || '',
             });
+            // Reset the builder to a clean severity default.
+            st.rbField = null; st.rbOp = null; st.rbValue = null;
             st.activeTab = 'rules';
             openSettingsInner(st);
             toast('Rule added — active now.');
+        }
+        // When the reviewer changes the field dropdown in the builder,
+        // reload the operator + value sub-dropdowns to match the new
+        // field's schema.
+        function updateRuleBuilderField(fieldId) {
+            const st = window.IntelMvpSettings || {};
+            captureSettingsInPlace(st);
+            st.rbField = fieldId;
+            st.rbOp = null;
+            st.rbValue = null;
+            st.activeTab = 'rules';
+            openSettingsInner(st);
         }
         function deleteRule(id) {
             const st = window.IntelMvpSettings || {};
@@ -36928,6 +37008,14 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 deleteRule(del.getAttribute('data-im-rule-del'));
             }
         });
+        // Rule-builder field change — re-render the modal so the op
+        // and value dropdowns reflect the new field's schema.
+        document.addEventListener('change', (ev) => {
+            const t = ev.target;
+            if (t && t.id === 'im-rb-field') {
+                updateRuleBuilderField(t.value);
+            }
+        });
 
         window.IntelMvp = {
             act, closeModal, toggleExpand, openCite,
@@ -36935,7 +37023,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             finishAccept, finishWatch, finishDismiss,
             quarantineConfirm, quarantineReject, finishQuarantineReject,
             cadenceConfirm, cadenceKeep,
-            openSettings, setSettingsTab, addRule, deleteRule, saveSettings,
+            openSettings, setSettingsTab, addRule, deleteRule, updateRuleBuilderField, saveSettings,
         };
     })();
     </script>
