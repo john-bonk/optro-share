@@ -11110,6 +11110,31 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .vendor-history-spacer { flex: 1; }
         .vendor-history-chev { transition: transform .15s; }
         .vendor-history-footer.expanded .vendor-history-chev { /* chevron flips via icon swap; transform unused */ }
+        /* Intel monitoring footer variant — reuses the vendor-history
+           shell but swaps the clock icon for a pulsing teal dot and
+           adds a right-anchored last-sweep meta label. */
+        .im-footer-pulse { width: 8px; height: 8px; border-radius: 50%;
+            background: #266c92; box-shadow: 0 0 0 3px #e3f0f2; flex: none;
+            animation: imFooterPulse 2s ease-in-out infinite; }
+        @keyframes imFooterPulse {
+            0%, 100% { box-shadow: 0 0 0 3px #e3f0f2; }
+            50%      { box-shadow: 0 0 0 6px rgba(38, 108, 146, 0.10); }
+        }
+        .im-footer-meta { margin-left: auto; font-size: 0.75rem; color: #64748b;
+            font-weight: 400; letter-spacing: 0; padding-right: 0.5rem; }
+        /* Monitored-source rows inside the expanded intel footer.
+           Same rh-row anatomy as retrieval history for continuity;
+           the src-pulse indicator replaces the retrieval-history icon
+           column so the visual grammar stays consistent while the
+           semantics shift from "run history" to "live source". */
+        .im-src-pulse { width: 8px; height: 8px; border-radius: 50%;
+            background: #266c92; box-shadow: 0 0 0 3px #e3f0f2;
+            display: inline-block; }
+        .im-src-pulse.off { background: #cbd5e1; box-shadow: 0 0 0 3px #f1f5f9; }
+        .im-footer-entity { margin-top: 0.75rem; padding-top: 0.75rem;
+            border-top: 1px dashed #e2e8f0; font-size: 0.75rem; color: #64748b;
+            line-height: 1.5; }
+        .im-footer-entity b { color: #0f172a; font-weight: 600; }
 
         /* Right-aligned tools gear in the footer (Lifecycle tab only) */
         .vh-tools { position: relative; }
@@ -15085,6 +15110,10 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
               trigger: 'Zip integration · intake sync' },
         ],
         retrievalHistoryOpen: false,
+        // Intel monitoring footer — same pattern as retrievalHistoryOpen.
+        // Collapsed shows pulse-dot + right-anchored sweep meta;
+        // expanded lists monitored sources.
+        intelMonitoringOpen: false,
         // Required-evidence catalog — seeded from REQUIRED_DOCS, mutable from
         // Settings → Required Documents and from the Documents tab "+ Add document".
         // We initialize from the const seed once the const is declared (see init below).
@@ -18582,6 +18611,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             render();
         },
         toggleRetrievalHistory() { state.retrievalHistoryOpen = !state.retrievalHistoryOpen; render(); },
+        toggleIntelMonitoring() { state.intelMonitoringOpen = !state.intelMonitoringOpen; render(); },
         // Re-run pass — clears any prior notes, flags every non-Contract row
         // as retrieving, and after ~2s stamps two red micro-notes on the
         // first two received rows.
@@ -27260,6 +27290,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         <nav class="vd-tabs-wrap"><div class="luna-tablist" data-component="Tablist">${tabNav}</div></nav>
         <div class="tprm-scroll">${body}</div>
         ${state.activeTab === 'documents' ? renderRetrievalHistoryFooter()
+          : state.activeTab === 'intelligence' && document.body.classList.contains('mvp-mode') ? renderIntelMonitoringFooter()
           : ['lifecycle','assessments'].includes(state.activeTab) ? renderVendorHistoryFooter()
           : ''}
         ${document.body.classList.contains('mvp-mode') && state.workflowPhase === 'monitoring_active' && state.activeTab === 'lifecycle'
@@ -29905,6 +29936,57 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         </div>`;
     }
 
+    // Intelligence monitoring footer — same shell pattern as the
+    // Documents History footer, but scoped to the Intel tab. Collapsed
+    // reads as a single pinned bar: pulse dot · "Optro Intelligence ·
+    // Monitoring on" · right-anchored sweep meta. Expanded reveals the
+    // catalog of monitored sources with per-source freshness timestamps.
+    // Replaces the inline `.coverage` card that used to sit at the
+    // bottom of the tab body.
+    function renderIntelMonitoringFooter() {
+        const expanded = !!state.intelMonitoringOpen;
+        const SOURCES = [
+            { name: 'SEC EDGAR',                    last: '22m ago', on: true },
+            { name: 'Leak-site monitors',           last: '22m ago', on: true },
+            { name: 'Breach registries',            last: '1h ago',  on: true },
+            { name: 'News and media',               last: '41m ago', on: true },
+            { name: 'Sanctions lists',              last: '3h ago',  on: true },
+            { name: 'Cert transparency',            last: '2h ago',  on: true },
+            { name: 'Domain health',                last: '6h ago',  on: true },
+            { name: 'Vendor trust page',            last: '1d ago',  on: true },
+            { name: 'Court records',                last: '1d ago',  on: true },
+            { name: 'Security ratings (BitSight)',  last: 'not connected', on: false },
+        ];
+        const activeCount = SOURCES.filter(s => s.on).length;
+        const rows = SOURCES.map(s => `<article class="rh-row">
+            <div class="rh-row-icon ${s.on ? '' : 'inactive'}"><span class="im-src-pulse${s.on ? '' : ' off'}"></span></div>
+            <div class="rh-row-body">
+                <div class="rh-row-title">${esc(s.name)}</div>
+                <div class="rh-row-meta">${s.on ? 'Active · last sweep ' + esc(s.last) : 'Not connected'}</div>
+            </div>
+            <span class="luna-badge ${s.on ? 'teal' : 'gray'} weak" data-component="Badge">${s.on ? 'Active' : 'Idle'}</span>
+        </article>`).join('');
+        return `<div class="vendor-history-footer${expanded ? ' expanded' : ''}">
+            <div class="vendor-history-content" data-stop>
+                <div class="vendor-history-content-inner">
+                    <div class="vendor-history-section-title">Monitored sources · ${activeCount} of ${SOURCES.length} active</div>
+                    <div class="rh-rows">${rows}</div>
+                    <div class="im-footer-entity">Watching as <b>Acme Cloud Co., Inc.</b> · CIK 0001728394 · acme.co, status.acme.co · Entity match profile: <b>Strong</b> (5 anchors)</div>
+                </div>
+            </div>
+            <div class="vendor-history-bar">
+                <button class="vendor-history-toggle" data-action="toggle-intel-monitoring" aria-expanded="${expanded}">
+                    <span class="im-footer-pulse"></span>
+                    <span class="vendor-history-label">Optro Intelligence · Monitoring on</span>
+                    <span class="luna-badge gray weak" data-component="Badge">${activeCount} sources</span>
+                    <span class="im-footer-meta">Last sweep 08:52 · next ~14:00</span>
+                    <span class="luna-icon vendor-history-chev" data-icon="${expanded ? 'chevron-down' : 'chevron-up'}" data-size="sm"></span>
+                </button>
+                <div class="vendor-history-spacer"></div>
+            </div>
+        </div>`;
+    }
+
     // MVP monitoring-terminal footer — sits below .tprm-scroll (like the
     // Vendor History footer, which is hidden in MVP mode via data-mvp-
     // region). Only rendered when MVP is on AND the workflow has reached
@@ -31809,8 +31891,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                             <span>Item 1.05</span>
                             <span class="meta-sep">·</span>
                             <span>Today · 6:42 AM ET</span>
-                            <span class="meta-sep">·</span>
-                            <span class="meta-related">1 related signal</span>
                         </div>
                     </div>
                     <div class="signal-tail">
@@ -31869,8 +31949,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                             <span>cl0p</span>
                             <span class="meta-sep">·</span>
                             <span>First seen Aug 11 · resurfaced today</span>
-                            <span class="meta-sep">·</span>
-                            <span class="meta-related">related to the 8-K above</span>
                         </div>
                     </div>
                     <div class="signal-tail">
@@ -31919,7 +31997,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <div class="quiet-row" onclick="IntelMvp.toggleExpand('proc-cadence')">
                         <span class="quiet-ico proc"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 5V8l1.75 1.25"/></svg></span>
                         <span><b>Move the next scheduled review earlier</b> <span class="muted">· Feb 12, 2027 → Sep 15, 2026</span></span>
-                        ${pill('cadence', 'teal', 'Awaiting decision')}
                         <span class="when">Today · 7:02 AM</span>
                     </div>
                     <div class="quiet-detail">
@@ -31942,7 +32019,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <div class="quiet-row" onclick="IntelMvp.toggleExpand('quiet-soc2')">
                         <span class="quiet-ico pos">&#10003;</span>
                         <span><b>SOC 2 Type II renewed</b> <span class="muted">· report attached to Documents automatically</span></span>
-                        <span class="badge teal">Positive</span>
                         <span class="when">Jul 30</span>
                     </div>
                     <div class="quiet-detail">
@@ -31958,7 +32034,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <div class="quiet-row" onclick="IntelMvp.toggleExpand('quiet-exec')">
                         <span class="quiet-ico dis">&#10005;</span>
                         <span><b>CFO departure reported</b> <span class="muted">· Reuters</span></span>
-                        <span class="badge gray">Dismissed</span>
                         <span class="when">Aug 6</span>
                     </div>
                     <div class="quiet-detail">
@@ -31979,7 +32054,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <div class="quiet-row" onclick="IntelMvp.toggleExpand('match-court')">
                         <span class="quiet-ico match">?</span>
                         <span><b>County court judgment: "Acme Cloud Services Ltd", Manchester UK</b></span>
-                        <span class="badge gray outline">Match 41%</span>
                         <span class="when">Aug 29</span>
                     </div>
                     <div class="quiet-detail">
@@ -31992,32 +32066,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 </div>
             </div>
 
-            <div class="coverage">
-                <div class="card coverage-card">
-                    <div class="coverage-head">
-                        <span class="cov-title"><span class="pulse"></span>Optro Intelligence · monitoring on</span>
-                        <span class="cov-meta">Last sweep today, 8:52 AM · next sweep ~2:00 PM</span>
-                        <span class="cov-right">Followed since <b>Feb 12, 2026</b>, added automatically from Zip intake</span>
-                    </div>
-                    <div class="src-grid">
-                        <div class="src-row"><span class="dot"></span>SEC EDGAR<span class="when">22m ago</span></div>
-                        <div class="src-row"><span class="dot"></span>Leak-site monitors<span class="when">22m ago</span></div>
-                        <div class="src-row"><span class="dot"></span>Breach registries<span class="when">1h ago</span></div>
-                        <div class="src-row"><span class="dot"></span>News and media<span class="when">41m ago</span></div>
-                        <div class="src-row"><span class="dot"></span>Sanctions lists<span class="when">3h ago</span></div>
-                        <div class="src-row"><span class="dot"></span>Cert transparency<span class="when">2h ago</span></div>
-                        <div class="src-row"><span class="dot"></span>Domain health<span class="when">6h ago</span></div>
-                        <div class="src-row"><span class="dot"></span>Vendor trust page<span class="when">1d ago</span></div>
-                        <div class="src-row"><span class="dot"></span>Court records<span class="when">1d ago</span></div>
-                        <div class="src-row slot"><span class="dot idle"></span>Security ratings (BitSight)<span class="when">not connected</span></div>
-                    </div>
-                    <div class="entity-line">
-                        <span>Watching as <b>Acme Cloud Co., Inc.</b> · CIK 0001728394 · acme.co, status.acme.co</span>
-                        <span>Entity match profile: <b>Strong</b> (5 anchors)</span>
-                        <span class="optout"><a href="#" onclick="return IntelMvp.openCite('Pause monitoring (exception flow, requires reason)')">Pause monitoring for this vendor</a></span>
-                    </div>
-                </div>
-            </div>
         </div>`;
     }
 
@@ -33656,6 +33704,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             case 'lc-fab-toggle':             state.lcFabMenuOpen = !state.lcFabMenuOpen; return render();
             case 'toggle-vendor-history':     state.vendorHistoryOpen = !state.vendorHistoryOpen; return render();
             case 'toggle-retrieval-history':  return actions.toggleRetrievalHistory();
+            case 'toggle-intel-monitoring':   return actions.toggleIntelMonitoring();
             case 'retrieve-initial-docs':     return actions.retrieveInitialDocs({ source: 'manual' });
             case 'open-retrieval-modal': {
                 // Reset the URL to the pre-populated default every time
