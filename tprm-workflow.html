@@ -8919,31 +8919,22 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             max-width: 1000px; margin: 0 auto; padding: 1rem 0.25rem 3rem;
         }
         .intel-mvp * { box-sizing: border-box; }
-        /* ─── Intel header row ───────────────────────────────────
-           Understated eyebrow (dot + product name + status) on the
-           left, small icon-button cluster on the right. Sits just
-           above the "Needs attention" queue-head so it reads as a
-           surface identifier, not a hero. */
-        .intel-mvp .intel-hdr { display: flex; align-items: center; gap: 0.5rem;
-            padding: 0.125rem 0 0.875rem; border-bottom: 1px solid var(--luna-gray-100);
-            margin-bottom: 1rem; }
-        .intel-mvp .intel-hdr-eyebrow { display: inline-flex; align-items: center;
-            gap: 0.5rem; font-size: 0.75rem; font-weight: 600;
-            letter-spacing: 0.02em; color: var(--luna-gray-700); flex: 1; min-width: 0; }
-        .intel-mvp .intel-hdr-dot { width: 8px; height: 8px; border-radius: 50%;
-            background: var(--luna-teal-500); box-shadow: 0 0 0 3px var(--luna-teal-100);
-            flex: none; }
-        .intel-mvp .intel-hdr-sep { color: var(--luna-gray-300); font-weight: 400; }
-        .intel-mvp .intel-hdr-status { color: var(--luna-gray-500); font-weight: 500; letter-spacing: 0; }
-        .intel-mvp .intel-hdr-actions { display: inline-flex; align-items: center;
-            gap: 0.25rem; flex: none; }
-        .intel-mvp .intel-hdr-icon-btn { width: 1.75rem; height: 1.75rem;
+        /* Queue head with inline gear — the tab title lands here so
+           the top of the pane feels anchored rather than eyebrow-heavy.
+           Coverage footer at the bottom of the pane carries the
+           "monitoring on · 10 sources" line — no need to duplicate. */
+        .intel-mvp .queue-head { display: flex; align-items: baseline; gap: 0.75rem;
+            padding: 0.125rem 0 0.875rem; margin-bottom: 0.75rem; }
+        .intel-mvp .queue-head-title { flex: 1; min-width: 0;
+            display: flex; align-items: baseline; gap: 0.625rem; flex-wrap: wrap; }
+        .intel-mvp .intel-gear-btn { width: 2rem; height: 2rem; flex: none;
+            align-self: center;
             display: inline-flex; align-items: center; justify-content: center;
             background: transparent; border: 1px solid transparent; border-radius: 6px;
             color: var(--luna-gray-500); cursor: pointer; padding: 0; }
-        .intel-mvp .intel-hdr-icon-btn:hover { background: var(--luna-gray-50);
+        .intel-mvp .intel-gear-btn:hover { background: var(--luna-gray-50);
             color: var(--luna-gray-900); border-color: var(--luna-gray-200); }
-        .intel-mvp .intel-hdr-icon-btn svg { width: 15px; height: 15px; display: block; }
+        .intel-mvp .intel-gear-btn svg { width: 16px; height: 16px; display: block; }
         .intel-mvp a { color: var(--luna-blue-600); text-decoration: none; }
         .intel-mvp a:hover { text-decoration: underline; }
         .intel-mvp h2, .intel-mvp h3 { margin: 0; font-weight: 600; }
@@ -8992,13 +8983,21 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             background: var(--luna-teal-500); flex: none; display: inline-block; }
         .intel-mvp .cite.internal { color: var(--luna-gray-700); background: var(--luna-gray-100); border-color: var(--luna-gray-200); }
         .intel-mvp .cite.internal .src-ico { background: var(--luna-gray-500); }
-        .intel-mvp .matters { background: var(--luna-gray-50); border: 1px solid var(--luna-gray-200);
-            border-radius: var(--luna-radius-sm); padding: 0.625rem 0.75rem; font-size: 0.8125rem; }
-        .intel-mvp .matters .matters-title { font-size: 0.6875rem; font-weight: 600;
-            letter-spacing: 0.03rem; text-transform: uppercase; color: var(--luna-teal-600);
-            margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.375rem; }
-        .intel-mvp .matters ul { margin: 0.25rem 0 0; padding-left: 1.05rem; }
-        .intel-mvp .matters li { margin-bottom: 0.2rem; }
+        /* "Why this matters" — evolved from a padded gray block to a
+           lightweight callout: teal accent bar on the left, no
+           background box, tighter uppercase eyebrow. Reads as an
+           annotation rather than a competing surface. */
+        .intel-mvp .matters { padding: 0.125rem 0 0.125rem 0.875rem;
+            border-left: 2px solid var(--luna-teal-500);
+            font-size: 0.8125rem; margin-bottom: 1rem; }
+        .intel-mvp .matters .matters-title { font-size: 0.6875rem; font-weight: 700;
+            letter-spacing: 0.06em; text-transform: uppercase; color: var(--luna-teal-600);
+            margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.375rem; }
+        .intel-mvp .matters ul { margin: 0; padding-left: 1rem; list-style: none; }
+        .intel-mvp .matters li { position: relative; margin-bottom: 0.375rem;
+            padding-left: 0.75rem; color: var(--luna-gray-700); line-height: 1.5; }
+        .intel-mvp .matters li::before { content: '·'; position: absolute;
+            left: 0; color: var(--luna-teal-500); font-weight: 700; }
         .intel-mvp .matters li:last-child { margin-bottom: 0; }
         .intel-mvp .trail { list-style: none; margin: 0.375rem 0 0; padding: 0;
             font-size: 0.75rem; color: var(--luna-gray-600); }
@@ -9009,30 +9008,109 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .intel-mvp .queue-head { display: flex; align-items: baseline; gap: 0.625rem; margin-bottom: 0.5rem; }
         .intel-mvp .queue-head h2 { font-size: 0.9375rem; }
         .intel-mvp .queue-head .muted { font-size: 0.75rem; }
-        .intel-mvp .signal { margin-bottom: 0.75rem; overflow: hidden; }
-        .intel-mvp .signal.sev-critical { border-left: 3px solid var(--luna-red-500); }
-        .intel-mvp .signal.sev-high { border-left: 3px solid var(--luna-red-500); opacity: 1; }
-        .intel-mvp .signal-head { display: flex; align-items: center; gap: 0.5rem;
-            padding: 0.625rem 0.875rem; cursor: pointer; user-select: none; }
+        /* Signal card — Luna-forward evolution.
+           Header is a 3-slot flex: severity tag (dot + label) · title
+           stack · status pill + chevron. The whole row is a click
+           surface; hover paints a subtle wash without moving anything.
+           Left severity accent lives on the CARD, not a competing
+           chip in the header — pushes the eye to the title first. */
+        .intel-mvp .signal { margin-bottom: 0.5rem; overflow: hidden;
+            border-radius: 8px; }
+        .intel-mvp .signal { position: relative; }
+        .intel-mvp .signal::before { content: ''; position: absolute;
+            left: 0; top: 0; bottom: 0; width: 3px; background: transparent;
+            border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        .intel-mvp .signal.sev-critical::before { background: var(--luna-red-500); }
+        .intel-mvp .signal.sev-high::before     { background: var(--luna-red-500); opacity: 0.7; }
+        .intel-mvp .signal-head { display: flex; align-items: center; gap: 0.875rem;
+            padding: 0.875rem 1rem 0.875rem 1.125rem; cursor: pointer; user-select: none;
+            transition: background 0.12s ease; }
         .intel-mvp .signal-head:hover { background: var(--luna-gray-50); }
-        .intel-mvp .signal-title { font-weight: 600; font-size: 0.875rem; }
-        .intel-mvp .signal-src { font-size: 0.75rem; color: var(--luna-gray-500); }
-        .intel-mvp .signal-head .chips { margin-left: auto; display: flex; align-items: center; gap: 0.375rem; }
-        .intel-mvp .chev { color: var(--luna-gray-400); font-size: 0.625rem; transition: transform 120ms; }
-        .intel-mvp .signal-body { display: none; border-top: var(--luna-border); padding: 0.875rem; }
+        .intel-mvp .signal-lead { flex: none; }
+        .intel-mvp .signal-main { flex: 1; min-width: 0; }
+        .intel-mvp .signal-tail { flex: none; display: inline-flex;
+            align-items: center; gap: 0.5rem; }
+        .intel-mvp .signal-title { font-weight: 600; font-size: 0.9375rem;
+            color: var(--luna-gray-900); line-height: 1.35;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        /* Severity tag — dot + label, muted background pill. Softer
+           than a filled badge, still scans as a category. */
+        .intel-mvp .sev-tag { display: inline-flex; align-items: center; gap: 0.375rem;
+            padding: 0.125rem 0.5rem; border-radius: 999px;
+            font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.02em;
+            background: var(--luna-gray-100); color: var(--luna-gray-700); }
+        .intel-mvp .sev-tag .sev-dot { width: 6px; height: 6px; border-radius: 50%;
+            background: var(--luna-gray-500); flex: none; }
+        .intel-mvp .sev-tag.sev-critical { background: #fbe3e3; color: #5a1919; }
+        .intel-mvp .sev-tag.sev-critical .sev-dot { background: #8c1c1c; box-shadow: 0 0 0 2px rgba(140, 28, 28, 0.15); }
+        .intel-mvp .sev-tag.sev-high { background: #fbe3e3; color: #8c1c1c; }
+        .intel-mvp .sev-tag.sev-high .sev-dot { background: #db3535; }
+        /* Meta line — single scannable row of dimensional metadata
+           replacing the old three-chip cluster. Muted, tabular feel. */
+        .intel-mvp .signal-meta { display: flex; align-items: center;
+            gap: 0.375rem; margin-top: 0.25rem; font-size: 0.75rem;
+            color: var(--luna-gray-500); flex-wrap: wrap; }
+        .intel-mvp .signal-meta .meta-source { display: inline-flex;
+            align-items: center; gap: 0.375rem; color: var(--luna-gray-700);
+            font-weight: 500; }
+        .intel-mvp .signal-meta .meta-dot { width: 5px; height: 5px;
+            border-radius: 50%; background: var(--luna-teal-500); flex: none; }
+        .intel-mvp .signal-meta .meta-sep { color: var(--luna-gray-300); }
+        .intel-mvp .signal-meta .meta-related { color: var(--luna-teal-700);
+            background: var(--luna-teal-100); padding: 0.0625rem 0.4375rem;
+            border-radius: 999px; font-weight: 500; }
+        .intel-mvp .chev { color: var(--luna-gray-400); font-size: 0.5625rem;
+            transition: transform 120ms; margin-left: 0.125rem; }
+        .intel-mvp .signal-body { display: none; border-top: var(--luna-border);
+            padding: 1rem 1.125rem; }
         .intel-mvp .signal.open .signal-body { display: block; }
         .intel-mvp .signal.open .chev { transform: rotate(180deg); }
-        .intel-mvp .evidence { margin: 0; padding: 0; list-style: none; }
-        .intel-mvp .evidence li { display: flex; gap: 0.5rem; align-items: baseline;
-            padding: 0.25rem 0; font-size: 0.8125rem; }
-        .intel-mvp .evidence .ev-when { color: var(--luna-gray-400); font-size: 0.6875rem;
-            white-space: nowrap; width: 56px; flex: none; }
-        .intel-mvp .evidence blockquote { margin: 0; color: var(--luna-gray-600); font-style: italic; display: inline; }
-        .intel-mvp .actionbar { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;
-            border-top: var(--luna-border); margin: 0.875rem -0.875rem -0.875rem;
-            padding: 0.625rem 0.875rem; background: var(--luna-gray-50); }
+        /* Evidence timeline — dot-column left rail so the temporal
+           sequence reads visually before the content does. Time
+           label stays fixed-width to keep the dots aligned. */
+        .intel-mvp .evidence { margin: 0.375rem 0 0; padding: 0; list-style: none;
+            position: relative; }
+        .intel-mvp .evidence::before { content: ''; position: absolute;
+            left: 3.375rem; top: 0.625rem; bottom: 0.625rem;
+            width: 1px; background: var(--luna-gray-200); }
+        .intel-mvp .evidence li { position: relative; display: flex;
+            gap: 0.5rem; align-items: baseline;
+            padding: 0.375rem 0; font-size: 0.8125rem;
+            color: var(--luna-gray-700); line-height: 1.55; }
+        .intel-mvp .evidence .ev-when { color: var(--luna-gray-500);
+            font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.01em;
+            white-space: nowrap; width: 3rem; flex: none; text-align: right; }
+        .intel-mvp .evidence li::before { content: ''; position: absolute;
+            left: 3.25rem; top: 0.8125rem;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--luna-white);
+            border: 2px solid var(--luna-teal-500); box-sizing: border-box;
+            flex: none; }
+        .intel-mvp .evidence li > span:last-child { flex: 1; padding-left: 0.875rem; }
+        .intel-mvp .evidence blockquote { margin: 0; color: var(--luna-gray-600);
+            font-style: italic; display: inline; }
+        /* Actionbar — bottom slab, single row, subtle divider from
+           the body above. Primary action (Send inquiry) keeps its
+           teal solid; secondaries drop to plain-text buttons with
+           hover-fill so they don't fight the eye. Dismiss lives at
+           the far right in ghost treatment. */
+        .intel-mvp .actionbar { display: flex; gap: 0.375rem; align-items: center; flex-wrap: wrap;
+            border-top: var(--luna-border); margin: 1rem -1.125rem -1rem;
+            padding: 0.75rem 1.125rem; background: var(--luna-gray-50); }
+        .intel-mvp .actionbar .btn { background: transparent; border-color: transparent;
+            color: var(--luna-gray-700); }
+        .intel-mvp .actionbar .btn:hover { background: var(--luna-gray-100);
+            color: var(--luna-gray-900); border-color: transparent; }
+        .intel-mvp .actionbar .btn.primary { background: var(--luna-teal-500);
+            border-color: var(--luna-teal-500); color: #fff; }
+        .intel-mvp .actionbar .btn.primary:hover { background: var(--luna-teal-600);
+            border-color: var(--luna-teal-600); }
+        .intel-mvp .actionbar .btn.transparent { color: var(--luna-gray-500); }
+        .intel-mvp .actionbar .btn.transparent:hover { color: var(--luna-gray-900);
+            background: var(--luna-gray-100); }
         .intel-mvp .actionbar .spacer { flex: 1; }
-        .intel-mvp .seam-note { font-size: 0.6875rem; color: var(--luna-gray-400); }
+        .intel-mvp .seam-note { font-size: 0.6875rem; color: var(--luna-gray-500);
+            line-height: 1.5; max-width: 22rem; }
         /* Cadence + quarantine cards share the same visual grammar:
            white surface, thin gray border, teal-tinted icon leading,
            title + inline decision pills, actions right-anchored. Only
@@ -9119,24 +9197,17 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
            the user into that vendor's Intelligence tab. */
         .di-page { padding: 0; background: #ffffff; }
         .di-container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
-        .di-header { display: flex; align-items: center; gap: 0.5rem;
-            padding: 0 0 0.875rem; border-bottom: 1px solid #f1f5f9; margin-bottom: 1.25rem; }
-        .di-eyebrow { display: inline-flex; align-items: center; gap: 0.5rem;
-            font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em;
-            color: #334155; flex: 1; min-width: 0; }
-        .di-eyebrow-dot { width: 8px; height: 8px; border-radius: 50%;
-            background: #266c92; box-shadow: 0 0 0 3px #e3f0f2; flex: none; }
-        .di-eyebrow-sep { color: #cbd5e1; font-weight: 400; }
-        .di-eyebrow-status { color: #64748b; font-weight: 500; letter-spacing: 0; }
-        .di-header-actions { display: inline-flex; align-items: center; gap: 0.25rem; }
-        .di-icon-btn { width: 1.75rem; height: 1.75rem;
+        .di-header { display: flex; align-items: center; gap: 0.75rem;
+            margin-bottom: 1.25rem; }
+        .di-header .di-title { margin: 0; flex: 1; min-width: 0; }
+        .di-icon-btn { width: 2rem; height: 2rem; flex: none;
             display: inline-flex; align-items: center; justify-content: center;
             background: transparent; border: 1px solid transparent; border-radius: 6px;
             color: #64748b; cursor: pointer; padding: 0; }
         .di-icon-btn:hover { background: #f8fafc; color: #0f172a; border-color: #e2e8f0; }
-        .di-icon-btn svg { width: 15px; height: 15px; display: block; }
+        .di-icon-btn svg { width: 16px; height: 16px; display: block; }
         .di-title { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em;
-            color: #0f172a; margin: 0 0 1.25rem; }
+            color: #0f172a; margin: 0; }
         /* KPI cards — four-up grid of small stat cards. Label above,
            value below with an optional sub-label context. Numeric-first
            treatment so the reviewer's eye lands on the count. */
@@ -31465,34 +31536,40 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
     // Cross-vendor signal seed. In a real product this would come
     // from the backend; here it's a curated set that exercises the
     // filter + sort UX and produces a realistic table density.
+    // Bucket semantics — kept strict on purpose so the tabs earn their
+    // separation:
+    //   attention → action required or in-flight action awaiting close
+    //   process   → cadence / governance / scheduling recommendations
+    //   matches   → matcher held-for-review candidates (potential entity match)
+    //   other     → positive / dismissed / informational · no action needed
     const CROSS_VENDOR_SIGNALS = [
-        // ─── Needs attention (actionable) ────────────────────────
+        // ─── Needs attention · action required or in-flight ─────
         { id: 'x-8k',    vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Critical', bucket: 'attention', title: 'SEC 8-K filed: material cybersecurity incident',              source: 'SEC EDGAR',           when: 'Today · 06:42',   tier: 1, status: 'Needs review' },
         { id: 'x-leak',  vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'High',     bucket: 'attention', title: 'Leak-site listing references acme.co',                        source: 'Leak-site monitor',   when: 'Today · 07:03',   tier: 1, status: 'Watching · resurfaced' },
         { id: 'x-sf',    vendor: 'Salesforce Inc.',      vendorId: 'salesforce', severity: 'High',     bucket: 'attention', title: 'Adverse news · subprocessor breach disclosure',               source: 'News and media',      when: 'Today · 09:17',   tier: 1, status: 'Needs review' },
-        { id: 'x-ok',    vendor: 'Okta Inc.',            vendorId: 'okta',       severity: 'High',     bucket: 'attention', title: 'Cert transparency: new *.customerX.okta.com',                 source: 'Cert transparency',   when: 'Today · 10:04',   tier: 1, status: 'Needs review' },
-        { id: 'x-aws',   vendor: 'AWS',                  vendorId: 'aws',        severity: 'Medium',   bucket: 'attention', title: 'Domain-health regression on trust portal',                    source: 'Domain health',       when: 'Today · 11:22',   tier: 1, status: 'Watching' },
-        { id: 'x-cs',    vendor: 'CrowdStrike',          vendorId: 'crowdstrike',severity: 'Medium',   bucket: 'attention', title: 'Executive: CFO departure reported',                           source: 'News and media',      when: 'Yesterday',       tier: 1, status: 'Needs review' },
+        { id: 'x-ok',    vendor: 'Okta Inc.',            vendorId: 'okta',       severity: 'High',     bucket: 'attention', title: 'Cert transparency: unrecognized wildcard *.customerX.okta.com', source: 'Cert transparency', when: 'Today · 10:04',   tier: 1, status: 'Needs review' },
         { id: 'x-wd',    vendor: 'Workday',              vendorId: 'workday',    severity: 'High',     bucket: 'attention', title: 'Breach registry entry: HR-Data-Pipeline exposure',            source: 'Breach registries',   when: 'Yesterday',       tier: 2, status: 'Needs review' },
-        { id: 'x-nx',    vendor: 'NetSuite',             vendorId: 'netsuite',   severity: 'Medium',   bucket: 'attention', title: 'Trust-page banner: brief incident, resolved',                 source: 'Vendor trust page',   when: 'Sep 24',          tier: 2, status: 'Watching' },
-        { id: 'x-az',    vendor: 'Microsoft Azure',      vendorId: 'azure',      severity: 'Medium',   bucket: 'attention', title: 'Sub-processor list changed · 3 additions',                    source: 'Vendor trust page',   when: 'Sep 23',          tier: 1, status: 'Needs review' },
         { id: 'x-mb',    vendor: 'MongoDB Atlas',        vendorId: 'mongo',      severity: 'High',     bucket: 'attention', title: 'Adverse news · data-residency dispute in EU jurisdiction',   source: 'News and media',      when: 'Sep 22',          tier: 1, status: 'Inquiry sent' },
-        { id: 'x-pd',    vendor: 'PagerDuty',            vendorId: 'pagerduty',  severity: 'Medium',   bucket: 'attention', title: 'Cert transparency: unexpected wildcard issuance',             source: 'Cert transparency',   when: 'Sep 21',          tier: 2, status: 'Needs review' },
-        { id: 'x-gcp',   vendor: 'Google Cloud Platform',vendorId: 'gcp',        severity: 'Medium',   bucket: 'attention', title: 'Adverse news · regional outage impact analysis',              source: 'News and media',      when: 'Sep 20',          tier: 1, status: 'Watching' },
+        { id: 'x-aws',   vendor: 'AWS',                  vendorId: 'aws',        severity: 'Medium',   bucket: 'attention', title: 'Domain-health regression on trust portal',                    source: 'Domain health',       when: 'Today · 11:22',   tier: 1, status: 'Watching' },
+        { id: 'x-pd',    vendor: 'PagerDuty',            vendorId: 'pagerduty',  severity: 'Medium',   bucket: 'attention', title: 'Cert transparency: unauthorized wildcard issuance',           source: 'Cert transparency',   when: 'Sep 21',          tier: 2, status: 'Needs review' },
 
-        // ─── Process recommendations (cadence + governance) ─────
+        // ─── Process recommendations · cadence / governance ─────
         { id: 'x-r1',    vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'process',   title: 'Move next scheduled review from Feb 12, 2027 → Sep 15, 2026', source: 'Cadence rules',       when: 'Today · 07:02',   tier: 1, status: 'Awaiting decision' },
         { id: 'x-r2',    vendor: 'Zoom',                 vendorId: 'zoom',       severity: 'Info',     bucket: 'process',   title: 'Reassessment overdue by 21 days · schedule now',              source: 'Cadence rules',       when: 'Sep 25',          tier: 2, status: 'Awaiting decision' },
         { id: 'x-r3',    vendor: 'Slack Technologies',   vendorId: 'slack',      severity: 'Info',     bucket: 'process',   title: 'Downgrade cadence proposal: Tier 3 · biennial → triennial',   source: 'Cadence rules',       when: 'Sep 23',          tier: 3, status: 'Awaiting decision' },
         { id: 'x-r4',    vendor: 'DocuSign',             vendorId: 'docusign',   severity: 'Info',     bucket: 'process',   title: 'Recontract renewal check-in — 60-day lead time reached',      source: 'Contract dates',      when: 'Sep 20',          tier: 2, status: 'Awaiting decision' },
+        { id: 'x-r5',    vendor: 'Microsoft Azure',      vendorId: 'azure',      severity: 'Info',     bucket: 'process',   title: 'Sub-processor addendum required · 3 new sub-processors observed', source: 'Vendor trust page', when: 'Sep 23',          tier: 1, status: 'Awaiting decision' },
 
-        // ─── Potential matches (matcher-quarantined) ─────────────
+        // ─── Potential matches · matcher-quarantined ─────────────
         { id: 'x-m1',    vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'matches',   title: 'County court judgment: "Acme Cloud Services Ltd", Manchester UK', source: 'Court records',   when: 'Aug 29',          tier: 1, status: 'Held for review' },
         { id: 'x-m2',    vendor: 'Slack Technologies',   vendorId: 'slack',      severity: 'Info',     bucket: 'matches',   title: 'Similar-name match: "Slack Community NL"',                    source: 'Court records',       when: 'Aug 22',          tier: 3, status: 'Held for review' },
         { id: 'x-m3',    vendor: 'Twilio',               vendorId: 'twilio',     severity: 'Info',     bucket: 'matches',   title: 'Domain squatter match: twilio-status.io',                     source: 'Cert transparency',   when: 'Aug 18',          tier: 2, status: 'Held for review' },
         { id: 'x-m4',    vendor: 'GitHub',               vendorId: 'github',     severity: 'Info',     bucket: 'matches',   title: 'Similar-name match: "GitHub Enterprise Advisors GmbH"',        source: 'Court records',       when: 'Aug 15',          tier: 1, status: 'Held for review' },
 
-        // ─── Other information (positive / dismissed / handled) ──
+        // ─── Other information · positive / dismissed / no action ─
+        { id: 'x-o-nx',  vendor: 'NetSuite',             vendorId: 'netsuite',   severity: 'Info',     bucket: 'other',     title: 'Trust-page banner: brief incident, resolved',                 source: 'Vendor trust page',   when: 'Sep 24',          tier: 2, status: 'Resolved' },
+        { id: 'x-o-cs',  vendor: 'CrowdStrike',          vendorId: 'crowdstrike',severity: 'Info',     bucket: 'other',     title: 'Executive: CFO departure reported',                           source: 'News and media',      when: 'Yesterday',       tier: 1, status: 'Dismissed' },
+        { id: 'x-o-gcp', vendor: 'Google Cloud Platform',vendorId: 'gcp',        severity: 'Info',     bucket: 'other',     title: 'Regional outage · impact-analysis published',                 source: 'News and media',      when: 'Sep 20',          tier: 1, status: 'Positive' },
         { id: 'x-o1',    vendor: 'Salesforce Inc.',      vendorId: 'salesforce', severity: 'Info',     bucket: 'other',     title: 'SOC 2 Type II renewed · report auto-attached',                source: 'Vendor trust page',   when: 'Jul 30',          tier: 1, status: 'Positive' },
         { id: 'x-o2',    vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'other',     title: 'SOC 2 Type II renewed · report auto-attached',                source: 'Vendor trust page',   when: 'Jul 30',          tier: 1, status: 'Positive' },
         { id: 'x-o3',    vendor: 'Datadog',              vendorId: 'datadog',    severity: 'Info',     bucket: 'other',     title: 'ISO 27001 recertified · certificate on file',                 source: 'Vendor trust page',   when: 'Jul 22',          tier: 2, status: 'Positive' },
@@ -31598,17 +31675,11 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         return `<div class="tprm-scroll di-page">
             <div class="di-container">
                 <header class="di-header">
-                    <div class="di-eyebrow">
-                        <span class="di-eyebrow-dot"></span>
-                        <span>Optro Intelligence Platform</span>
-                    </div>
-                    <div class="di-header-actions">
-                        <button type="button" class="di-icon-btn" data-tooltip="Intelligence settings" data-action="di-open-settings" aria-label="Intelligence settings">
-                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="2"/><path d="M13 8a5 5 0 0 0-.1-1l1.4-1.1-1.4-2.4-1.7.6a5 5 0 0 0-1.7-1l-.3-1.8h-2.8l-.3 1.8a5 5 0 0 0-1.7 1l-1.7-.6-1.4 2.4L2.6 7A5 5 0 0 0 2.6 9L1.2 10.1l1.4 2.4 1.7-.6a5 5 0 0 0 1.7 1l.3 1.8h2.8l.3-1.8a5 5 0 0 0 1.7-1l1.7.6 1.4-2.4L12.9 9q.1-.5.1-1z"/></svg>
-                        </button>
-                    </div>
+                    <h1 class="di-title">Third Party Intelligence</h1>
+                    <button type="button" class="di-icon-btn" data-tooltip="Intelligence settings" data-action="di-open-settings" aria-label="Intelligence settings">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="2"/><path d="M13 8a5 5 0 0 0-.1-1l1.4-1.1-1.4-2.4-1.7.6a5 5 0 0 0-1.7-1l-.3-1.8h-2.8l-.3 1.8a5 5 0 0 0-1.7 1l-1.7-.6-1.4 2.4L2.6 7A5 5 0 0 0 2.6 9L1.2 10.1l1.4 2.4 1.7-.6a5 5 0 0 0 1.7 1l.3 1.8h2.8l.3-1.8a5 5 0 0 0 1.7-1l1.7.6 1.4-2.4L12.9 9q.1-.5.1-1z"/></svg>
+                    </button>
                 </header>
-                <h1 class="di-title">Third Party Intelligence</h1>
                 ${kpiHtml}
                 <div class="di-tabs" role="tablist">
                     <button type="button" class="di-tab${f.bucket==='attention'?' active':''}" role="tab" data-action="di-set-bucket" data-bucket="attention">Needs attention <span class="di-tab-count">${bucketCounts.attention}</span></button>
@@ -31689,32 +31760,34 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         };
         const extraTrail = (id) => (s.trails[id] || []).map(html => `<li>${html}</li>`).join('');
         return `<div class="intel-mvp">
-            <header class="intel-hdr">
-                <div class="intel-hdr-eyebrow">
-                    <span class="intel-hdr-dot"></span>
-                    <span>Optro Intelligence Platform</span>
-                    <span class="intel-hdr-sep">·</span>
-                    <span class="intel-hdr-status">Monitoring · 10 sources</span>
-                </div>
-                <div class="intel-hdr-actions">
-                    <button type="button" class="intel-hdr-icon-btn" data-tooltip="Intelligence settings" onclick="IntelMvp.openSettings()" aria-label="Intelligence settings">
-                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="2"/><path d="M13 8a5 5 0 0 0-.1-1l1.4-1.1-1.4-2.4-1.7.6a5 5 0 0 0-1.7-1l-.3-1.8h-2.8l-.3 1.8a5 5 0 0 0-1.7 1l-1.7-.6-1.4 2.4L2.6 7A5 5 0 0 0 2.6 9L1.2 10.1l1.4 2.4 1.7-.6a5 5 0 0 0 1.7 1l.3 1.8h2.8l.3-1.8a5 5 0 0 0 1.7-1l1.7.6 1.4-2.4L12.9 9q.1-.5.1-1z"/></svg>
-                    </button>
-                </div>
-            </header>
             <div class="queue-head">
-                <h2>Needs attention</h2>
-                <span class="muted">2 signals, most material first</span>
+                <div class="queue-head-title">
+                    <h2>Needs attention</h2>
+                    <span class="muted">2 signals · most material first</span>
+                </div>
+                <button type="button" class="intel-gear-btn" data-tooltip="Intelligence settings" onclick="IntelMvp.openSettings()" aria-label="Intelligence settings">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="2"/><path d="M13 8a5 5 0 0 0-.1-1l1.4-1.1-1.4-2.4-1.7.6a5 5 0 0 0-1.7-1l-.3-1.8h-2.8l-.3 1.8a5 5 0 0 0-1.7 1l-1.7-.6-1.4 2.4L2.6 7A5 5 0 0 0 2.6 9L1.2 10.1l1.4 2.4 1.7-.6a5 5 0 0 0 1.7 1l.3 1.8h2.8l.3-1.8a5 5 0 0 0 1.7-1l1.7.6 1.4-2.4L12.9 9q.1-.5.1-1z"/></svg>
+                </button>
             </div>
 
             <div class="card signal sev-critical${openCls('sig-8k')}${dimCls('8k')}" id="sig-8k" data-signal-card="8k">
                 <div class="signal-head" onclick="IntelMvp.toggleExpand('sig-8k')">
-                    <span class="badge red xstrong">Critical</span>
-                    <div>
-                        <div class="signal-title">SEC 8-K filed: material cybersecurity incident</div>
-                        <div class="signal-src">SEC EDGAR · Item 1.05 · Filed today, 6:42 AM ET · <span class="muted">1 related signal</span></div>
+                    <div class="signal-lead">
+                        <span class="sev-tag sev-critical"><span class="sev-dot"></span>Critical</span>
                     </div>
-                    <div class="chips">
+                    <div class="signal-main">
+                        <div class="signal-title">SEC 8-K filed: material cybersecurity incident</div>
+                        <div class="signal-meta">
+                            <span class="meta-source"><span class="meta-dot"></span>SEC EDGAR</span>
+                            <span class="meta-sep">·</span>
+                            <span>Item 1.05</span>
+                            <span class="meta-sep">·</span>
+                            <span>Today · 6:42 AM ET</span>
+                            <span class="meta-sep">·</span>
+                            <span class="meta-related">1 related signal</span>
+                        </div>
+                    </div>
+                    <div class="signal-tail">
                         ${pill('8k', 'teal strong', 'Needs review')}
                         <span class="chev">&#9660;</span>
                     </div>
@@ -31760,12 +31833,22 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
 
             <div class="card signal sev-high${openCls('sig-leak')}${dimCls('leak')}" id="sig-leak" data-signal-card="leak">
                 <div class="signal-head" onclick="IntelMvp.toggleExpand('sig-leak')">
-                    <span class="badge red">High</span>
-                    <div>
-                        <div class="signal-title">Leak-site listing references acme.co</div>
-                        <div class="signal-src">Leak-site monitor · cl0p · First seen Aug 11 · resurfaced today · <span class="muted">related to the 8-K above</span></div>
+                    <div class="signal-lead">
+                        <span class="sev-tag sev-high"><span class="sev-dot"></span>High</span>
                     </div>
-                    <div class="chips">
+                    <div class="signal-main">
+                        <div class="signal-title">Leak-site listing references acme.co</div>
+                        <div class="signal-meta">
+                            <span class="meta-source"><span class="meta-dot"></span>Leak-site monitor</span>
+                            <span class="meta-sep">·</span>
+                            <span>cl0p</span>
+                            <span class="meta-sep">·</span>
+                            <span>First seen Aug 11 · resurfaced today</span>
+                            <span class="meta-sep">·</span>
+                            <span class="meta-related">related to the 8-K above</span>
+                        </div>
+                    </div>
+                    <div class="signal-tail">
                         ${pill('leak', 'gray', 'Watching · resurfaced')}
                         <span class="chev">&#9660;</span>
                     </div>
