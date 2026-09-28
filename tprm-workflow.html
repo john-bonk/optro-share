@@ -8919,22 +8919,22 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             max-width: 1180px; margin: 0 auto; padding: 1rem 0 3rem;
         }
         .intel-mvp * { box-sizing: border-box; }
-        /* Queue head with inline gear — the tab title lands here so
-           the top of the pane feels anchored rather than eyebrow-heavy.
-           Coverage footer at the bottom of the pane carries the
-           "monitoring on · 10 sources" line — no need to duplicate. */
-        .intel-mvp .queue-head { display: flex; align-items: baseline; gap: 0.75rem;
-            padding: 0.125rem 0 0.875rem; margin-bottom: 0.75rem; }
-        .intel-mvp .queue-head-title { flex: 1; min-width: 0;
-            display: flex; align-items: baseline; gap: 0.625rem; flex-wrap: wrap; }
-        .intel-mvp .intel-gear-btn { width: 2rem; height: 2rem; flex: none;
-            align-self: center;
+        /* Gear icon lives inline with the "Needs attention" section
+           label so the tab feels anchored by section headings, not by
+           a dedicated hero. Section labels themselves stay compact +
+           uppercase across all four sections for rhythm consistency. */
+        .intel-mvp .section-label-attention { justify-content: space-between;
+            margin-top: 0.25rem; }
+        .intel-mvp .section-label-attention > span:first-child {
+            display: inline-flex; align-items: center; gap: 0.5rem; }
+        .intel-mvp .intel-gear-btn { width: 1.75rem; height: 1.75rem; flex: none;
             display: inline-flex; align-items: center; justify-content: center;
             background: transparent; border: 1px solid transparent; border-radius: 6px;
-            color: var(--luna-gray-500); cursor: pointer; padding: 0; }
+            color: var(--luna-gray-500); cursor: pointer; padding: 0;
+            margin-top: -0.375rem; margin-bottom: -0.375rem; }
         .intel-mvp .intel-gear-btn:hover { background: var(--luna-gray-50);
             color: var(--luna-gray-900); border-color: var(--luna-gray-200); }
-        .intel-mvp .intel-gear-btn svg { width: 16px; height: 16px; display: block; }
+        .intel-mvp .intel-gear-btn svg { width: 15px; height: 15px; display: block; }
         .intel-mvp a { color: var(--luna-blue-600); text-decoration: none; }
         .intel-mvp a:hover { text-decoration: underline; }
         .intel-mvp h2, .intel-mvp h3 { margin: 0; font-weight: 600; }
@@ -9148,7 +9148,8 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .intel-mvp .quiet-row + .quiet-detail,
         .intel-mvp .quiet-row { border-top: var(--luna-border); }
         .intel-mvp .quiet-row:first-child { border-top: none; }
-        .intel-mvp .quiet-detail { display: none; padding: 0 0.875rem 0.75rem 2.375rem; }
+        .intel-mvp .quiet-detail { display: none;
+            padding: 0.625rem 1.125rem 1.125rem 2.375rem; }
         .intel-mvp .quiet-item.open .quiet-detail { display: block; }
         .intel-mvp .quiet-ico { width: 22px; height: 22px; border-radius: var(--luna-radius-full);
             flex: none; display: flex; align-items: center; justify-content: center; font-size: 0.6875rem; }
@@ -9212,7 +9213,12 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
            → source → detected → status. Rows are clickable and drop
            the user into that vendor's Intelligence tab. */
         .di-page { padding: 0; background: #ffffff; }
-        .di-container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
+        /* Match the Third Parties list container spacing 1:1 — the
+           dashboard is a first-class route in the app shell, so it
+           takes the full content column with the same 2rem side
+           padding + 1.5rem top used by `.page-band`. No max-width
+           cap so wide monitors get real density. */
+        .di-container { max-width: none; margin: 0; padding: 1.5rem 2rem 3rem; }
         .di-header { display: flex; align-items: center; gap: 0.75rem;
             margin-bottom: 1.25rem; }
         .di-header .di-title { margin: 0; flex: 1; min-width: 0; }
@@ -31783,11 +31789,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         };
         const extraTrail = (id) => (s.trails[id] || []).map(html => `<li>${html}</li>`).join('');
         return `<div class="intel-mvp">
-            <div class="queue-head">
-                <div class="queue-head-title">
-                    <h2>Needs attention</h2>
-                    <span class="muted">2 signals · most material first</span>
-                </div>
+            <div class="section-label section-label-attention">
+                <span>Needs attention <span class="badge gray">2</span></span>
                 <button type="button" class="intel-gear-btn" data-tooltip="Intelligence settings" onclick="IntelMvp.openSettings()" aria-label="Intelligence settings">
                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="2"/><path d="M13 8a5 5 0 0 0-.1-1l1.4-1.1-1.4-2.4-1.7.6a5 5 0 0 0-1.7-1l-.3-1.8h-2.8l-.3 1.8a5 5 0 0 0-1.7 1l-1.7-.6-1.4 2.4L2.6 7A5 5 0 0 0 2.6 9L1.2 10.1l1.4 2.4 1.7-.6a5 5 0 0 0 1.7 1l.3 1.8h2.8l.3-1.8a5 5 0 0 0 1.7-1l1.7.6 1.4-2.4L12.9 9q.1-.5.1-1z"/></svg>
                 </button>
@@ -36767,12 +36770,9 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     'Security ratings (BitSight)':  { on: false, cadence: 'not connected' },
                 },
                 rules: [
-                    { id: 'r1', on: true,  scope: 'tier-1',   field: 'severity', op: 'is at least', value: 'Critical', action: 'notify-owner', note: '' },
-                    { id: 'r2', on: true,  scope: 'all',      field: 'source',   op: 'is',          value: 'Leak-site monitors', action: 'send-inquiry', note: '' },
-                    { id: 'r3', on: true,  scope: 'all',      field: 'source',   op: 'is',          value: 'Sanctions lists',    action: 'proc-lock',    note: 'Auto-open Issue and block procurement lock' },
-                    { id: 'r4', on: true,  scope: 'tier-1-2', field: 'severity', op: 'is at least', value: 'High',     action: 'open-issue',   note: '' },
-                    { id: 'r5', on: false, scope: 'tier-1',   field: 'age',      op: 'is at least', value: '3 days',   action: 'watch',        note: 'Watch signals sitting in queue' },
-                    { id: 'r6', on: false, scope: 'all',      field: 'severity', op: 'is',          value: 'Low',      action: 'dismiss-low',  note: '' },
+                    { id: 'r1', on: true, scope: 'tier-1', field: 'severity', op: 'is at least', value: 'Critical',           action: 'notify-owner', note: '' },
+                    { id: 'r2', on: true, scope: 'all',    field: 'source',   op: 'is',          value: 'Leak-site monitors', action: 'send-inquiry', note: '' },
+                    { id: 'r3', on: true, scope: 'all',    field: 'source',   op: 'is',          value: 'Sanctions lists',    action: 'proc-lock',    note: 'Auto-open Issue and block procurement lock' },
                 ],
             };
             openSettingsInner(st);
