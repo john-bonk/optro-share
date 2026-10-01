@@ -9069,28 +9069,13 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             padding: 1rem 1.125rem; }
         .intel-mvp .signal.open .signal-body { display: block; }
         .intel-mvp .signal.open .chev { transform: rotate(180deg); }
-        /* Evidence timeline — dot-column left rail so the temporal
-           sequence reads visually before the content does. Time
-           label stays fixed-width to keep the dots aligned. */
-        .intel-mvp .evidence { margin: 0.375rem 0 0; padding: 0; list-style: none;
-            position: relative; }
-        .intel-mvp .evidence::before { content: ''; position: absolute;
-            left: 3.375rem; top: 0.625rem; bottom: 0.625rem;
-            width: 1px; background: var(--luna-gray-200); }
-        .intel-mvp .evidence li { position: relative; display: flex;
-            gap: 0.5rem; align-items: baseline;
-            padding: 0.375rem 0; font-size: 0.8125rem;
-            color: var(--luna-gray-700); line-height: 1.55; }
-        .intel-mvp .evidence .ev-when { color: var(--luna-gray-500);
-            font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.01em;
-            white-space: nowrap; width: 3rem; flex: none; text-align: right; }
-        .intel-mvp .evidence li::before { content: ''; position: absolute;
-            left: 3.25rem; top: 0.8125rem;
-            width: 6px; height: 6px; border-radius: 50%;
-            background: var(--luna-white);
-            border: 2px solid var(--luna-teal-500); box-sizing: border-box;
-            flex: none; }
-        .intel-mvp .evidence li > span:last-child { flex: 1; padding-left: 0.875rem; }
+        /* Evidence block — flat bulleted list; timestamps dropped so
+           the content reads as supporting facts, not a temporal rail. */
+        .intel-mvp .evidence { margin: 0.375rem 0 0; padding-left: 1.125rem;
+            list-style: disc; color: var(--luna-gray-700); }
+        .intel-mvp .evidence li { padding: 0.1875rem 0;
+            font-size: 0.8125rem; line-height: 1.55; }
+        .intel-mvp .evidence li::marker { color: var(--luna-gray-400); }
         .intel-mvp .evidence blockquote { margin: 0; color: var(--luna-gray-600);
             font-style: italic; display: inline; }
         /* Actionbar — bottom slab, single row, subtle divider from
@@ -9352,8 +9337,10 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .di-row-head:hover { background: #fafafa; }
         .di-cell { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         /* Visual breathing room between the Severity chip and the Vendor
-           column — grid gap is uniform, so add dedicated right-padding. */
+           column — grid gap is uniform, so add dedicated padding. The
+           vendor column has slack room to the right, so shift it 24px. */
         .di-cell-sev { padding-right: 1rem; }
+        .di-cell-vendor { padding-left: 24px; }
         .di-cell-title { color: #0f172a; font-weight: 400; }
         .di-cell-type { color: #64748b; font-size: 0.75rem; }
         .di-cell-vendor { display: flex; flex-direction: column; gap: 0.125rem; }
@@ -32120,9 +32107,9 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
 
                     <div class="section-label">Evidence</div>
                     <ul class="evidence">
-                        <li><span class="ev-when">6:42 AM</span><span>8-K filed, reporting <blockquote>"unauthorized activity within a portion of its production environment"</blockquote> (Acme 8-K). <a class="cite" onclick="return IntelMvp.openCite('SEC EDGAR accession 0001728394-26-000041')"><span class="src-ico"></span>EDGAR filing</a></span></li>
-                        <li><span class="ev-when">7:03 AM</span><span>Vendor trust page updated with an incident banner; no customer notice posted. <a class="cite" onclick="return IntelMvp.openCite('trust.acme.co')"><span class="src-ico"></span>Trust page</a></span></li>
-                        <li><span class="ev-when">Aug 11</span><span>Related: leak-site listing referencing acme.co, now linked to this incident (96% confidence). <a href="#sig-leak" class="cite internal"><span class="src-ico"></span>Related signal below</a></span></li>
+                        <li><span>8-K filed, reporting <blockquote>"unauthorized activity within a portion of its production environment"</blockquote> (Acme 8-K). <a class="cite" onclick="return IntelMvp.openCite('SEC EDGAR accession 0001728394-26-000041')"><span class="src-ico"></span>EDGAR filing</a></span></li>
+                        <li><span>Vendor trust page updated with an incident banner; no customer notice posted. <a class="cite" onclick="return IntelMvp.openCite('trust.acme.co')"><span class="src-ico"></span>Trust page</a></span></li>
+                        <li><span>Related: leak-site listing referencing acme.co, now linked to this incident (96% confidence). <a href="#sig-leak" class="cite internal"><span class="src-ico"></span>Related signal below</a></span></li>
                     </ul>
                     ${bottomBar('8k')}
                 </div>
@@ -32160,8 +32147,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
 
                     <div class="section-label">Evidence</div>
                     <ul class="evidence">
-                        <li><span class="ev-when">Aug 11</span><span>Listing appeared on the cl0p leak site claiming 2.1 TB from "acme.co". <a class="cite" onclick="return IntelMvp.openCite('Leak-site capture, Aug 11 (archived)')"><span class="src-ico"></span>Archived capture</a></span></li>
-                        <li><span class="ev-when">Today</span><span>8-K filed by the vendor, corroborating the listing. <a class="cite" onclick="return IntelMvp.openCite('SEC EDGAR 8-K')"><span class="src-ico"></span>EDGAR filing</a></span></li>
+                        <li><span>Listing appeared on the cl0p leak site claiming 2.1 TB from "acme.co". <a class="cite" onclick="return IntelMvp.openCite('Leak-site capture, Aug 11 (archived)')"><span class="src-ico"></span>Archived capture</a></span></li>
+                        <li><span>8-K filed by the vendor, corroborating the listing. <a class="cite" onclick="return IntelMvp.openCite('SEC EDGAR 8-K')"><span class="src-ico"></span>EDGAR filing</a></span></li>
                     </ul>
                     ${bottomBar('leak')}
                 </div>
@@ -32197,8 +32184,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     </div>
                     <div class="section-label">Evidence</div>
                     <ul class="evidence">
-                        <li><span class="ev-when">Yesterday</span><span>Trust page sub-processor table diff: +1 entry for "Snowflake Compute · eu-west-1". <a class="cite" onclick="return IntelMvp.openCite('trust.acme.co/subprocessors')"><span class="src-ico"></span>Trust page</a></span></li>
-                        <li><span class="ev-when">Today</span><span>No notification email received from Acme (checked security@acme.co inbox).</span></li>
+                        <li><span>Trust page sub-processor table diff: +1 entry for "Snowflake Compute · eu-west-1". <a class="cite" onclick="return IntelMvp.openCite('trust.acme.co/subprocessors')"><span class="src-ico"></span>Trust page</a></span></li>
+                        <li><span>No notification email received from Acme (checked security@acme.co inbox).</span></li>
                     </ul>
                     ${bottomBar('cert')}
                 </div>
@@ -32234,8 +32221,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     </div>
                     <div class="section-label">Evidence</div>
                     <ul class="evidence">
-                        <li><span class="ev-when">5:48 AM</span><span>HIBP paste-source match: 2 addresses from <code>@acme.co</code>, dump labelled <em>paste_sep28_2026_combo_v4</em>. <a class="cite" onclick="return IntelMvp.openCite('HIBP · paste_sep28_2026_combo_v4')"><span class="src-ico"></span>HIBP record</a></span></li>
-                        <li><span class="ev-when">5:52 AM</span><span>No inbound notification received from Acme security contact (checked security@acme.co inbox).</span></li>
+                        <li><span>HIBP paste-source match: 2 addresses from <code>@acme.co</code>, dump labelled <em>paste_sep28_2026_combo_v4</em>. <a class="cite" onclick="return IntelMvp.openCite('HIBP · paste_sep28_2026_combo_v4')"><span class="src-ico"></span>HIBP record</a></span></li>
+                        <li><span>No inbound notification received from Acme security contact (checked security@acme.co inbox).</span></li>
                     </ul>
                     ${bottomBar('creds')}
                 </div>
