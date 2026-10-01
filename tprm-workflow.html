@@ -9286,7 +9286,7 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .di-table { background: #ffffff; border: 1px solid #e2e8f0;
             border-radius: 8px; overflow: hidden; }
         .di-row { display: grid;
-            grid-template-columns: 6rem minmax(11rem, 1.2fr) minmax(20rem, 2fr) minmax(9rem, 0.8fr) 6rem minmax(9rem, 0.9fr);
+            grid-template-columns: 6rem minmax(11rem, 1.2fr) 6rem minmax(18rem, 2fr) minmax(9rem, 0.8fr) 6rem minmax(9rem, 0.9fr);
             gap: 0.5rem; padding: 0.6875rem 0.875rem; align-items: center;
             font-size: 0.8125rem; color: #334155; border-bottom: 1px solid #f1f5f9;
             cursor: pointer; transition: background 0.12s ease; }
@@ -9297,7 +9297,8 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             padding: 0.5625rem 0.875rem; cursor: default; }
         .di-row-head:hover { background: #fafafa; }
         .di-cell { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .di-cell-title { color: #0f172a; font-weight: 500; }
+        .di-cell-title { color: #0f172a; font-weight: 400; }
+        .di-cell-type { color: #64748b; font-size: 0.75rem; }
         .di-cell-vendor { display: flex; flex-direction: column; gap: 0.125rem; }
         .di-vendor-link { color: #266c92; font-weight: 500; text-decoration: none; }
         .di-vendor-link:hover { text-decoration: underline; }
@@ -31730,7 +31731,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             bucket: 'attention',
             severity: 'all',
             tier: 'all',
-            source: 'all',
+            type: 'all',
             search: '',
         };
         const f = state.dashIntel;
@@ -31774,16 +31775,23 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         // Derive filter option lists from the source data so a new
         // seed vendor auto-populates the dropdowns.
         const uniq = (arr) => Array.from(new Set(arr));
-        const sourceOptions = uniq(CROSS_VENDOR_SIGNALS.map(s => s.source)).sort();
+        // Vendor-type lookup — derived from MANAGED_VENDORS so a new
+        // vendor added there propagates automatically to the dashboard.
+        const vendorTypeOf = (vid) => {
+            if (typeof MANAGED_VENDORS === 'undefined') return 'Vendor';
+            const v = MANAGED_VENDORS.find(x => x.id === vid);
+            return (v && v.type) || 'Vendor';
+        };
+        const typeOptions = uniq(CROSS_VENDOR_SIGNALS.map(s => vendorTypeOf(s.vendorId))).sort();
         // Apply filters in order — bucket first, then severity, tier,
-        // source, then text search across vendor + title.
+        // vendor-type, then text search across vendor + title.
         let rows = CROSS_VENDOR_SIGNALS.filter(s => s.bucket === f.bucket);
         if (f.severity !== 'all') rows = rows.filter(s => s.severity.toLowerCase() === f.severity.toLowerCase());
         if (f.tier !== 'all')     rows = rows.filter(s => String(s.tier) === String(f.tier));
-        if (f.source !== 'all')   rows = rows.filter(s => s.source === f.source);
+        if (f.type !== 'all' && f.type != null) rows = rows.filter(s => vendorTypeOf(s.vendorId) === f.type);
         const q = (f.search || '').toLowerCase().trim();
         if (q) rows = rows.filter(s => (s.vendor + ' ' + s.title).toLowerCase().includes(q));
-        const anyFilterActive = f.severity !== 'all' || f.tier !== 'all' || f.source !== 'all' || !!q;
+        const anyFilterActive = f.severity !== 'all' || f.tier !== 'all' || (f.type && f.type !== 'all') || !!q;
         const sevBadge = (sev) => {
             const cls = sev === 'Critical' ? 'red xstrong'
                       : sev === 'High'     ? 'red'
@@ -31805,6 +31813,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             ? rows.map(r => `<div class="di-row" data-action="goto-vendor-intel" data-vendor-id="${esc(r.vendorId)}">
                 <div class="di-cell di-cell-sev">${sevBadge(r.severity)}</div>
                 <div class="di-cell di-cell-vendor"><a class="di-vendor-link" data-action="goto-vendor-intel" data-vendor-id="${esc(r.vendorId)}" href="#" onclick="return false">${esc(r.vendor)}</a><span class="di-tier">Tier ${r.tier}</span></div>
+                <div class="di-cell di-cell-type">${esc(vendorTypeOf(r.vendorId))}</div>
                 <div class="di-cell di-cell-title">${esc(r.title)}</div>
                 <div class="di-cell di-cell-source">${esc(r.source)}</div>
                 <div class="di-cell di-cell-when">${esc(r.when)}</div>
@@ -31844,9 +31853,9 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                         <option value="2"${f.tier==='2'?' selected':''}>Tier 2</option>
                         <option value="3"${f.tier==='3'?' selected':''}>Tier 3</option>
                     </select>
-                    <select class="di-select" data-action="di-set-filter" data-filter="source">
-                        <option value="all"${f.source==='all'?' selected':''}>All sources</option>
-                        ${sourceOptions.map(s => `<option value="${esc(s)}"${f.source===s?' selected':''}>${esc(s)}</option>`).join('')}
+                    <select class="di-select" data-action="di-set-filter" data-filter="type">
+                        <option value="all"${(!f.type || f.type==='all')?' selected':''}>All vendor types</option>
+                        ${typeOptions.map(t => `<option value="${esc(t)}"${f.type===t?' selected':''}>${esc(t)}</option>`).join('')}
                     </select>
                     ${anyFilterActive ? `<button type="button" class="di-clear" data-action="di-clear-filters">Clear</button>` : ''}
                 </div>
@@ -31854,6 +31863,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <div class="di-row di-row-head">
                         <div class="di-cell di-cell-sev">Severity</div>
                         <div class="di-cell di-cell-vendor">Vendor</div>
+                        <div class="di-cell di-cell-type">Type</div>
                         <div class="di-cell di-cell-title">Signal</div>
                         <div class="di-cell di-cell-source">Source</div>
                         <div class="di-cell di-cell-when">Detected</div>
@@ -36536,7 +36546,10 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         function openModal(title, sub, bodyHTML, footHTML) {
             ensureShell();
             document.getElementById('im-pm-title').textContent = title;
-            document.getElementById('im-pm-sub').textContent = sub || '';
+            const subEl = document.getElementById('im-pm-sub');
+            subEl.textContent = sub || '';
+            // Empty subtitle collapses — avoids a stray margin block.
+            subEl.style.display = sub ? '' : 'none';
             document.getElementById('im-pm-body').innerHTML = bodyHTML;
             document.getElementById('im-pm-foot').innerHTML = footHTML;
             document.getElementById('im-proto-modal').classList.add('open');
@@ -36893,6 +36906,16 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     { id: 'r2', on: true, scope: 'all',    field: 'source',   op: 'is',          value: 'Leak-site monitors', action: 'send-inquiry', note: '' },
                     { id: 'r3', on: true, scope: 'all',    field: 'source',   op: 'is',          value: 'Sanctions lists',    action: 'proc-lock',    note: 'Auto-open Issue and block procurement lock' },
                 ],
+                // Signal-classification rules — map a condition on
+                // the raw event (source / keyword / tier) to a severity
+                // level. Lets the reviewer tune how incoming events
+                // are graded before any automation fires on them.
+                signalRules: [
+                    { id: 's1', on: true, scope: 'all',    field: 'source',   op: 'is',       value: 'SEC EDGAR',           severity: 'Critical', note: '' },
+                    { id: 's2', on: true, scope: 'all',    field: 'source',   op: 'is',       value: 'Leak-site monitors',  severity: 'High',     note: '' },
+                    { id: 's3', on: true, scope: 'all',    field: 'source',   op: 'is',       value: 'Breach registries',   severity: 'High',     note: '' },
+                    { id: 's4', on: true, scope: 'tier-1', field: 'keyword',  op: 'contains', value: 'ransomware',          severity: 'Critical', note: 'Tier-1 only' },
+                ],
             };
             openSettingsInner(st);
         }
@@ -36961,7 +36984,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             const rulesPane = `
                 <div class="im-set-section">
                     <div class="im-set-section-title">Active rules · ${st.rules.length}</div>
-                    <div class="im-set-sub">Rules fire the moment a signal matches the condition. Each action logs to the signal's review record.</div>
                     <div class="im-rule-list">
                         ${st.rules.map((r) => `
                             <div class="im-rule">
@@ -37019,14 +37041,87 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                         </div>
                     </div>
                 </div>`;
-            const activePane = tab === 'sources' ? sourcesPane
+            // Signal-classification rules — same visual grammar as the
+            // automation rules but the "Then" slot sets a severity
+            // level instead of firing an action. State persists in
+            // st.signalRules; builder state in st.srbField / srbOp /
+            // srbValue / srbSeverity for the field-change refresh.
+            st.signalRules = st.signalRules || [];
+            const srbField = st.srbField || RULE_FIELDS[0].id;
+            const srbFieldDef = findField(srbField) || RULE_FIELDS[0];
+            const srbOp = st.srbOp || srbFieldDef.operators[0];
+            const srbValueOptions = srbFieldDef.values;
+            const srbValue = st.srbValue || (srbValueOptions ? srbValueOptions[0] : '');
+            const srbSeverity = st.srbSeverity || 'High';
+            const SEVERITY_LEVELS = ['Critical', 'High', 'Medium', 'Low', 'Info'];
+            const signalsPane = `
+                <div class="im-set-section">
+                    <div class="im-set-section-title">Active classifiers · ${st.signalRules.length}</div>
+                    <div class="im-rule-list">
+                        ${st.signalRules.map((r) => `
+                            <div class="im-rule">
+                                <label class="im-rule-toggle">
+                                    <input type="checkbox" data-im-sig-on="${esc(r.id)}" ${r.on ? 'checked' : ''} />
+                                </label>
+                                <div class="im-rule-body">
+                                    <div class="im-rule-when"><span class="im-rule-lbl">When</span> ${esc(whenClause(r))}</div>
+                                    <div class="im-rule-then"><span class="im-rule-lbl">Then</span> Set severity to <strong>${esc(r.severity || 'Medium')}</strong></div>
+                                    <div class="im-rule-scope"><span class="im-rule-lbl">Scope</span> ${esc(scopeLabel(r.scope))}${r.note ? ` · <span class="muted">${esc(r.note)}</span>` : ''}</div>
+                                </div>
+                                <button type="button" class="im-rule-del" data-im-sig-del="${esc(r.id)}" aria-label="Delete classifier" title="Delete classifier">
+                                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h10"/><path d="M5.5 4V3a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1"/><path d="M4.5 4l0.5 8.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1L11.5 4"/></svg>
+                                </button>
+                            </div>`).join('')}
+                    </div>
+                </div>
+                <div class="im-set-section">
+                    <div class="im-set-section-title">Create a new classifier</div>
+                    <div class="im-rule-builder">
+                        <div class="im-rule-builder-row">
+                            <label class="im-rb-lbl">When</label>
+                            <div class="im-rb-triple">
+                                <select id="im-srb-field" class="im-rb-input">
+                                    ${RULE_FIELDS.map(fd => `<option value="${fd.id}"${fd.id === srbField ? ' selected' : ''}>${esc(fd.label)}</option>`).join('')}
+                                </select>
+                                <select id="im-srb-op" class="im-rb-input">
+                                    ${srbFieldDef.operators.map(o => `<option value="${esc(o)}"${o === srbOp ? ' selected' : ''}>${esc(o)}</option>`).join('')}
+                                </select>
+                                ${srbValueOptions
+                                    ? `<select id="im-srb-value" class="im-rb-input">
+                                        ${srbValueOptions.map(v => `<option value="${esc(v)}"${v === srbValue ? ' selected' : ''}>${esc(v)}</option>`).join('')}
+                                    </select>`
+                                    : `<input type="text" id="im-srb-value" class="im-rb-input" placeholder="e.g. ransomware, acquisition" value="${esc(srbValue)}" />`}
+                            </div>
+                        </div>
+                        <div class="im-rule-builder-row">
+                            <label class="im-rb-lbl">Scope</label>
+                            <select id="im-srb-scope" class="im-rb-input">
+                                ${RULE_SCOPES.map(sc => `<option value="${sc.id}">${esc(sc.label)}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="im-rule-builder-row">
+                            <label class="im-rb-lbl">Then set severity</label>
+                            <select id="im-srb-severity" class="im-rb-input">
+                                ${SEVERITY_LEVELS.map(sv => `<option value="${esc(sv)}"${sv === srbSeverity ? ' selected' : ''}>${esc(sv)}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="im-rule-builder-row">
+                            <label class="im-rb-lbl">Note</label>
+                            <input type="text" id="im-srb-note" class="im-rb-input" placeholder="Optional context for reviewers" />
+                        </div>
+                        <div class="im-rule-builder-actions">
+                            <button type="button" class="btn primary" onclick="IntelMvp.addSignalRule()">Add classifier</button>
+                        </div>
+                    </div>
+                </div>`;
+            const activePane = tab === 'signals' ? signalsPane
                              : tab === 'rules'   ? rulesPane
                              :                     filtersPane;
-            openModal('Intelligence settings', 'Filter the feed, tune monitored sources, and set rules for automated actions', `
+            openModal('Intelligence settings', '', `
                 <div class="im-tabs">
                     ${tabBtn('filters', 'Filters')}
-                    ${tabBtn('sources', 'Sources')}
-                    ${tabBtn('rules',   `Rules · ${st.rules.length}`)}
+                    ${tabBtn('signals', `Signals · ${st.signalRules.length}`)}
+                    ${tabBtn('rules',   `Automation · ${st.rules.length}`)}
                 </div>
                 ${activePane}`,
                 `<span class="foot-note">Session-scoped · resets on refresh.</span>
@@ -37059,6 +37154,11 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             document.querySelectorAll('[data-im-rule-on]').forEach((c) => {
                 const k = c.getAttribute('data-im-rule-on');
                 const r = st.rules.find(x => x.id === k);
+                if (r) r.on = c.checked;
+            });
+            document.querySelectorAll('[data-im-sig-on]').forEach((c) => {
+                const k = c.getAttribute('data-im-sig-on');
+                const r = (st.signalRules || []).find(x => x.id === k);
                 if (r) r.on = c.checked;
             });
         }
@@ -37107,6 +37207,47 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             st.rules = (st.rules || []).filter(r => r.id !== id);
             openSettingsInner(st);
         }
+        function addSignalRule() {
+            const st = window.IntelMvpSettings || {};
+            captureSettingsInPlace(st);
+            const f = document.getElementById('im-srb-field');
+            const op = document.getElementById('im-srb-op');
+            const v = document.getElementById('im-srb-value');
+            const sc = document.getElementById('im-srb-scope');
+            const sv = document.getElementById('im-srb-severity');
+            const n = document.getElementById('im-srb-note');
+            if (!f || !op || !v || !sc || !sv) return;
+            st.signalRules = st.signalRules || [];
+            st.signalRules.push({
+                id: 's' + (st.signalRules.length + Math.floor(Math.random() * 900) + 100),
+                on: true,
+                field: f.value,
+                op: op.value,
+                value: v.value,
+                scope: sc.value,
+                severity: sv.value,
+                note: (n && n.value.trim()) || '',
+            });
+            st.srbField = null; st.srbOp = null; st.srbValue = null; st.srbSeverity = null;
+            st.activeTab = 'signals';
+            openSettingsInner(st);
+            toast('Classifier added — new signals will be graded accordingly.');
+        }
+        function deleteSignalRule(id) {
+            const st = window.IntelMvpSettings || {};
+            captureSettingsInPlace(st);
+            st.signalRules = (st.signalRules || []).filter(r => r.id !== id);
+            openSettingsInner(st);
+        }
+        function updateSignalBuilderField(fieldId) {
+            const st = window.IntelMvpSettings || {};
+            captureSettingsInPlace(st);
+            st.srbField = fieldId;
+            st.srbOp = null;
+            st.srbValue = null;
+            st.activeTab = 'signals';
+            openSettingsInner(st);
+        }
         function saveSettings() {
             const st = window.IntelMvpSettings || {};
             captureSettingsInPlace(st);
@@ -37125,14 +37266,23 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             if (del) {
                 ev.preventDefault();
                 deleteRule(del.getAttribute('data-im-rule-del'));
+                return;
+            }
+            const sdel = t.closest('[data-im-sig-del]');
+            if (sdel) {
+                ev.preventDefault();
+                deleteSignalRule(sdel.getAttribute('data-im-sig-del'));
             }
         });
         // Rule-builder field change — re-render the modal so the op
-        // and value dropdowns reflect the new field's schema.
+        // and value dropdowns reflect the new field's schema. Signals
+        // tab has an isomorphic builder; mirror the behavior there.
         document.addEventListener('change', (ev) => {
             const t = ev.target;
             if (t && t.id === 'im-rb-field') {
                 updateRuleBuilderField(t.value);
+            } else if (t && t.id === 'im-srb-field') {
+                updateSignalBuilderField(t.value);
             }
         });
 
@@ -37142,7 +37292,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             finishAccept, finishWatch, finishDismiss,
             quarantineConfirm, quarantineReject, finishQuarantineReject,
             cadenceConfirm, cadenceKeep,
-            openSettings, setSettingsTab, addRule, deleteRule, updateRuleBuilderField, saveSettings,
+            openSettings, setSettingsTab, addRule, deleteRule, updateRuleBuilderField,
+            addSignalRule, deleteSignalRule, updateSignalBuilderField, saveSettings,
         };
     })();
     </script>
