@@ -9096,9 +9096,58 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
            teal solid; secondaries drop to plain-text buttons with
            hover-fill so they don't fight the eye. Dismiss lives at
            the far right in ghost treatment. */
+        /* Actionbar wrapper hosts both the default toolbar and the
+           optional recommended-action overlay. position:relative lets
+           the overlay fill the toolbar footprint without displacing it. */
+        .intel-mvp .actionbar-wrap { position: relative; margin: 1rem -1.125rem -1rem; }
         .intel-mvp .actionbar { display: flex; gap: 0.375rem; align-items: center; flex-wrap: wrap;
-            border-top: var(--luna-border); margin: 1rem -1.125rem -1rem;
+            border-top: var(--luna-border);
             padding: 0.75rem 1.125rem; background: var(--luna-gray-50); }
+        /* Recommended-action overlay — a translucent teal gradient
+           block that sits over the default toolbar when Optro
+           Intelligence has a specific next-move suggestion for the
+           reviewer. Fades in on card expand; dismiss (X) or completing
+           every recommended action collapses it back to the default. */
+        .intel-mvp .rec-overlay { position: absolute; inset: 0;
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0 1.125rem;
+            background: linear-gradient(100deg,
+                rgba(227, 240, 242, 0.98) 0%,
+                rgba(201, 227, 232, 0.94) 55%,
+                rgba(179, 214, 219, 0.88) 100%);
+            border-top: 1px solid rgba(14, 83, 113, 0.22);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            animation: intel-rec-fade-in 320ms cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden; }
+        @keyframes intel-rec-fade-in {
+            from { opacity: 0; transform: translateY(2px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .intel-mvp .rec-overlay-label { display: inline-flex; align-items: center; gap: 0.4375rem;
+            font-size: 0.6875rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.06em;
+            color: #0a3a52; white-space: nowrap; flex: none; }
+        .intel-mvp .rec-overlay-label svg { width: 12px; height: 12px; opacity: 0.75; }
+        .intel-mvp .rec-overlay-actions { display: flex; gap: 0.375rem; flex-wrap: wrap; align-items: center; }
+        .intel-mvp .rec-overlay-actions .rec-overlay-btn { background: #0e5371; color: #fff;
+            border: 1px solid #0e5371;
+            padding: 0.3125rem 0.6875rem; font-size: 0.75rem; font-weight: 500;
+            border-radius: 0.3125rem;
+            box-shadow: 0 1px 2px rgba(14, 83, 113, 0.18);
+            transition: background 160ms, box-shadow 160ms, transform 160ms; }
+        .intel-mvp .rec-overlay-actions .rec-overlay-btn:hover {
+            background: #0a4661; border-color: #0a4661;
+            box-shadow: 0 2px 6px rgba(14, 83, 113, 0.26);
+            transform: translateY(-1px); }
+        .intel-mvp .rec-overlay-dismiss { margin-left: auto; display: inline-flex;
+            align-items: center; justify-content: center;
+            width: 22px; height: 22px; border-radius: 50%;
+            background: transparent; border: none; cursor: pointer;
+            color: #0a3a52; opacity: 0.55; flex: none;
+            transition: opacity 160ms, background 160ms; }
+        .intel-mvp .rec-overlay-dismiss:hover { opacity: 1; background: rgba(14, 83, 113, 0.1); }
+        .intel-mvp .rec-overlay-dismiss svg { width: 11px; height: 11px; }
         .intel-mvp .actionbar .btn { background: transparent; border-color: transparent;
             color: var(--luna-gray-700); }
         .intel-mvp .actionbar .btn:hover { background: var(--luna-gray-100);
@@ -9317,8 +9366,10 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .di-sev-critical { color: #8c1c1c; }
         .di-sev-high .di-sev-dot     { background: #b4480f; }
         .di-sev-high     { color: #6b2d0a; }
-        .di-sev-medium .di-sev-dot   { background: #94a3b8; }
-        .di-sev-medium   { color: #475569; }
+        .di-sev-medium .di-sev-dot   { background: #ea6706; }
+        .di-sev-medium   { color: #7e2b0a; }
+        .di-sev-low .di-sev-dot      { background: #ca8a04; }
+        .di-sev-low      { color: #8d5112; }
         .di-sev-info .di-sev-dot     { background: #cbd5e1; }
         .di-sev-info     { color: #64748b; }
         /* Status pill — small, understated. */
@@ -31743,7 +31794,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         { id: 'x-o1',    vendor: 'Salesforce Inc.',      vendorId: 'salesforce', severity: 'Info',     bucket: 'other',     title: 'SOC 2 Type II renewed · report auto-attached',                source: 'Vendor trust page',   when: 'Jul 30',          tier: 1, status: 'Positive' },
         { id: 'x-o2',    vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'other',     title: 'SOC 2 Type II renewed · report auto-attached',                source: 'Vendor trust page',   when: 'Jul 30',          tier: 1, status: 'Positive' },
         { id: 'x-o-dns', vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'other',     title: 'DNSSEC enabled on acme.co · posture score 82 → 86',           source: 'Domain health',       when: 'Jul 18',          tier: 1, status: 'Positive' },
-        { id: 'x-o-vp',  vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'other',     title: 'New VP of Engineering announced',                             source: 'News and media',      when: 'Sep 26',          tier: 1, status: 'Informational' },
         { id: 'x-o3',    vendor: 'Datadog',              vendorId: 'datadog',    severity: 'Info',     bucket: 'other',     title: 'ISO 27001 recertified · certificate on file',                 source: 'Vendor trust page',   when: 'Jul 22',          tier: 2, status: 'Positive' },
         { id: 'x-o4',    vendor: 'GitHub',               vendorId: 'github',     severity: 'Info',     bucket: 'other',     title: 'Executive: CTO promotion reported',                           source: 'News and media',      when: 'Jul 14',          tier: 1, status: 'Dismissed' },
         { id: 'x-o5',    vendor: 'DocuSign',             vendorId: 'docusign',   severity: 'Info',     bucket: 'other',     title: 'Trust-page banner cleared · incident resolved',               source: 'Vendor trust page',   when: 'Jul 09',          tier: 2, status: 'Positive' },
@@ -31926,7 +31976,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         const s = window.IntelMvpState = window.IntelMvpState || {
             expanded: { 'sig-8k': false, 'sig-leak': false, 'sig-cert': false, 'sig-creds': false,
                         'proc-cadence': false, 'proc-retier': false, 'match-court': false,
-                        'quiet-soc2': false, 'quiet-exec': false, 'quiet-dns': false, 'quiet-vp': false },
+                        'quiet-soc2': false, 'quiet-exec': false, 'quiet-dns': false },
             statuses: {},
             trails: { '8k': [], 'leak': [], 'cadence': [], 'soc2': [], 'exec': [] },
             dimmed: {},
@@ -31942,6 +31992,61 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             return `<span class="badge ${cls}" data-status="${id}">${label}</span>`;
         };
         const extraTrail = (id) => (s.trails[id] || []).map(html => `<li>${html}</li>`).join('');
+        // Recommended-action overlay — per-card contextual suggestion
+        // from Optro Intelligence. Severity shapes the surface:
+        //   Critical → inquiry + notify-owner (fast containment)
+        //   High     → inquiry + open-issue   (escalate + track)
+        //   Medium   → inquiry                (ask the vendor)
+        //   Low      → notify owner           (loop in without blocking)
+        // The reviewer can dismiss (X → default toolbar restored) or
+        // execute each rec through the modal flow; completing all recs
+        // auto-dismisses the overlay and removes the executed buttons
+        // from the default toolbar so the card doesn't offer them twice.
+        const REC_MAP = {
+            '8k':    [{ action: 'inquiry', label: 'Send Inquiry' }, { action: 'notify', label: 'Notify Owner' }],
+            'leak':  [{ action: 'inquiry', label: 'Send Inquiry' }, { action: 'issue',  label: 'Open Issue' }],
+            'cert':  [{ action: 'inquiry', label: 'Send Inquiry' }],
+            'creds': [{ action: 'notify',  label: 'Notify Owner' }],
+        };
+        const ACTION_CATALOG = [
+            { action: 'inquiry', label: 'Send Inquiry' },
+            { action: 'notify',  label: 'Notify Owner' },
+            { action: 'issue',   label: 'Open Issue' },
+            { action: 'accept',  label: 'Accept Risk' },
+            { action: 'watch',   label: 'Watch' },
+            { action: 'dismiss', label: 'Dismiss', transparent: true },
+        ];
+        s.recDone      = s.recDone      || {};
+        s.recDismissed = s.recDismissed || {};
+        const bottomBar = (cardId) => {
+            const done = s.recDone[cardId] || {};
+            const dismissed = !!s.recDismissed[cardId];
+            const recs = REC_MAP[cardId] || [];
+            const pendingRecs = recs.filter(r => !done[r.action]);
+            const showOverlay = !dismissed && pendingRecs.length > 0;
+            const barActions = ACTION_CATALOG.filter(a => !done[a.action]);
+            const btn = (a) => `<button class="btn sm${a.transparent ? ' transparent' : ''}" onclick="IntelMvp.act('${a.action}','${cardId}')">${a.label}</button>`;
+            const overlay = showOverlay ? `
+                        <div class="rec-overlay" data-rec-card="${cardId}">
+                            <span class="rec-overlay-label">
+                                <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1.2l1.6 4.1 4.2.3-3.3 2.6 1.1 4.1L8 10.2l-3.6 2.1 1.1-4.1L2.2 5.6l4.2-.3L8 1.2z"/></svg>
+                                Recommended
+                            </span>
+                            <div class="rec-overlay-actions">
+                                ${pendingRecs.map(r => `<button class="rec-overlay-btn" onclick="IntelMvp.doRec('${cardId}','${r.action}')">${r.label}</button>`).join('')}
+                            </div>
+                            <button class="rec-overlay-dismiss" onclick="IntelMvp.dismissRec('${cardId}')" aria-label="Dismiss recommendation">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                            </button>
+                        </div>` : '';
+            return `
+                    <div class="actionbar-wrap">
+                        <div class="actionbar">
+                            ${barActions.map(btn).join('')}
+                            <span class="spacer"></span>
+                        </div>${overlay}
+                    </div>`;
+        };
         return `<div class="intel-mvp">
             <div class="section-label section-label-attention">
                 <span>Needs attention <span class="badge gray">4</span></span>
@@ -31987,15 +32092,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                         <li><span class="ev-when">7:03 AM</span><span>Vendor trust page updated with an incident banner; no customer notice posted. <a class="cite" onclick="return IntelMvp.openCite('trust.acme.co')"><span class="src-ico"></span>Trust page</a></span></li>
                         <li><span class="ev-when">Aug 11</span><span>Related: leak-site listing referencing acme.co, now linked to this incident (96% confidence). <a href="#sig-leak" class="cite internal"><span class="src-ico"></span>Related signal below</a></span></li>
                     </ul>
-                    <div class="actionbar">
-                        <button class="btn sm" onclick="IntelMvp.act('inquiry','8k')">Send Inquiry</button>
-                        <button class="btn sm" onclick="IntelMvp.act('notify','8k')">Notify Owner</button>
-                        <button class="btn sm" onclick="IntelMvp.act('issue','8k')">Open Issue</button>
-                        <button class="btn sm" onclick="IntelMvp.act('accept','8k')">Accept Risk</button>
-                        <button class="btn sm" onclick="IntelMvp.act('watch','8k')">Watch</button>
-                        <button class="btn transparent sm" onclick="IntelMvp.act('dismiss','8k')">Dismiss</button>
-                        <span class="spacer"></span>
-                    </div>
+                    ${bottomBar('8k')}
                 </div>
             </div>
 
@@ -32034,14 +32131,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                         <li><span class="ev-when">Aug 11</span><span>Listing appeared on the cl0p leak site claiming 2.1 TB from "acme.co". <a class="cite" onclick="return IntelMvp.openCite('Leak-site capture, Aug 11 (archived)')"><span class="src-ico"></span>Archived capture</a></span></li>
                         <li><span class="ev-when">Today</span><span>8-K filed by the vendor, corroborating the listing. <a class="cite" onclick="return IntelMvp.openCite('SEC EDGAR 8-K')"><span class="src-ico"></span>EDGAR filing</a></span></li>
                     </ul>
-                    <div class="actionbar">
-                        <button class="btn sm" onclick="IntelMvp.act('inquiry','leak')">Send Inquiry</button>
-                        <button class="btn sm" onclick="IntelMvp.act('notify','leak')">Notify Owner</button>
-                        <button class="btn sm" onclick="IntelMvp.act('issue','leak')">Open Issue</button>
-                        <button class="btn sm" onclick="IntelMvp.act('accept','leak')">Accept Risk</button>
-                        <button class="btn sm" onclick="IntelMvp.act('watch','leak')">Watch</button>
-                        <button class="btn transparent sm" onclick="IntelMvp.act('dismiss','leak')">Dismiss</button>
-                    </div>
+                    ${bottomBar('leak')}
                 </div>
             </div>
 
@@ -32078,14 +32168,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                         <li><span class="ev-when">Yesterday</span><span>Trust page sub-processor table diff: +1 entry for "Snowflake Compute · eu-west-1". <a class="cite" onclick="return IntelMvp.openCite('trust.acme.co/subprocessors')"><span class="src-ico"></span>Trust page</a></span></li>
                         <li><span class="ev-when">Today</span><span>No notification email received from Acme (checked security@acme.co inbox).</span></li>
                     </ul>
-                    <div class="actionbar">
-                        <button class="btn sm" onclick="IntelMvp.act('inquiry','cert')">Send Inquiry</button>
-                        <button class="btn sm" onclick="IntelMvp.act('notify','cert')">Notify Owner</button>
-                        <button class="btn sm" onclick="IntelMvp.act('issue','cert')">Open Issue</button>
-                        <button class="btn sm" onclick="IntelMvp.act('accept','cert')">Accept Risk</button>
-                        <button class="btn sm" onclick="IntelMvp.act('watch','cert')">Watch</button>
-                        <button class="btn transparent sm" onclick="IntelMvp.act('dismiss','cert')">Dismiss</button>
-                    </div>
+                    ${bottomBar('cert')}
                 </div>
             </div>
 
@@ -32119,21 +32202,14 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     </div>
                     <div class="section-label">Evidence</div>
                     <ul class="evidence">
-                        <li><span class="ev-when">Today 05:48</span><span>HIBP paste-source match: 2 addresses from <code>@acme.co</code>, dump labelled <em>paste_sep28_2026_combo_v4</em>. <a class="cite" onclick="return IntelMvp.openCite('HIBP · paste_sep28_2026_combo_v4')"><span class="src-ico"></span>HIBP record</a></span></li>
-                        <li><span class="ev-when">Today 05:52</span><span>No inbound notification received from Acme security contact (checked security@acme.co inbox).</span></li>
+                        <li><span class="ev-when">5:48 AM</span><span>HIBP paste-source match: 2 addresses from <code>@acme.co</code>, dump labelled <em>paste_sep28_2026_combo_v4</em>. <a class="cite" onclick="return IntelMvp.openCite('HIBP · paste_sep28_2026_combo_v4')"><span class="src-ico"></span>HIBP record</a></span></li>
+                        <li><span class="ev-when">5:52 AM</span><span>No inbound notification received from Acme security contact (checked security@acme.co inbox).</span></li>
                     </ul>
-                    <div class="actionbar">
-                        <button class="btn sm" onclick="IntelMvp.act('inquiry','creds')">Send Inquiry</button>
-                        <button class="btn sm" onclick="IntelMvp.act('notify','creds')">Notify Owner</button>
-                        <button class="btn sm" onclick="IntelMvp.act('issue','creds')">Open Issue</button>
-                        <button class="btn sm" onclick="IntelMvp.act('accept','creds')">Accept Risk</button>
-                        <button class="btn sm" onclick="IntelMvp.act('watch','creds')">Watch</button>
-                        <button class="btn transparent sm" onclick="IntelMvp.act('dismiss','creds')">Dismiss</button>
-                    </div>
+                    ${bottomBar('creds')}
                 </div>
             </div>
 
-            <div class="section-label">Other information · last 90 days <span class="badge gray">4</span></div>
+            <div class="section-label">Other information · last 90 days <span class="badge gray">3</span></div>
             <div class="card">
                 <div class="quiet-item${openCls('quiet-soc2')}" id="quiet-soc2">
                     <div class="quiet-row" onclick="IntelMvp.toggleExpand('quiet-soc2')">
@@ -32147,20 +32223,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                             <li>Report (period Jun 1, 2025 to May 31, 2026) <strong>attached to Documents</strong> automatically · Jul 30 <a class="cite internal" onclick="return IntelMvp.openCite('Documents tab, SOC 2 Type II 2026')"><span class="src-ico"></span>Documents</a></li>
                             <li>Graded Positive: no attention needed under your signal rules</li>
                             ${extraTrail('soc2')}
-                        </ul>
-                    </div>
-                </div>
-                <div class="quiet-item${openCls('quiet-vp')}" id="quiet-vp">
-                    <div class="quiet-row" onclick="IntelMvp.toggleExpand('quiet-vp')">
-                        <span class="quiet-ico pos">&#10003;</span>
-                        <span><b>New VP of Engineering announced</b> <span class="muted">· TechCrunch</span></span>
-                        <span class="when">Sep 26</span>
-                    </div>
-                    <div class="quiet-detail">
-                        <ul class="trail">
-                            <li>Detected by Optro Intelligence · Sep 26 <a class="cite" onclick="return IntelMvp.openCite('TechCrunch · Sep 26')"><span class="src-ico"></span>TechCrunch</a></li>
-                            <li>No direct control or service impact; engineering contact unchanged</li>
-                            <li>Graded Informational: leadership-transition signals ranked low for this vendor under current rules</li>
                         </ul>
                     </div>
                 </div>
@@ -36903,6 +36965,22 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             }
         }
 
+        function markRecDone(cardId, action) {
+            const st = ensureState();
+            st.recDone = st.recDone || {};
+            (st.recDone[cardId] = st.recDone[cardId] || {})[action] = true;
+        }
+        function doRec(cardId, action) { act(action, cardId); }
+        function dismissRec(cardId) {
+            const st = ensureState();
+            (st.recDismissed = st.recDismissed || {})[cardId] = true;
+            if (typeof renderPreserveTabScroll === 'function') renderPreserveTabScroll();
+            else if (typeof render === 'function') render();
+        }
+        function refreshBottomBar() {
+            if (typeof renderPreserveTabScroll === 'function') renderPreserveTabScroll();
+            else if (typeof render === 'function') render();
+        }
         function finishInquiry() {
             const coverRelated = alsoRelatedChecked();
             closeModal();
@@ -36916,6 +36994,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             } else {
                 toast('Inquiry INQ-1042 sent. Optro Intelligence will evaluate the response when it arrives.');
             }
+            markRecDone(CURRENT.signal, 'inquiry');
+            refreshBottomBar();
         }
         function finishNotify() {
             const coverRelated = alsoRelatedChecked();
@@ -36924,6 +37004,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             const rel = RELATED[CURRENT.signal];
             if (coverRelated && rel) addTrail(rel, `<strong>Business owner notified</strong> via the related signal · ${today()}, 9:14 AM`);
             toast('Notification sent to Dana Whitfield and logged on this signal.');
+            markRecDone(CURRENT.signal, 'notify');
+            refreshBottomBar();
         }
         function finishIssue() {
             const coverRelated = alsoRelatedChecked();
@@ -36932,18 +37014,24 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             const rel = RELATED[CURRENT.signal];
             if (coverRelated && rel) addTrail(rel, `<strong>Issue ISS-2087 also covers this signal</strong>, opened from the related signal · ${today()}, 9:14 AM`);
             toast('Issue ISS-2087 created. It appears in this vendor’s Issues tab.');
+            markRecDone(CURRENT.signal, 'issue');
+            refreshBottomBar();
         }
         function finishAccept() {
             closeModal();
             setStatus(CURRENT.signal, 'teal', 'Risk accepted');
             addTrail(CURRENT.signal, `<strong>Risk accepted</strong> by you, rationale on record · ${today()}, 9:14 AM`);
             toast('Risk accepted. Rationale saved to the review record.');
+            markRecDone(CURRENT.signal, 'accept');
+            refreshBottomBar();
         }
         function finishWatch() {
             closeModal();
             setStatus(CURRENT.signal, 'gray', 'Watching');
             addTrail(CURRENT.signal, `<strong>Watching</strong> set by you, resurfaces on any new related signal · ${today()}, 9:14 AM`);
             toast('Watching. This signal auto-resurfaces; it cannot silently expire.');
+            markRecDone(CURRENT.signal, 'watch');
+            refreshBottomBar();
         }
         function finishDismiss() {
             closeModal();
@@ -36951,6 +37039,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             addTrail(CURRENT.signal, `<strong>Dismissed</strong> by you, reason on record, grading tuned · ${today()}, 9:14 AM`);
             dimSignal(CURRENT.signal);
             toast('Dismissed with reason. Optro Intelligence will grade similar signals lower for this vendor.');
+            markRecDone(CURRENT.signal, 'dismiss');
+            refreshBottomBar();
         }
 
         function quarantineConfirm() {
@@ -37480,6 +37570,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             finishAccept, finishWatch, finishDismiss,
             quarantineConfirm, quarantineReject, finishQuarantineReject,
             cadenceConfirm, cadenceKeep,
+            doRec, dismissRec,
             openSettings, setSettingsTab, addRule, deleteRule, updateRuleBuilderField, toggleRuleBuilder,
             addSignalRule, deleteSignalRule, updateSignalBuilderField, toggleSigBuilder, saveSettings,
         };
