@@ -9028,19 +9028,17 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .intel-mvp .signal-main { flex: 1; min-width: 0; }
         .intel-mvp .signal-tail { flex: none; display: inline-flex;
             align-items: center; gap: 0.5rem; }
-        /* Equal-width status badge on each Attention card so signal
-           titles share a right-edge column regardless of status label
-           length ("Needs review" vs "Inquiry sent · awaiting vendor"). */
-        .intel-mvp .signal-tail .badge { min-width: 13rem; justify-content: center; text-align: center; }
         .intel-mvp .signal-title { font-weight: 600; font-size: 0.9375rem;
             color: var(--luna-gray-900); line-height: 1.35;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        /* Severity tag — dot + label, muted background pill. Softer
-           than a filled badge, still scans as a category. */
-        .intel-mvp .sev-tag { display: inline-flex; align-items: center; gap: 0.375rem;
-            padding: 0.125rem 0.5rem; border-radius: 999px;
+        /* Severity tag — dot + label, muted background pill. Equal-
+           width so each card's title column starts at the same X
+           regardless of label length (Critical vs High vs Low). */
+        .intel-mvp .sev-tag { display: inline-flex; align-items: center; justify-content: center;
+            gap: 0.375rem; padding: 0.125rem 0.4375rem; border-radius: 999px;
             font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.02em;
-            background: var(--luna-gray-100); color: var(--luna-gray-700); }
+            background: var(--luna-gray-100); color: var(--luna-gray-700);
+            min-width: 4.75rem; }
         .intel-mvp .sev-tag .sev-dot { width: 6px; height: 6px; border-radius: 50%;
             background: var(--luna-gray-500); flex: none; }
         .intel-mvp .sev-tag.sev-critical { background: #fbe3e3; color: #5a1919; }
@@ -9341,8 +9339,8 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .di-table { background: #ffffff; border: 1px solid #e2e8f0;
             border-radius: 8px; overflow: hidden; }
         .di-row { display: grid;
-            grid-template-columns: 6rem minmax(11rem, 1.2fr) 6rem minmax(18rem, 2fr) minmax(9rem, 0.8fr) 6rem minmax(9rem, 0.9fr);
-            gap: 0.5rem; padding: 0.6875rem 0.875rem; align-items: center;
+            grid-template-columns: 5rem minmax(11rem, 1.2fr) 6rem minmax(18rem, 2fr) minmax(9rem, 0.8fr) 6rem minmax(9rem, 0.9fr);
+            gap: 1rem; padding: 0.6875rem 0.875rem; align-items: center;
             font-size: 0.8125rem; color: #334155; border-bottom: 1px solid #f1f5f9;
             cursor: pointer; transition: background 0.12s ease; }
         .di-row:last-child { border-bottom: 0; }
@@ -9366,8 +9364,8 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
            vendor's own Attention cards. */
         .di-sev { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem;
             font-size: 0.75rem; font-weight: 500;
-            padding: 0.1875rem 0.5625rem; border-radius: 999px;
-            white-space: nowrap; min-width: 5.5rem; }
+            padding: 0.1875rem 0.4375rem; border-radius: 999px;
+            white-space: nowrap; min-width: 4.75rem; }
         .di-sev-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
         .di-sev-critical { background: #fbe3e3; color: #5a1919; }
         .di-sev-critical .di-sev-dot { background: #8c1c1c; box-shadow: 0 0 0 2px rgba(140, 28, 28, 0.15); }
