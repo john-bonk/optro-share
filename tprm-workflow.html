@@ -9351,6 +9351,9 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             padding: 0.5625rem 0.875rem; cursor: default; }
         .di-row-head:hover { background: #fafafa; }
         .di-cell { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        /* Visual breathing room between the Severity chip and the Vendor
+           column — grid gap is uniform, so add dedicated right-padding. */
+        .di-cell-sev { padding-right: 1rem; }
         .di-cell-title { color: #0f172a; font-weight: 400; }
         .di-cell-type { color: #64748b; font-size: 0.75rem; }
         .di-cell-vendor { display: flex; flex-direction: column; gap: 0.125rem; }
@@ -31896,6 +31899,14 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         if (f.type !== 'all' && f.type != null) rows = rows.filter(s => vendorTypeOf(s.vendorId) === f.type);
         const q = (f.search || '').toLowerCase().trim();
         if (q) rows = rows.filter(s => (s.vendor + ' ' + s.title).toLowerCase().includes(q));
+        // Default-sort the Needs attention bucket by severity (highest
+        // at top) so a reviewer scanning the dashboard sees the most
+        // material signals across their portfolio first, regardless of
+        // which vendor they belong to.
+        if (f.bucket === 'attention') {
+            const sevRank = { 'Critical': 0, 'High': 1, 'Medium': 2, 'Low': 3, 'Info': 4 };
+            rows = rows.slice().sort((a, b) => (sevRank[a.severity] ?? 99) - (sevRank[b.severity] ?? 99));
+        }
         const anyFilterActive = f.severity !== 'all' || f.tier !== 'all' || (f.type && f.type !== 'all') || !!q;
         const sevBadge = (sev) => {
             const cls = sev === 'Critical' ? 'red xstrong'
