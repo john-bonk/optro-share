@@ -9043,6 +9043,10 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .intel-mvp .sev-tag.sev-critical .sev-dot { background: #8c1c1c; box-shadow: 0 0 0 2px rgba(140, 28, 28, 0.15); }
         .intel-mvp .sev-tag.sev-high { background: #fbe3e3; color: #8c1c1c; }
         .intel-mvp .sev-tag.sev-high .sev-dot { background: #db3535; }
+        .intel-mvp .sev-tag.sev-medium { background: #fff1dc; color: #7e2b0a; }
+        .intel-mvp .sev-tag.sev-medium .sev-dot { background: #ea6706; }
+        .intel-mvp .sev-tag.sev-low { background: #fef9c3; color: #8d5112; }
+        .intel-mvp .sev-tag.sev-low .sev-dot { background: #ca8a04; }
         /* Meta line — single scannable row of dimensional metadata
            replacing the old three-chip cluster. Muted, tabular feel. */
         .intel-mvp .signal-meta { display: flex; align-items: center;
@@ -9499,7 +9503,17 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .intel-mvp-shell .im-rb-input:focus { outline: 0; border-color: #266c92;
             box-shadow: 0 0 0 3px rgba(38, 108, 146, 0.1); }
         .intel-mvp-shell .im-rule-builder-actions { display: flex;
-            justify-content: flex-end; margin-top: 0.25rem; }
+            justify-content: flex-end; gap: 0.375rem; margin-top: 0.25rem; }
+        /* + Create rule link — collapsed state for the builder.
+           Reads as a quiet affordance below the rule list; expands
+           into the full form on click (same panel height when
+           collapsed, so the modal fits content). */
+        .intel-mvp-shell .im-rule-add-btn { display: inline-flex;
+            align-items: center; gap: 0.375rem; margin-top: 0.625rem;
+            background: transparent; border: 0; padding: 0.25rem 0.375rem;
+            font: inherit; font-size: 0.8125rem; color: #266c92;
+            cursor: pointer; border-radius: 4px; font-weight: 500; }
+        .intel-mvp-shell .im-rule-add-btn:hover { background: #e3f0f2; }
         /* Field · operator · value triple for the concrete rule
            builder. Grid so the three drop widths breathe together. */
         .intel-mvp-shell .im-rb-triple { display: grid;
@@ -31686,6 +31700,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         // ─── Needs attention · action required or in-flight ─────
         { id: 'x-8k',    vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Critical', bucket: 'attention', title: 'SEC 8-K filed: material cybersecurity incident',              source: 'SEC EDGAR',           when: 'Today · 06:42',   tier: 1, status: 'Needs review' },
         { id: 'x-leak',  vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'High',     bucket: 'attention', title: 'Leak-site listing references acme.co',                        source: 'Leak-site monitor',   when: 'Today · 07:03',   tier: 1, status: 'Watching · resurfaced' },
+        { id: 'x-cert-acme', vendor: 'Acme Cloud Co.',   vendorId: 'acme',       severity: 'Medium',   bucket: 'attention', title: 'Sub-processor added: Snowflake Compute (EU-West)',            source: 'Vendor trust page',   when: 'Yesterday · 16:12', tier: 1, status: 'Needs review' },
+        { id: 'x-exec-acme', vendor: 'Acme Cloud Co.',   vendorId: 'acme',       severity: 'Low',      bucket: 'attention', title: 'New VP of Engineering announced',                             source: 'News and media',      when: 'Sep 26 · 11:30',  tier: 1, status: 'Watching' },
         { id: 'x-sf',    vendor: 'Salesforce Inc.',      vendorId: 'salesforce', severity: 'High',     bucket: 'attention', title: 'Adverse news · subprocessor breach disclosure',               source: 'News and media',      when: 'Today · 09:17',   tier: 1, status: 'Needs review' },
         { id: 'x-ok',    vendor: 'Okta Inc.',            vendorId: 'okta',       severity: 'High',     bucket: 'attention', title: 'Cert transparency: unrecognized wildcard *.customerX.okta.com', source: 'Cert transparency', when: 'Today · 10:04',   tier: 1, status: 'Needs review' },
         { id: 'x-wd',    vendor: 'Workday',              vendorId: 'workday',    severity: 'High',     bucket: 'attention', title: 'Breach registry entry: HR-Data-Pipeline exposure',            source: 'Breach registries',   when: 'Yesterday',       tier: 2, status: 'Needs review' },
@@ -31695,6 +31711,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
 
         // ─── Process recommendations · cadence / governance ─────
         { id: 'x-r1',    vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'process',   title: 'Move next scheduled review from Feb 12, 2027 → Sep 15, 2026', source: 'Cadence rules',       when: 'Today · 07:02',   tier: 1, status: 'Awaiting decision' },
+        { id: 'x-r-retier', vendor: 'Acme Cloud Co.',    vendorId: 'acme',       severity: 'Info',     bucket: 'process',   title: 'Re-tier Acme Cloud Co.: Tier 2 → Tier 1 · data-classification uplift', source: 'Tiering criteria', when: 'Today · 07:04', tier: 1, status: 'Awaiting decision' },
         { id: 'x-r2',    vendor: 'Zoom',                 vendorId: 'zoom',       severity: 'Info',     bucket: 'process',   title: 'Reassessment overdue by 21 days · schedule now',              source: 'Cadence rules',       when: 'Sep 25',          tier: 2, status: 'Awaiting decision' },
         { id: 'x-r3',    vendor: 'Slack Technologies',   vendorId: 'slack',      severity: 'Info',     bucket: 'process',   title: 'Downgrade cadence proposal: Tier 3 · biennial → triennial',   source: 'Cadence rules',       when: 'Sep 23',          tier: 3, status: 'Awaiting decision' },
         { id: 'x-r4',    vendor: 'DocuSign',             vendorId: 'docusign',   severity: 'Info',     bucket: 'process',   title: 'Recontract renewal check-in — 60-day lead time reached',      source: 'Contract dates',      when: 'Sep 20',          tier: 2, status: 'Awaiting decision' },
@@ -31712,6 +31729,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         { id: 'x-o-gcp', vendor: 'Google Cloud Platform',vendorId: 'gcp',        severity: 'Info',     bucket: 'other',     title: 'Regional outage · impact-analysis published',                 source: 'News and media',      when: 'Sep 20',          tier: 1, status: 'Positive' },
         { id: 'x-o1',    vendor: 'Salesforce Inc.',      vendorId: 'salesforce', severity: 'Info',     bucket: 'other',     title: 'SOC 2 Type II renewed · report auto-attached',                source: 'Vendor trust page',   when: 'Jul 30',          tier: 1, status: 'Positive' },
         { id: 'x-o2',    vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'other',     title: 'SOC 2 Type II renewed · report auto-attached',                source: 'Vendor trust page',   when: 'Jul 30',          tier: 1, status: 'Positive' },
+        { id: 'x-o-dns', vendor: 'Acme Cloud Co.',       vendorId: 'acme',       severity: 'Info',     bucket: 'other',     title: 'DNSSEC enabled on acme.co · posture score 82 → 86',           source: 'Domain health',       when: 'Jul 18',          tier: 1, status: 'Positive' },
         { id: 'x-o3',    vendor: 'Datadog',              vendorId: 'datadog',    severity: 'Info',     bucket: 'other',     title: 'ISO 27001 recertified · certificate on file',                 source: 'Vendor trust page',   when: 'Jul 22',          tier: 2, status: 'Positive' },
         { id: 'x-o4',    vendor: 'GitHub',               vendorId: 'github',     severity: 'Info',     bucket: 'other',     title: 'Executive: CTO promotion reported',                           source: 'News and media',      when: 'Jul 14',          tier: 1, status: 'Dismissed' },
         { id: 'x-o5',    vendor: 'DocuSign',             vendorId: 'docusign',   severity: 'Info',     bucket: 'other',     title: 'Trust-page banner cleared · incident resolved',               source: 'Vendor trust page',   when: 'Jul 09',          tier: 2, status: 'Positive' },
@@ -31831,9 +31849,9 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 ${kpiHtml}
                 <div class="di-tabs" role="tablist">
                     <button type="button" class="di-tab${f.bucket==='attention'?' active':''}" role="tab" data-action="di-set-bucket" data-bucket="attention">Needs attention <span class="di-tab-count">${bucketCounts.attention}</span></button>
+                    <button type="button" class="di-tab${f.bucket==='other'?' active':''}" role="tab" data-action="di-set-bucket" data-bucket="other">Other information <span class="di-tab-count">${bucketCounts.other}</span></button>
                     <button type="button" class="di-tab${f.bucket==='process'?' active':''}" role="tab" data-action="di-set-bucket" data-bucket="process">Process recommendations <span class="di-tab-count">${bucketCounts.process}</span></button>
                     <button type="button" class="di-tab${f.bucket==='matches'?' active':''}" role="tab" data-action="di-set-bucket" data-bucket="matches">Potential matches <span class="di-tab-count">${bucketCounts.matches}</span></button>
-                    <button type="button" class="di-tab${f.bucket==='other'?' active':''}" role="tab" data-action="di-set-bucket" data-bucket="other">Other information <span class="di-tab-count">${bucketCounts.other}</span></button>
                 </div>
                 <div class="di-toolbar">
                     <label class="di-search">
@@ -31892,9 +31910,9 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         // is the source of truth; behaviors in the IntelMvp namespace
         // write to it, and this render function reads from it.
         const s = window.IntelMvpState = window.IntelMvpState || {
-            expanded: { 'sig-8k': false, 'sig-leak': false,
-                        'proc-cadence': false, 'match-court': false,
-                        'quiet-soc2': false, 'quiet-exec': false },
+            expanded: { 'sig-8k': false, 'sig-leak': false, 'sig-cert': false, 'sig-exec': false,
+                        'proc-cadence': false, 'proc-retier': false, 'match-court': false,
+                        'quiet-soc2': false, 'quiet-exec': false, 'quiet-dns': false },
             statuses: {},
             trails: { '8k': [], 'leak': [], 'cadence': [], 'soc2': [], 'exec': [] },
             dimmed: {},
@@ -31912,7 +31930,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         const extraTrail = (id) => (s.trails[id] || []).map(html => `<li>${html}</li>`).join('');
         return `<div class="intel-mvp">
             <div class="section-label section-label-attention">
-                <span>Needs attention <span class="badge gray">2</span></span>
+                <span>Needs attention <span class="badge gray">4</span></span>
                 <button type="button" class="intel-gear-btn" data-tooltip="Intelligence settings" onclick="IntelMvp.openSettings()" aria-label="Intelligence settings">
                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="2"/><path d="M13 8a5 5 0 0 0-.1-1l1.4-1.1-1.4-2.4-1.7.6a5 5 0 0 0-1.7-1l-.3-1.8h-2.8l-.3 1.8a5 5 0 0 0-1.7 1l-1.7-.6-1.4 2.4L2.6 7A5 5 0 0 0 2.6 9L1.2 10.1l1.4 2.4 1.7-.6a5 5 0 0 0 1.7 1l.3 1.8h2.8l.3-1.8a5 5 0 0 0 1.7-1l1.7.6 1.4-2.4L12.9 9q.1-.5.1-1z"/></svg>
                 </button>
@@ -32013,7 +32031,143 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 </div>
             </div>
 
-            <div class="section-label">Process recommendations <span class="badge gray">1</span></div>
+            <div class="card signal sev-medium${openCls('sig-cert')}${dimCls('cert')}" id="sig-cert" data-signal-card="cert">
+                <div class="signal-head" onclick="IntelMvp.toggleExpand('sig-cert')">
+                    <div class="signal-lead">
+                        <span class="sev-tag sev-medium"><span class="sev-dot"></span>Medium</span>
+                    </div>
+                    <div class="signal-main">
+                        <div class="signal-title">Sub-processor added: Snowflake Compute (EU-West)</div>
+                        <div class="signal-meta">
+                            <span class="meta-source"><span class="meta-dot"></span>Vendor trust page</span>
+                            <span class="meta-sep">·</span>
+                            <span>Trust page diff</span>
+                            <span class="meta-sep">·</span>
+                            <span>Yesterday · 4:12 PM</span>
+                        </div>
+                    </div>
+                    <div class="signal-tail">
+                        ${pill('cert', 'teal', 'Needs review')}
+                        <span class="chev">&#9660;</span>
+                    </div>
+                </div>
+                <div class="signal-body">
+                    <div class="matters">
+                        <div class="matters-title">&#10022; Why this matters to you</div>
+                        <ul>
+                            <li>Acme's sub-processor list changed — a new EU-West region appears for compute workloads. Your DPA Annex II requires review of material sub-processor changes before they take effect. <a class="cite internal" onclick="return IntelMvp.openCite('DPA Annex II')"><span class="src-ico"></span>DPA · Annex II</a></li>
+                            <li>No pre-change notice received. Policy §6.3 requires 30-day advance notice. <a class="cite internal" onclick="return IntelMvp.openCite('Policy §6.3')"><span class="src-ico"></span>Policy · §6.3</a></li>
+                        </ul>
+                    </div>
+                    <div class="section-label">Evidence</div>
+                    <ul class="evidence">
+                        <li><span class="ev-when">Yesterday</span><span>Trust page sub-processor table diff: +1 entry for "Snowflake Compute · eu-west-1". <a class="cite" onclick="return IntelMvp.openCite('trust.acme.co/subprocessors')"><span class="src-ico"></span>Trust page</a></span></li>
+                        <li><span class="ev-when">Today</span><span>No notification email received from Acme (checked security@acme.co inbox).</span></li>
+                    </ul>
+                    <div class="actionbar">
+                        <button class="btn sm" onclick="IntelMvp.act('inquiry','cert')">Send Inquiry</button>
+                        <button class="btn sm" onclick="IntelMvp.act('notify','cert')">Notify Owner</button>
+                        <button class="btn sm" onclick="IntelMvp.act('issue','cert')">Open Issue</button>
+                        <button class="btn sm" onclick="IntelMvp.act('accept','cert')">Accept Risk</button>
+                        <button class="btn sm" onclick="IntelMvp.act('watch','cert')">Watch</button>
+                        <button class="btn transparent sm" onclick="IntelMvp.act('dismiss','cert')">Dismiss</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card signal sev-low${openCls('sig-exec')}${dimCls('exec')}" id="sig-exec" data-signal-card="exec">
+                <div class="signal-head" onclick="IntelMvp.toggleExpand('sig-exec')">
+                    <div class="signal-lead">
+                        <span class="sev-tag sev-low"><span class="sev-dot"></span>Low</span>
+                    </div>
+                    <div class="signal-main">
+                        <div class="signal-title">New VP of Engineering announced</div>
+                        <div class="signal-meta">
+                            <span class="meta-source"><span class="meta-dot"></span>News and media</span>
+                            <span class="meta-sep">·</span>
+                            <span>TechCrunch</span>
+                            <span class="meta-sep">·</span>
+                            <span>Sep 26 · 11:30 AM</span>
+                        </div>
+                    </div>
+                    <div class="signal-tail">
+                        ${pill('exec', 'gray', 'Watching')}
+                        <span class="chev">&#9660;</span>
+                    </div>
+                </div>
+                <div class="signal-body">
+                    <div class="matters">
+                        <div class="matters-title">&#10022; Why this matters to you</div>
+                        <ul>
+                            <li>No direct control or service impact; informational signal. Current engineering contact remains the same.</li>
+                            <li>Flagged to the queue because leadership changes correlate with roadmap shifts worth tracking for Tier 1 vendors. <a class="cite internal" onclick="return IntelMvp.openCite('Tier 1 monitoring policy')"><span class="src-ico"></span>Tier 1 policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="section-label">Evidence</div>
+                    <ul class="evidence">
+                        <li><span class="ev-when">Sep 26</span><span>TechCrunch article: "Acme Cloud Co. names new VP of Engineering from Snowflake." <a class="cite" onclick="return IntelMvp.openCite('TechCrunch · Sep 26')"><span class="src-ico"></span>Article</a></span></li>
+                    </ul>
+                    <div class="actionbar">
+                        <button class="btn sm" onclick="IntelMvp.act('inquiry','exec')">Send Inquiry</button>
+                        <button class="btn sm" onclick="IntelMvp.act('notify','exec')">Notify Owner</button>
+                        <button class="btn sm" onclick="IntelMvp.act('issue','exec')">Open Issue</button>
+                        <button class="btn sm" onclick="IntelMvp.act('accept','exec')">Accept Risk</button>
+                        <button class="btn sm" onclick="IntelMvp.act('watch','exec')">Watch</button>
+                        <button class="btn transparent sm" onclick="IntelMvp.act('dismiss','exec')">Dismiss</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-label">Other information · last 90 days <span class="badge gray">3</span></div>
+            <div class="card">
+                <div class="quiet-item${openCls('quiet-soc2')}" id="quiet-soc2">
+                    <div class="quiet-row" onclick="IntelMvp.toggleExpand('quiet-soc2')">
+                        <span class="quiet-ico pos">&#10003;</span>
+                        <span><b>SOC 2 Type II renewed</b> <span class="muted">· report attached to Documents automatically</span></span>
+                        <span class="when">Jul 30</span>
+                    </div>
+                    <div class="quiet-detail">
+                        <ul class="trail" data-trail="soc2">
+                            <li>Detected on the vendor trust page by Optro Intelligence · Jul 30</li>
+                            <li>Report (period Jun 1, 2025 to May 31, 2026) <strong>attached to Documents</strong> automatically · Jul 30 <a class="cite internal" onclick="return IntelMvp.openCite('Documents tab, SOC 2 Type II 2026')"><span class="src-ico"></span>Documents</a></li>
+                            <li>Graded Positive: no attention needed under your signal rules</li>
+                            ${extraTrail('soc2')}
+                        </ul>
+                    </div>
+                </div>
+                <div class="quiet-item${openCls('quiet-dns')}" id="quiet-dns">
+                    <div class="quiet-row" onclick="IntelMvp.toggleExpand('quiet-dns')">
+                        <span class="quiet-ico pos">&#10003;</span>
+                        <span><b>DNSSEC enabled on acme.co</b> <span class="muted">· domain-health scan</span></span>
+                        <span class="when">Jul 18</span>
+                    </div>
+                    <div class="quiet-detail">
+                        <ul class="trail">
+                            <li>Detected by Optro Intelligence domain-health scan · Jul 18</li>
+                            <li>Posture score for Acme increased from 82 → 86</li>
+                            <li>Graded Positive: logged for the next assessment cycle</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="quiet-item${openCls('quiet-exec')}" id="quiet-exec">
+                    <div class="quiet-row" onclick="IntelMvp.toggleExpand('quiet-exec')">
+                        <span class="quiet-ico dis">&#10005;</span>
+                        <span><b>CFO departure reported</b> <span class="muted">· Reuters</span></span>
+                        <span class="when">Aug 6</span>
+                    </div>
+                    <div class="quiet-detail">
+                        <ul class="trail" data-trail="exec">
+                            <li>Detected and graded <strong>Low</strong> by Optro Intelligence · Aug 5 <a class="cite" onclick="return IntelMvp.openCite('Reuters, Aug 5')"><span class="src-ico"></span>Reuters</a></li>
+                            <li><strong>Dismissed</strong> by Marcus Lee · Aug 6</li>
+                            <li>Reason on record: "Routine executive transition, no control or service impact. Finance contact unchanged."</li>
+                            <li>Grading tuned: similar leadership-change signals will rank lower for this vendor</li>
+                            ${extraTrail('exec')}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-label">Process recommendations <span class="badge gray">2</span></div>
             <div class="card">
                 <div class="quiet-item${openCls('proc-cadence')}" id="proc-cadence">
                     <div class="quiet-row" onclick="IntelMvp.toggleExpand('proc-cadence')">
@@ -32033,39 +32187,21 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                         </div>`}
                     </div>
                 </div>
-            </div>
-
-            <div class="section-label">Other information · last 90 days <span class="badge gray">2</span></div>
-            <div class="card">
-                <div class="quiet-item${openCls('quiet-soc2')}" id="quiet-soc2">
-                    <div class="quiet-row" onclick="IntelMvp.toggleExpand('quiet-soc2')">
-                        <span class="quiet-ico pos">&#10003;</span>
-                        <span><b>SOC 2 Type II renewed</b> <span class="muted">· report attached to Documents automatically</span></span>
-                        <span class="when">Jul 30</span>
+                <div class="quiet-item${openCls('proc-retier')}" id="proc-retier">
+                    <div class="quiet-row" onclick="IntelMvp.toggleExpand('proc-retier')">
+                        <span class="quiet-ico proc"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v3"/><path d="M8 11v3"/><path d="M2 8h3"/><path d="M11 8h3"/><circle cx="8" cy="8" r="2.5"/></svg></span>
+                        <span><b>Re-tier Acme Cloud Co.</b> <span class="muted">· Tier 2 → Tier 1 · data-classification uplift</span></span>
+                        <span class="when">Today · 7:04 AM</span>
                     </div>
                     <div class="quiet-detail">
-                        <ul class="trail" data-trail="soc2">
-                            <li>Detected on the vendor trust page by Optro Intelligence · Jul 30</li>
-                            <li>Report (period Jun 1, 2025 to May 31, 2026) <strong>attached to Documents</strong> automatically · Jul 30 <a class="cite internal" onclick="return IntelMvp.openCite('Documents tab, SOC 2 Type II 2026')"><span class="src-ico"></span>Documents</a></li>
-                            <li>Graded Positive: no attention needed under your process-recommendation rules</li>
-                            ${extraTrail('soc2')}
+                        <p class="quiet-body">Vendor-profile data classification moved from Internal to Confidential (per last questionnaire). Optro Intelligence recommends re-tiering Acme to Tier 1, which raises the monitoring cadence to annual and tightens the SLA on breach notification review.</p>
+                        <ul class="trail">
+                            <li>Proposed by Optro Intelligence under your tiering-criteria rules · today, 7:04 AM <a class="cite internal" onclick="return IntelMvp.openCite('Tiering criteria (Settings)')"><span class="src-ico"></span>Tiering criteria</a></li>
                         </ul>
-                    </div>
-                </div>
-                <div class="quiet-item${openCls('quiet-exec')}" id="quiet-exec">
-                    <div class="quiet-row" onclick="IntelMvp.toggleExpand('quiet-exec')">
-                        <span class="quiet-ico dis">&#10005;</span>
-                        <span><b>CFO departure reported</b> <span class="muted">· Reuters</span></span>
-                        <span class="when">Aug 6</span>
-                    </div>
-                    <div class="quiet-detail">
-                        <ul class="trail" data-trail="exec">
-                            <li>Detected and graded <strong>Low</strong> by Optro Intelligence · Aug 5 <a class="cite" onclick="return IntelMvp.openCite('Reuters, Aug 5')"><span class="src-ico"></span>Reuters</a></li>
-                            <li><strong>Dismissed</strong> by Marcus Lee · Aug 6</li>
-                            <li>Reason on record: "Routine executive transition, no control or service impact. Finance contact unchanged."</li>
-                            <li>Grading tuned: similar leadership-change signals will rank lower for this vendor</li>
-                            ${extraTrail('exec')}
-                        </ul>
+                        <div class="quiet-actions">
+                            <button class="btn sm" onclick="event.stopPropagation();IntelMvp.closeModal&&IntelMvp.closeModal();">Keep Tier 2</button>
+                            <button class="btn primary sm" onclick="event.stopPropagation();IntelMvp.closeModal&&IntelMvp.closeModal();">Re-tier to Tier 1</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -36906,15 +37042,15 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     { id: 'r2', on: true, scope: 'all',    field: 'source',   op: 'is',          value: 'Leak-site monitors', action: 'send-inquiry', note: '' },
                     { id: 'r3', on: true, scope: 'all',    field: 'source',   op: 'is',          value: 'Sanctions lists',    action: 'proc-lock',    note: 'Auto-open Issue and block procurement lock' },
                 ],
-                // Signal-classification rules — map a condition on
-                // the raw event (source / keyword / tier) to a severity
+                // Signal-grading rules — map a condition on the raw
+                // event (source / keyword / tier / age) to a severity
                 // level. Lets the reviewer tune how incoming events
                 // are graded before any automation fires on them.
                 signalRules: [
-                    { id: 's1', on: true, scope: 'all',    field: 'source',   op: 'is',       value: 'SEC EDGAR',           severity: 'Critical', note: '' },
-                    { id: 's2', on: true, scope: 'all',    field: 'source',   op: 'is',       value: 'Leak-site monitors',  severity: 'High',     note: '' },
-                    { id: 's3', on: true, scope: 'all',    field: 'source',   op: 'is',       value: 'Breach registries',   severity: 'High',     note: '' },
-                    { id: 's4', on: true, scope: 'tier-1', field: 'keyword',  op: 'contains', value: 'ransomware',          severity: 'Critical', note: 'Tier-1 only' },
+                    { id: 's1', on: true, scope: 'tier-1', field: 'source',   op: 'is',          value: 'SEC EDGAR',          severity: 'Critical', note: '' },
+                    { id: 's2', on: true, scope: 'all',    field: 'keyword',  op: 'contains',    value: 'ransomware',         severity: 'Critical', note: '' },
+                    { id: 's3', on: true, scope: 'tier-1-2', field: 'source', op: 'is',          value: 'Leak-site monitors', severity: 'High',     note: '' },
+                    { id: 's4', on: true, scope: 'all',    field: 'age',      op: 'is at least', value: '14 days',            severity: 'Low',      note: 'Stale signals downgrade' },
                 ],
             };
             openSettingsInner(st);
@@ -37000,9 +37136,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                                 </button>
                             </div>`).join('')}
                     </div>
-                </div>
-                <div class="im-set-section">
-                    <div class="im-set-section-title">Create a new rule</div>
+                    ${ruleBuilderOpen ? `
                     <div class="im-rule-builder">
                         <div class="im-rule-builder-row">
                             <label class="im-rb-lbl">When</label>
@@ -37037,9 +37171,11 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                             <input type="text" id="im-rb-note" class="im-rb-input" placeholder="Optional context for reviewers" />
                         </div>
                         <div class="im-rule-builder-actions">
+                            <button type="button" class="btn" onclick="IntelMvp.toggleRuleBuilder()">Cancel</button>
                             <button type="button" class="btn primary" onclick="IntelMvp.addRule()">Add rule</button>
                         </div>
-                    </div>
+                    </div>`
+                    : `<button type="button" class="im-rule-add-btn" onclick="IntelMvp.toggleRuleBuilder()">+ Create rule</button>`}
                 </div>`;
             // Signal-classification rules — same visual grammar as the
             // automation rules but the "Then" slot sets a severity
@@ -37054,9 +37190,14 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             const srbValue = st.srbValue || (srbValueOptions ? srbValueOptions[0] : '');
             const srbSeverity = st.srbSeverity || 'High';
             const SEVERITY_LEVELS = ['Critical', 'High', 'Medium', 'Low', 'Info'];
+            // Builder-open state — gates whether the "Create new rule"
+            // form is visible or collapsed behind a "+ Create rule" link.
+            // Separate per tab so each pane opens independently.
+            const sigBuilderOpen = !!st.sigBuilderOpen;
+            const ruleBuilderOpen = !!st.ruleBuilderOpen;
             const signalsPane = `
                 <div class="im-set-section">
-                    <div class="im-set-section-title">Active classifiers · ${st.signalRules.length}</div>
+                    <div class="im-set-section-title">Active rules · ${st.signalRules.length}</div>
                     <div class="im-rule-list">
                         ${st.signalRules.map((r) => `
                             <div class="im-rule">
@@ -37068,14 +37209,12 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                                     <div class="im-rule-then"><span class="im-rule-lbl">Then</span> Set severity to <strong>${esc(r.severity || 'Medium')}</strong></div>
                                     <div class="im-rule-scope"><span class="im-rule-lbl">Scope</span> ${esc(scopeLabel(r.scope))}${r.note ? ` · <span class="muted">${esc(r.note)}</span>` : ''}</div>
                                 </div>
-                                <button type="button" class="im-rule-del" data-im-sig-del="${esc(r.id)}" aria-label="Delete classifier" title="Delete classifier">
+                                <button type="button" class="im-rule-del" data-im-sig-del="${esc(r.id)}" aria-label="Delete rule" title="Delete rule">
                                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h10"/><path d="M5.5 4V3a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1"/><path d="M4.5 4l0.5 8.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1L11.5 4"/></svg>
                                 </button>
                             </div>`).join('')}
                     </div>
-                </div>
-                <div class="im-set-section">
-                    <div class="im-set-section-title">Create a new classifier</div>
+                    ${sigBuilderOpen ? `
                     <div class="im-rule-builder">
                         <div class="im-rule-builder-row">
                             <label class="im-rb-lbl">When</label>
@@ -37110,9 +37249,11 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                             <input type="text" id="im-srb-note" class="im-rb-input" placeholder="Optional context for reviewers" />
                         </div>
                         <div class="im-rule-builder-actions">
-                            <button type="button" class="btn primary" onclick="IntelMvp.addSignalRule()">Add classifier</button>
+                            <button type="button" class="btn" onclick="IntelMvp.toggleSigBuilder()">Cancel</button>
+                            <button type="button" class="btn primary" onclick="IntelMvp.addSignalRule()">Add rule</button>
                         </div>
-                    </div>
+                    </div>`
+                    : `<button type="button" class="im-rule-add-btn" onclick="IntelMvp.toggleSigBuilder()">+ Create rule</button>`}
                 </div>`;
             const activePane = tab === 'signals' ? signalsPane
                              : tab === 'rules'   ? rulesPane
@@ -37124,8 +37265,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     ${tabBtn('rules',   `Automation · ${st.rules.length}`)}
                 </div>
                 ${activePane}`,
-                `<span class="foot-note">Session-scoped · resets on refresh.</span>
-                <button class="btn" onclick="IntelMvp.closeModal()">Close</button>
+                `<button class="btn" onclick="IntelMvp.closeModal()">Close</button>
                 <button class="btn primary" onclick="IntelMvp.saveSettings()">Save settings</button>`);
         }
         function setSettingsTab(id) {
@@ -37185,6 +37325,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             });
             // Reset the builder to a clean severity default.
             st.rbField = null; st.rbOp = null; st.rbValue = null;
+            st.ruleBuilderOpen = false;
             st.activeTab = 'rules';
             openSettingsInner(st);
             toast('Rule added — active now.');
@@ -37205,6 +37346,20 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             const st = window.IntelMvpSettings || {};
             captureSettingsInPlace(st);
             st.rules = (st.rules || []).filter(r => r.id !== id);
+            openSettingsInner(st);
+        }
+        function toggleRuleBuilder() {
+            const st = window.IntelMvpSettings || {};
+            captureSettingsInPlace(st);
+            st.ruleBuilderOpen = !st.ruleBuilderOpen;
+            st.activeTab = 'rules';
+            openSettingsInner(st);
+        }
+        function toggleSigBuilder() {
+            const st = window.IntelMvpSettings || {};
+            captureSettingsInPlace(st);
+            st.sigBuilderOpen = !st.sigBuilderOpen;
+            st.activeTab = 'signals';
             openSettingsInner(st);
         }
         function addSignalRule() {
@@ -37229,9 +37384,10 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 note: (n && n.value.trim()) || '',
             });
             st.srbField = null; st.srbOp = null; st.srbValue = null; st.srbSeverity = null;
+            st.sigBuilderOpen = false;
             st.activeTab = 'signals';
             openSettingsInner(st);
-            toast('Classifier added — new signals will be graded accordingly.');
+            toast('Rule added — new signals will be graded accordingly.');
         }
         function deleteSignalRule(id) {
             const st = window.IntelMvpSettings || {};
@@ -37292,8 +37448,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             finishAccept, finishWatch, finishDismiss,
             quarantineConfirm, quarantineReject, finishQuarantineReject,
             cadenceConfirm, cadenceKeep,
-            openSettings, setSettingsTab, addRule, deleteRule, updateRuleBuilderField,
-            addSignalRule, deleteSignalRule, updateSignalBuilderField, saveSettings,
+            openSettings, setSettingsTab, addRule, deleteRule, updateRuleBuilderField, toggleRuleBuilder,
+            addSignalRule, deleteSignalRule, updateSignalBuilderField, toggleSigBuilder, saveSettings,
         };
     })();
     </script>
