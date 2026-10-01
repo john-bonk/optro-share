@@ -9112,10 +9112,10 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             display: flex; align-items: center; gap: 0.75rem;
             padding: 0 1.125rem;
             background: linear-gradient(100deg,
-                rgba(227, 240, 242, 0.98) 0%,
-                rgba(201, 227, 232, 0.94) 55%,
-                rgba(179, 214, 219, 0.88) 100%);
-            border-top: 1px solid rgba(14, 83, 113, 0.22);
+                rgba(241, 249, 250, 0.94) 0%,
+                rgba(225, 240, 243, 0.80) 60%,
+                rgba(209, 231, 236, 0.62) 100%);
+            border-top: 1px solid rgba(14, 83, 113, 0.14);
             backdrop-filter: blur(2px);
             -webkit-backdrop-filter: blur(2px);
             animation: intel-rec-fade-in 320ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -9125,28 +9125,28 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             to   { opacity: 1; transform: translateY(0); }
         }
         .intel-mvp .rec-overlay-label { display: inline-flex; align-items: center; gap: 0.4375rem;
-            font-size: 0.6875rem; font-weight: 600;
+            font-size: 0.6875rem; font-weight: 700;
             text-transform: uppercase; letter-spacing: 0.06em;
-            color: #0a3a52; white-space: nowrap; flex: none; }
-        .intel-mvp .rec-overlay-label svg { width: 12px; height: 12px; opacity: 0.75; }
+            color: var(--luna-teal-600); white-space: nowrap; flex: none; }
+        .intel-mvp .rec-overlay-sparkle { font-size: 0.75rem; line-height: 1; display: inline-flex;
+            opacity: 0.85; }
         .intel-mvp .rec-overlay-actions { display: flex; gap: 0.375rem; flex-wrap: wrap; align-items: center; }
-        .intel-mvp .rec-overlay-actions .rec-overlay-btn { background: #0e5371; color: #fff;
-            border: 1px solid #0e5371;
+        .intel-mvp .rec-overlay-actions .rec-overlay-btn {
+            background: transparent; color: var(--luna-gray-700);
+            border: 1px solid transparent;
             padding: 0.3125rem 0.6875rem; font-size: 0.75rem; font-weight: 500;
-            border-radius: 0.3125rem;
-            box-shadow: 0 1px 2px rgba(14, 83, 113, 0.18);
-            transition: background 160ms, box-shadow 160ms, transform 160ms; }
+            border-radius: 0.3125rem; cursor: pointer;
+            transition: background 160ms, color 160ms; }
         .intel-mvp .rec-overlay-actions .rec-overlay-btn:hover {
-            background: #0a4661; border-color: #0a4661;
-            box-shadow: 0 2px 6px rgba(14, 83, 113, 0.26);
-            transform: translateY(-1px); }
+            background: rgba(14, 83, 113, 0.09);
+            color: var(--luna-gray-900); }
         .intel-mvp .rec-overlay-dismiss { margin-left: auto; display: inline-flex;
             align-items: center; justify-content: center;
             width: 22px; height: 22px; border-radius: 50%;
             background: transparent; border: none; cursor: pointer;
-            color: #0a3a52; opacity: 0.55; flex: none;
+            color: #0a3a52; opacity: 0.5; flex: none;
             transition: opacity 160ms, background 160ms; }
-        .intel-mvp .rec-overlay-dismiss:hover { opacity: 1; background: rgba(14, 83, 113, 0.1); }
+        .intel-mvp .rec-overlay-dismiss:hover { opacity: 1; background: rgba(14, 83, 113, 0.08); }
         .intel-mvp .rec-overlay-dismiss svg { width: 11px; height: 11px; }
         .intel-mvp .actionbar .btn { background: transparent; border-color: transparent;
             color: var(--luna-gray-700); }
@@ -9358,20 +9358,25 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .di-tier { font-size: 0.6875rem; color: #94a3b8; letter-spacing: 0.02em; }
         .di-row-head .di-cell-vendor { flex-direction: row; }
         .di-cell-source, .di-cell-when { color: #64748b; font-size: 0.75rem; }
-        /* Severity pill — muted dot + label, no filled background. */
+        /* Severity chip — filled background matching the per-vendor
+           Intelligence tab's sev-tag palette so a reviewer scanning the
+           dashboard sees the same color language they'd see on the
+           vendor's own Attention cards. */
         .di-sev { display: inline-flex; align-items: center; gap: 0.375rem;
-            font-size: 0.75rem; font-weight: 500; }
-        .di-sev-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
-        .di-sev-critical .di-sev-dot { background: #8c1c1c; box-shadow: 0 0 0 3px rgba(140, 28, 28, 0.14); }
-        .di-sev-critical { color: #8c1c1c; }
+            font-size: 0.75rem; font-weight: 500;
+            padding: 0.1875rem 0.5625rem; border-radius: 999px;
+            white-space: nowrap; }
+        .di-sev-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+        .di-sev-critical { background: #fbe3e3; color: #5a1919; }
+        .di-sev-critical .di-sev-dot { background: #8c1c1c; box-shadow: 0 0 0 2px rgba(140, 28, 28, 0.15); }
+        .di-sev-high     { background: #f8ddc8; color: #6b2d0a; }
         .di-sev-high .di-sev-dot     { background: #b4480f; }
-        .di-sev-high     { color: #6b2d0a; }
+        .di-sev-medium   { background: #fff1dc; color: #7e2b0a; }
         .di-sev-medium .di-sev-dot   { background: #ea6706; }
-        .di-sev-medium   { color: #7e2b0a; }
+        .di-sev-low      { background: #fef9c3; color: #8d5112; }
         .di-sev-low .di-sev-dot      { background: #ca8a04; }
-        .di-sev-low      { color: #8d5112; }
+        .di-sev-info     { background: #f1f5f9; color: #64748b; }
         .di-sev-info .di-sev-dot     { background: #cbd5e1; }
-        .di-sev-info     { color: #64748b; }
         /* Status pill — small, understated. */
         .di-status { display: inline-flex; align-items: center; padding: 0.125rem 0.5rem;
             border-radius: 999px; font-size: 0.6875rem; font-weight: 500;
@@ -19679,13 +19684,23 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 ? MANAGED_VENDORS.find(v => v.id === vendorId) : null;
             const label = seed ? seed.name : vendorId;
             if (opts.tab) state.activeTab = opts.tab;
-            // Deep links from the Intelligence dashboard park the lifecycle
-            // outline on Monitoring → 4.3 Monitoring signals, so a user who
-            // chases a signal into the vendor also sees "which workflow
-            // step this surfaced from" without hunting through the outline.
+            // Deep links from the Intelligence dashboard fundamentally
+            // dial the vendor into Monitoring → 4.3 Monitoring signals:
+            // backfill every upstream phase (profile → tier → docs →
+            // assessment → report) so the lifecycle outline shows real
+            // status for Monitoring with all status pills, control
+            // mappings, and prior-phase artefacts intact.
             if (opts.focusMonitoringSignals) {
+                try { backfillToPhase('monitoring_active'); } catch (err) {}
+                state.workflowPhase = 'monitoring_active';
+                if (!state.vendorDecision) state.vendorDecision = 'approved';
+                if (!state.assessmentCompletedAt) state.assessmentCompletedAt = new Date().toISOString();
                 state.activeStep = 3;      // Monitoring phase
                 state.expandedSubstep = 2; // 4.3 Monitoring signals (new substep)
+                if (!Number.isFinite(state.monitoringSimStep) || state.monitoringSimStep < 7) {
+                    state.monitoringSimStep = 7;
+                }
+                try { if (typeof tickMonitoringSim === 'function') tickMonitoringSim(); } catch (err) {}
             }
             actions.openVendorTab(vendorId, label);
         },
@@ -32029,8 +32044,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             const overlay = showOverlay ? `
                         <div class="rec-overlay" data-rec-card="${cardId}">
                             <span class="rec-overlay-label">
-                                <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1.2l1.6 4.1 4.2.3-3.3 2.6 1.1 4.1L8 10.2l-3.6 2.1 1.1-4.1L2.2 5.6l4.2-.3L8 1.2z"/></svg>
-                                Recommended
+                                <span class="rec-overlay-sparkle" aria-hidden="true">&#10022;</span>
+                                Recommended actions
                             </span>
                             <div class="rec-overlay-actions">
                                 ${pendingRecs.map(r => `<button class="rec-overlay-btn" onclick="IntelMvp.doRec('${cardId}','${r.action}')">${r.label}</button>`).join('')}
