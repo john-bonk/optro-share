@@ -9338,8 +9338,12 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .di-cell { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         /* Visual breathing room between the Severity chip and the Vendor
            column — grid gap is uniform, so add dedicated padding. The
-           vendor column has slack room to the right, so shift it 24px. */
-        .di-cell-sev { padding-right: 1rem; }
+           vendor column has slack room to the right, so shift it 24px.
+           Also kill the inherited text-overflow:ellipsis here: the sev
+           cell holds a filled chip, not wrappable text, and the ellipsis
+           machinery renders a stray "." glyph when the chip's intrinsic
+           width exceeds the cell's content box. */
+        .di-cell-sev { padding-right: 1rem; text-overflow: clip; overflow: visible; }
         .di-cell-vendor { padding-left: 24px; }
         .di-cell-title { color: #0f172a; font-weight: 400; }
         .di-cell-type { color: #64748b; font-size: 0.75rem; }
