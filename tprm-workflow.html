@@ -9028,6 +9028,10 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .intel-mvp .signal-main { flex: 1; min-width: 0; }
         .intel-mvp .signal-tail { flex: none; display: inline-flex;
             align-items: center; gap: 0.5rem; }
+        /* Equal-width status badge on each Attention card so signal
+           titles share a right-edge column regardless of status label
+           length ("Needs review" vs "Inquiry sent · awaiting vendor"). */
+        .intel-mvp .signal-tail .badge { min-width: 13rem; justify-content: center; text-align: center; }
         .intel-mvp .signal-title { font-weight: 600; font-size: 0.9375rem;
             color: var(--luna-gray-900); line-height: 1.35;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -9108,28 +9112,26 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
            Intelligence has a specific next-move suggestion for the
            reviewer. Fades in on card expand; dismiss (X) or completing
            every recommended action collapses it back to the default. */
+        /* Rec overlay — grayscale, matches the signal-head band so it
+           sits as a weighted overlay rather than a colored interrupt.
+           No animation: the monitoring tick re-renders the Intelligence
+           tab every ~1.2s, and a keyframe here replays on every attach,
+           which reads as a flash on all cards. Keep it static. */
         .intel-mvp .rec-overlay { position: absolute; inset: 0;
             display: flex; align-items: center; gap: 0.75rem;
             padding: 0 1.125rem;
             background: linear-gradient(100deg,
-                rgba(241, 249, 250, 0.94) 0%,
-                rgba(225, 240, 243, 0.80) 60%,
-                rgba(209, 231, 236, 0.62) 100%);
-            border-top: 1px solid rgba(14, 83, 113, 0.14);
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-            animation: intel-rec-fade-in 320ms cubic-bezier(0.4, 0, 0.2, 1);
+                rgba(248, 250, 252, 0.98) 0%,
+                rgba(241, 245, 249, 0.95) 55%,
+                rgba(226, 232, 240, 0.90) 100%);
+            border-top: 1px solid rgba(100, 116, 139, 0.18);
             overflow: hidden; }
-        @keyframes intel-rec-fade-in {
-            from { opacity: 0; transform: translateY(2px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
         .intel-mvp .rec-overlay-label { display: inline-flex; align-items: center; gap: 0.4375rem;
             font-size: 0.6875rem; font-weight: 700;
             text-transform: uppercase; letter-spacing: 0.06em;
-            color: var(--luna-teal-600); white-space: nowrap; flex: none; }
+            color: var(--luna-gray-700); white-space: nowrap; flex: none; }
         .intel-mvp .rec-overlay-sparkle { font-size: 0.75rem; line-height: 1; display: inline-flex;
-            opacity: 0.85; }
+            opacity: 0.7; color: var(--luna-gray-600); }
         .intel-mvp .rec-overlay-actions { display: flex; gap: 0.375rem; flex-wrap: wrap; align-items: center; }
         .intel-mvp .rec-overlay-actions .rec-overlay-btn {
             background: transparent; color: var(--luna-gray-700);
@@ -9138,15 +9140,15 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             border-radius: 0.3125rem; cursor: pointer;
             transition: background 160ms, color 160ms; }
         .intel-mvp .rec-overlay-actions .rec-overlay-btn:hover {
-            background: rgba(14, 83, 113, 0.09);
+            background: rgba(15, 23, 42, 0.07);
             color: var(--luna-gray-900); }
         .intel-mvp .rec-overlay-dismiss { margin-left: auto; display: inline-flex;
             align-items: center; justify-content: center;
             width: 22px; height: 22px; border-radius: 50%;
             background: transparent; border: none; cursor: pointer;
-            color: #0a3a52; opacity: 0.5; flex: none;
+            color: var(--luna-gray-600); opacity: 0.5; flex: none;
             transition: opacity 160ms, background 160ms; }
-        .intel-mvp .rec-overlay-dismiss:hover { opacity: 1; background: rgba(14, 83, 113, 0.08); }
+        .intel-mvp .rec-overlay-dismiss:hover { opacity: 1; background: rgba(15, 23, 42, 0.07); }
         .intel-mvp .rec-overlay-dismiss svg { width: 11px; height: 11px; }
         .intel-mvp .actionbar .btn { background: transparent; border-color: transparent;
             color: var(--luna-gray-700); }
@@ -9362,10 +9364,10 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
            Intelligence tab's sev-tag palette so a reviewer scanning the
            dashboard sees the same color language they'd see on the
            vendor's own Attention cards. */
-        .di-sev { display: inline-flex; align-items: center; gap: 0.375rem;
+        .di-sev { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem;
             font-size: 0.75rem; font-weight: 500;
             padding: 0.1875rem 0.5625rem; border-radius: 999px;
-            white-space: nowrap; }
+            white-space: nowrap; min-width: 5.5rem; }
         .di-sev-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
         .di-sev-critical { background: #fbe3e3; color: #5a1919; }
         .di-sev-critical .di-sev-dot { background: #8c1c1c; box-shadow: 0 0 0 2px rgba(140, 28, 28, 0.15); }
