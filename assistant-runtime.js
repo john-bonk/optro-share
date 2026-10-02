@@ -2189,43 +2189,36 @@
   // "Always Ask ▼" dropdown. The menu opens with three options
   // (Always Ask / Always Allow / Plan Mode) — selection is purely
   // visual for now, no actual mode change wiring. Default = Always Ask.
-  // Idempotent: the swap is anchored on a data-attribute flag so the
-  // MutationObserver's rapid re-fire doesn't double-replace.
+  //
+  // Non-invasive strategy: the bundle's chat panel is React. Setting
+  // inline styles on React-managed nodes (`style.display='none'`) or
+  // inserting siblings into React-managed child lists triggers the
+  // reconciler to "repair" the toolbar on the next render, which fires
+  // the MutationObserver, which fires the swap again — a feedback loop
+  // that also disrupts the panel's own dock-state polling (undock →
+  // re-dock race). Instead we:
+  //   • Hide the plan checkbox via a stylesheet rule (React can't undo
+  //     a CSS rule on its own class).
+  //   • Append the dropdown host as the LAST child of the toolbar so
+  //     React's child-list reconciler never sees us between its tracked
+  //     children; appending at the tail is the lowest-churn insertion.
+  //   • Mark the TOOLBAR (not planWrap) with `data-optro-mode-mounted`
+  //     and self-heal if React drops our host.
+  //   • Register the global document-click listener exactly ONCE, so
+  //     repeated swap passes don't accumulate listeners.
+  let _optroModeDocClickBound = false;
   function swapPlanCheckbox(player) {
     const planWrap = player.chatPanel.querySelector('._planCheckbox_1vvl1_1825');
     if (!planWrap) return;
-    if (planWrap.dataset.optroReplaced === '1') return;
-    planWrap.dataset.optroReplaced = '1';
-    // Hide the original checkbox/label — we leave it in the DOM so the
-    // bundle's own state references don't crash. We just stop rendering it.
-    planWrap.style.display = 'none';
-    // Build the dropdown next to the hidden wrapper so the toolbar
-    // layout stays identical.
-    const host = document.createElement('div');
-    host.className = 'optro-mode-picker';
-    host.innerHTML = `
-      <button type="button" class="optro-mode-trigger" data-optro-mode-trigger aria-haspopup="menu" aria-expanded="false">
-        <span class="optro-mode-label" data-optro-mode-label>Always Ask</span>
-        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
-      </button>
-      <div class="optro-mode-menu" data-optro-mode-menu role="menu" hidden>
-        <button type="button" class="optro-mode-opt" data-optro-mode="ask" role="menuitemradio" aria-checked="true">
-          <span class="optro-mode-check">&#10003;</span><span>Always Ask</span>
-        </button>
-        <button type="button" class="optro-mode-opt" data-optro-mode="allow" role="menuitemradio" aria-checked="false">
-          <span class="optro-mode-check">&#10003;</span><span>Always Allow</span>
-        </button>
-        <button type="button" class="optro-mode-opt" data-optro-mode="plan" role="menuitemradio" aria-checked="false">
-          <span class="optro-mode-check">&#10003;</span><span>Plan Mode</span>
-        </button>
-      </div>`;
-    planWrap.parentNode.insertBefore(host, planWrap);
-    // One-time styles — scoped via class so re-insertion of the host
-    // (on a bundle re-render) picks them up without re-registering.
+    const toolbar = planWrap.parentNode;
+    if (!toolbar) return;
+    // One-time stylesheet: hides the native plan checkbox + styles the
+    // dropdown. Scoped by class so re-mount of the host picks it up.
     if (!document.getElementById('optro-mode-picker-style')) {
       const style = document.createElement('style');
       style.id = 'optro-mode-picker-style';
       style.textContent = `
+        ._planCheckbox_1vvl1_1825 { display: none !important; }
         .optro-mode-picker { position: relative; display: inline-flex; align-items: center; }
         .optro-mode-trigger { display: inline-flex; align-items: center; gap: 0.3125rem;
           background: transparent; border: none; cursor: pointer;
@@ -2250,6 +2243,34 @@
       `;
       document.head.appendChild(style);
     }
+    // Self-heal: if the toolbar is already marked but React removed our
+    // host, clear the flag so we re-mount below. Otherwise bail early.
+    const alreadyMounted = toolbar.getAttribute('data-optro-mode-mounted') === '1';
+    const existingHost = toolbar.querySelector(':scope > .optro-mode-picker');
+    if (alreadyMounted && existingHost) return;
+    if (alreadyMounted && !existingHost) toolbar.removeAttribute('data-optro-mode-mounted');
+    const host = document.createElement('div');
+    host.className = 'optro-mode-picker';
+    host.innerHTML = `
+      <button type="button" class="optro-mode-trigger" data-optro-mode-trigger aria-haspopup="menu" aria-expanded="false">
+        <span class="optro-mode-label" data-optro-mode-label>Always Ask</span>
+        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+      </button>
+      <div class="optro-mode-menu" data-optro-mode-menu role="menu" hidden>
+        <button type="button" class="optro-mode-opt" data-optro-mode="ask" role="menuitemradio" aria-checked="true">
+          <span class="optro-mode-check">&#10003;</span><span>Always Ask</span>
+        </button>
+        <button type="button" class="optro-mode-opt" data-optro-mode="allow" role="menuitemradio" aria-checked="false">
+          <span class="optro-mode-check">&#10003;</span><span>Always Allow</span>
+        </button>
+        <button type="button" class="optro-mode-opt" data-optro-mode="plan" role="menuitemradio" aria-checked="false">
+          <span class="optro-mode-check">&#10003;</span><span>Plan Mode</span>
+        </button>
+      </div>`;
+    // Appending at the tail minimises React reconciliation churn vs.
+    // inserting between tracked siblings.
+    toolbar.appendChild(host);
+    toolbar.setAttribute('data-optro-mode-mounted', '1');
     const trigger = host.querySelector('[data-optro-mode-trigger]');
     const menu = host.querySelector('[data-optro-mode-menu]');
     const label = host.querySelector('[data-optro-mode-label]');
@@ -2269,9 +2290,22 @@
       label.textContent = opt.textContent.trim();
       closeMenu();
     });
-    document.addEventListener('click', (e) => {
-      if (!host.contains(e.target)) closeMenu();
-    });
+    // Global click-away listener is attached once; it finds whichever
+    // menu is live via the DOM, so swap re-mounts stay cheap.
+    if (!_optroModeDocClickBound) {
+      _optroModeDocClickBound = true;
+      document.addEventListener('click', (ev) => {
+        document.querySelectorAll('.optro-mode-picker').forEach((h) => {
+          const m = h.querySelector('.optro-mode-menu');
+          const t = h.querySelector('.optro-mode-trigger');
+          if (!m || m.hidden) return;
+          if (!h.contains(ev.target)) {
+            m.hidden = true;
+            if (t) t.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    }
   }
 
   // Tiled prompt gallery — replaces the four-pill empty-state cluster
