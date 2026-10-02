@@ -2182,6 +2182,96 @@
     try { swapPromptLibrary(player); } catch(e) {}
     try { swapEntityPicker(player); } catch(e) {}
     try { swapPersonaTriggerLabel(player); } catch(e) {}
+    try { swapPlanCheckbox(player); } catch(e) {}
+  }
+
+  // Replace the bundle's "Plan" checkbox in the input toolbar with an
+  // "Always Ask ▼" dropdown. The menu opens with three options
+  // (Always Ask / Always Allow / Plan Mode) — selection is purely
+  // visual for now, no actual mode change wiring. Default = Always Ask.
+  // Idempotent: the swap is anchored on a data-attribute flag so the
+  // MutationObserver's rapid re-fire doesn't double-replace.
+  function swapPlanCheckbox(player) {
+    const planWrap = player.chatPanel.querySelector('._planCheckbox_1vvl1_1825');
+    if (!planWrap) return;
+    if (planWrap.dataset.optroReplaced === '1') return;
+    planWrap.dataset.optroReplaced = '1';
+    // Hide the original checkbox/label — we leave it in the DOM so the
+    // bundle's own state references don't crash. We just stop rendering it.
+    planWrap.style.display = 'none';
+    // Build the dropdown next to the hidden wrapper so the toolbar
+    // layout stays identical.
+    const host = document.createElement('div');
+    host.className = 'optro-mode-picker';
+    host.innerHTML = `
+      <button type="button" class="optro-mode-trigger" data-optro-mode-trigger aria-haspopup="menu" aria-expanded="false">
+        <span class="optro-mode-label" data-optro-mode-label>Always Ask</span>
+        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+      </button>
+      <div class="optro-mode-menu" data-optro-mode-menu role="menu" hidden>
+        <button type="button" class="optro-mode-opt" data-optro-mode="ask" role="menuitemradio" aria-checked="true">
+          <span class="optro-mode-check">&#10003;</span><span>Always Ask</span>
+        </button>
+        <button type="button" class="optro-mode-opt" data-optro-mode="allow" role="menuitemradio" aria-checked="false">
+          <span class="optro-mode-check">&#10003;</span><span>Always Allow</span>
+        </button>
+        <button type="button" class="optro-mode-opt" data-optro-mode="plan" role="menuitemradio" aria-checked="false">
+          <span class="optro-mode-check">&#10003;</span><span>Plan Mode</span>
+        </button>
+      </div>`;
+    planWrap.parentNode.insertBefore(host, planWrap);
+    // One-time styles — scoped via class so re-insertion of the host
+    // (on a bundle re-render) picks them up without re-registering.
+    if (!document.getElementById('optro-mode-picker-style')) {
+      const style = document.createElement('style');
+      style.id = 'optro-mode-picker-style';
+      style.textContent = `
+        .optro-mode-picker { position: relative; display: inline-flex; align-items: center; }
+        .optro-mode-trigger { display: inline-flex; align-items: center; gap: 0.3125rem;
+          background: transparent; border: none; cursor: pointer;
+          font: inherit; font-size: 0.8125rem; font-weight: 500;
+          color: #374151; padding: 0.3125rem 0.5rem; border-radius: 0.375rem;
+          transition: background 140ms, color 140ms; }
+        .optro-mode-trigger:hover { background: rgba(15, 23, 42, 0.06); color: #0f172a; }
+        .optro-mode-trigger svg { opacity: 0.65; }
+        .optro-mode-menu { position: absolute; bottom: calc(100% + 0.375rem); left: 0;
+          min-width: 11rem; padding: 0.3125rem; z-index: 50;
+          background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.5rem;
+          box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.06); }
+        .optro-mode-menu[hidden] { display: none; }
+        .optro-mode-opt { display: flex; align-items: center; gap: 0.5rem;
+          width: 100%; padding: 0.4375rem 0.5rem; border: none; background: transparent;
+          font: inherit; font-size: 0.8125rem; color: #0f172a; text-align: left;
+          border-radius: 0.3125rem; cursor: pointer; transition: background 120ms; }
+        .optro-mode-opt:hover { background: rgba(15, 23, 42, 0.06); }
+        .optro-mode-opt .optro-mode-check { width: 14px; flex: none; text-align: center;
+          color: #374151; font-size: 0.75rem; line-height: 1; opacity: 0; }
+        .optro-mode-opt[aria-checked="true"] .optro-mode-check { opacity: 1; }
+      `;
+      document.head.appendChild(style);
+    }
+    const trigger = host.querySelector('[data-optro-mode-trigger]');
+    const menu = host.querySelector('[data-optro-mode-menu]');
+    const label = host.querySelector('[data-optro-mode-label]');
+    const closeMenu = () => { menu.hidden = true; trigger.setAttribute('aria-expanded', 'false'); };
+    const openMenu  = () => { menu.hidden = false; trigger.setAttribute('aria-expanded', 'true'); };
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menu.hidden ? openMenu() : closeMenu();
+    });
+    menu.addEventListener('click', (e) => {
+      const opt = e.target.closest('[data-optro-mode]');
+      if (!opt) return;
+      e.stopPropagation();
+      // Visual-only state change — no wiring to the bundle's plan mode.
+      menu.querySelectorAll('[data-optro-mode]').forEach((o) => o.setAttribute('aria-checked', 'false'));
+      opt.setAttribute('aria-checked', 'true');
+      label.textContent = opt.textContent.trim();
+      closeMenu();
+    });
+    document.addEventListener('click', (e) => {
+      if (!host.contains(e.target)) closeMenu();
+    });
   }
 
   // Tiled prompt gallery — replaces the four-pill empty-state cluster
