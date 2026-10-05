@@ -14866,6 +14866,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         // (SOX/GRC) manifest remains available in the switcher for
         // historical reference only.
         workshopManifestId: 'tprm',
+        // Platform Settings (gear) — which sidebar pane is selected.
+        platformSettingsSection: 'organization',
         _workshopDefaultManifest: null,
         _workshopTprmManifest: null,
         workshopOpenScripts: {},
@@ -21575,7 +21577,8 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             <div class="nav-icon" data-module="timesheets"    data-tooltip="Timesheets"><span class="luna-icon" data-icon="module-timesheets"></span></div>
         </div>
         <div class="nav-icons-bottom">
-            <div class="nav-icon" data-module="settings" data-action="open-assistant-workshop" data-tooltip="Assistant Workshop"><span class="luna-icon" data-icon="module-settings"></span></div>
+            <div class="nav-icon" data-module="assistant-workshop" data-action="open-assistant-workshop" data-tooltip="Assistant Workshop"><span class="luna-icon" data-icon="robot"></span></div>
+            <div class="nav-icon" data-module="settings" data-action="open-platform-settings" data-tooltip="Settings"><span class="luna-icon" data-icon="module-settings"></span></div>
             <div class="nav-icon" data-module="support"  data-tooltip="Support"><span class="luna-icon" data-icon="module-support"></span></div>
         </div>
     </div>`;
@@ -21614,10 +21617,10 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         const toggleIcon = collapsed ? 'menu-expand' : 'menu-collapse';
         const toggleTip  = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
         // Optro Assistant settings — fullscreen primary app view behind the
-        // gear. Two sibling routes share this sidebar: 'assistant-workshop'
-        // (the design-system view of every manifest bucket, default landing)
-        // and 'assistant-abilities' (the compiled bundle's own Abilities
-        // table, iframed). Active pill follows the current route.
+        // robot glyph. Two sibling routes share this sidebar:
+        // 'assistant-workshop' (the design-system view of every manifest
+        // bucket, default landing) and 'assistant-abilities' (the compiled
+        // bundle's own Abilities table). Active pill follows the route.
         if (state.route === 'assistant-workshop' || state.route === 'assistant-abilities') {
             const isW = state.route === 'assistant-workshop';
             return `<div class="sidebar" data-component="Sidebar">
@@ -21631,10 +21634,41 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                     <a class="sidebar-item${isW ? ' active' : ''}" data-action="open-assistant-workshop">Assistant Workshop</a>
                     <a class="sidebar-item${isW ? '' : ' active'}" data-action="open-assistant-abilities">Assistant Abilities</a>
                 </div>
+            </div>`;
+        }
+        // Platform Settings — the reclaimed gear. Stubbed IA; sections are
+        // placeholders pending the real Settings experience spec.
+        if (state.route === 'platform-settings') {
+            const sec = state.platformSettingsSection || 'organization';
+            const item = (id, label) => `<a class="sidebar-item${sec === id ? ' active' : ''}" data-action="set-platform-settings-section" data-section="${id}">${label}</a>`;
+            return `<div class="sidebar" data-component="Sidebar">
+                <div class="sidebar-header">
+                    <span>Settings</span>
+                    <button class="sidebar-collapse-btn" data-action="toggle-sidebar" data-tooltip="${toggleTip}"><span class="luna-icon" data-icon="${toggleIcon}" data-size="md"></span></button>
+                    <span class="sidebar-collapsed-label">ST</span>
+                </div>
                 <div class="sidebar-section">
-                    <div class="sidebar-section-title">ADMINISTRATION</div>
-                    <a class="sidebar-item">Access &amp; Roles</a>
-                    <a class="sidebar-item">Audit Log</a>
+                    <div class="sidebar-section-title">GENERAL</div>
+                    ${item('organization', 'Organization')}
+                    ${item('branding', 'Branding')}
+                    ${item('localization', 'Localization')}
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">ACCESS</div>
+                    ${item('users', 'Users')}
+                    ${item('roles', 'Roles &amp; Permissions')}
+                    ${item('sso', 'Single Sign-On')}
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">PLATFORM</div>
+                    ${item('integrations', 'Integrations')}
+                    ${item('notifications', 'Notifications')}
+                    ${item('api-keys', 'API Keys')}
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">GOVERNANCE</div>
+                    ${item('audit-log', 'Audit Log')}
+                    ${item('retention', 'Data Retention')}
                 </div>
             </div>`;
         }
@@ -21819,6 +21853,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                      : state.route === 'dashboards-intelligence' ? renderDashboardIntelligence()
                      : state.route === 'assistant-workshop' ? renderAssistantWorkshopPage()
                      : state.route === 'assistant-abilities' ? renderAssistantAbilitiesPage()
+                     : state.route === 'platform-settings' ? renderPlatformSettings()
                      : state.route === 'optroflow-hub' ? renderOptroflowHub()
                      : state.route === 'optroflow-schema-editor' ? renderOptroflowSchemaEditor()
                      : state.route === 'workstream' ? renderWorkstreamList()
@@ -21833,9 +21868,13 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             // Left-nav active glyph follows the current route. Workstream views
             // light up the Workstream icon; everything else stays on TPRM.
             const isWorkstream = state.route === 'workstream' || state.route === 'workstream-control-detail';
+            // Assistant Workshop + Abilities now live behind the robot glyph;
+            // the gear is reclaimed for the platform Settings experience.
             const isAssistantSettings = state.route === 'assistant-abilities' || state.route === 'assistant-workshop';
+            const isPlatformSettings = state.route === 'platform-settings';
             const activeModule = isWorkstream ? 'workstream'
-                              : isAssistantSettings ? 'settings'
+                              : isAssistantSettings ? 'assistant-workshop'
+                              : isPlatformSettings ? 'settings'
                               : 'tprm';
             const activeIcon = document.querySelector('.nav-icon[data-module="' + activeModule + '"]');
             if (activeIcon) activeIcon.classList.add('active');
@@ -21877,6 +21916,49 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         return fetch('./assistant-content-' + id + '.json?v=' + Date.now(), { cache: 'no-store' })
             .then((r) => r.json());
     }
+    // ─────────────────────────────────────────────────────────────
+    // Platform Settings — the reclaimed gear glyph (Assistant Workshop
+    // moved up to the robot). STUB: the IA is in place and every
+    // sidebar section routes here, but each pane is a placeholder
+    // pending the real Settings experience spec.
+    // ─────────────────────────────────────────────────────────────
+    const PLATFORM_SETTINGS_SECTIONS = {
+        'organization':  { title: 'Organization',          desc: 'Tenant name, primary contacts, business units, and fiscal calendar.' },
+        'branding':      { title: 'Branding',              desc: 'Logo, accent color, and the look of vendor-facing portals and emails.' },
+        'localization':  { title: 'Localization',          desc: 'Default language, timezone, date format, and currency.' },
+        'users':         { title: 'Users',                 desc: 'Provision, deactivate, and audit everyone with access to this tenant.' },
+        'roles':         { title: 'Roles & Permissions',   desc: 'Role definitions and the module-level permissions attached to each.' },
+        'sso':           { title: 'Single Sign-On',        desc: 'SAML / OIDC identity provider configuration and just-in-time provisioning.' },
+        'integrations':  { title: 'Integrations',          desc: 'Connected systems — ticketing, HRIS, procurement, and signal sources.' },
+        'notifications': { title: 'Notifications',         desc: 'Org-wide delivery defaults, digest cadence, and escalation routing.' },
+        'api-keys':      { title: 'API Keys',              desc: 'Programmatic access tokens, scopes, and rotation policy.' },
+        'audit-log':     { title: 'Audit Log',             desc: 'Immutable record of configuration changes and administrative actions.' },
+        'retention':     { title: 'Data Retention',        desc: 'How long records, documents, and signals are kept before archival.' },
+    };
+    function renderPlatformSettings() {
+        const id = state.platformSettingsSection || 'organization';
+        const meta = PLATFORM_SETTINGS_SECTIONS[id] || PLATFORM_SETTINGS_SECTIONS['organization'];
+        return `<div class="tprm-scroll">
+            <div class="page-band settings-page-band">
+                <div class="page-band-row"><h1 data-component="Heading">${esc(meta.title)}</h1></div>
+            </div>
+            <div class="set-page">
+                <section class="set-section" data-component="Card">
+                    <div class="set-section-hdr">
+                        <span class="set-section-icon"><span class="luna-icon" data-icon="module-settings" data-size="md"></span></span>
+                        <div class="set-section-meta">
+                            <div class="set-section-title">${esc(meta.title)}</div>
+                            <div class="set-section-desc">${esc(meta.desc)}</div>
+                        </div>
+                    </div>
+                    <div class="set-section-body">
+                        <div class="aa-empty">Not built yet — this pane is a placeholder.</div>
+                    </div>
+                </section>
+            </div>
+        </div>`;
+    }
+
     function renderAssistantAbilitiesPage() {
         if (!state._workshopTprmManifest) {
             // Kick a load; render loading. Reuse the Workshop's cache so
@@ -34181,6 +34263,17 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 e.preventDefault();
                 state.route = 'assistant-workshop';
                 state.activeTabId = null;
+                return render();
+            }
+            case 'open-platform-settings': {
+                e.preventDefault();
+                state.route = 'platform-settings';
+                state.activeTabId = null;
+                return render();
+            }
+            case 'set-platform-settings-section': {
+                e.preventDefault();
+                state.platformSettingsSection = trigger.dataset.section || 'organization';
                 return render();
             }
             case 'workshop-set-manifest': {
