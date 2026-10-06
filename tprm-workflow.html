@@ -11990,8 +11990,9 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .setx-list { border-right: 1px solid #e2e8f0; background: #fff; overflow-y: auto; min-height: 0; }
         .setx-list-head { padding: 0.8125rem 1rem; font-size: 0.875rem; font-weight: 600;
             color: #0f172a; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
-        .setx-group-title { padding: 0.75rem 1rem 0.375rem; font-size: 0.6875rem; font-weight: 700;
+        .setx-group-title { padding: 0.75rem 1rem 0.1875rem; font-size: 0.6875rem; font-weight: 700;
             letter-spacing: 0.06em; text-transform: uppercase; color: #94a3b8; }
+        .setx-group-note { padding: 0 1rem 0.5rem; font-size: 0.6875rem; line-height: 1.45; color: #94a3b8; }
         .setx-item { display: flex; align-items: center; gap: 0.625rem; width: 100%;
             padding: 0.625rem 1rem; background: transparent; cursor: pointer; text-align: left;
             font-family: inherit; border: 0; border-left: 3px solid transparent;
@@ -12042,6 +12043,16 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .setx-field-mono { font-size: 0.75rem; color: #94a3b8; margin-top: 0.0625rem; }
         .setx-field-note { font-size: 0.8125rem; color: #64748b; line-height: 1.55; margin-top: 0.3125rem; }
         .setx-field-help { font-size: 0.8125rem; color: #64748b; line-height: 1.55; margin-top: 0.4375rem; }
+        .setx-field-muted { color: #64748b; }
+        .setx-section-note { font-size: 0.8125rem; color: #64748b; line-height: 1.55;
+            margin: -0.25rem 0 0.75rem; max-width: 46rem; }
+        /* Locked pill — the read-tool counterpart to the write-tool
+           switch. Same row slot, but reads as state, not a control. */
+        .setx-locked { display: inline-flex; align-items: center; gap: 0.375rem;
+            padding: 0.25rem 0.5625rem; border-radius: 999px;
+            background: #e3f0f2; color: #0e5371;
+            font-size: 0.75rem; font-weight: 600; letter-spacing: 0.01em; }
+        .setx-locked svg { width: 11px; height: 11px; display: block; }
 
         /* Toggle switch — new settings primitive, Luna teal when on. */
         .setx-switch { display: inline-flex; align-items: center; gap: 0.625rem;
@@ -12072,6 +12083,12 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .setx-perm-del:hover { background: #fef2f2; color: #b91c1c; }
         .setx-perm-del svg { width: 14px; height: 14px; display: block; }
         .setx-perm-empty { font-size: 0.8125rem; color: #94a3b8; padding: 0.5rem 0 0.75rem; }
+        /* Inherited (read-tool) permission rows — no control affordance,
+           tinted surface so they don't read as editable. */
+        .setx-perm-row.is-inherited { background: #f8fafc; }
+        .setx-perm-inherit { flex: none; font-size: 0.6875rem; font-weight: 500;
+            letter-spacing: 0.02em; color: #64748b;
+            background: #e2e8f0; border-radius: 999px; padding: 0.125rem 0.5rem; }
 
         /* Settings version toggle — top-right of the Settings page header. */
         .settings-version-toggle { position: relative; margin-left: auto; }
@@ -15010,7 +15027,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         // selected detail item per master-detail pane.
         settingsScope: 'ai',
         platformSettingsSection: 'mcp-settings',
-        settingsDetail: { 'mcp-settings': 'create_issue_tool' },
+        settingsDetail: { 'mcp-settings': 'fetch_records_tool' },
         _workshopDefaultManifest: null,
         _workshopTprmManifest: null,
         workshopOpenScripts: {},
@@ -22085,49 +22102,103 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
     const perm = (name, value) => ({ name, value: value || 'Allowed' });
 
     // MCP tool catalog — the data behind the MCP Settings pane.
+    //
+    // Split by capability, not by privilege tier: `read` tools are
+    // reachable by anyone holding the mcp:access permission and have no
+    // per-tool switch, while `write` tools are off until an admin enables
+    // them and are then limited to the roles and teams listed on each.
+    // `template` points at the entry in the pane's `itemTemplates` that
+    // decides which detail sections and list badge the tool gets — so the
+    // two kinds can diverge in UI without branching in the render path.
     const MCP_TOOLS = {
+        // ── Read tools ───────────────────────────────────────────
+        fetch_records_tool: {
+            template: 'read', label: 'Fetch records', sublabel: 'fetch_records_tool',
+            description: 'Queries almost any Optro entity (issues, risks, controls, policies, tasks, audits, ESG metrics, BCM, users, and ~100 more) with filters, sorting, search, and related-record includes.',
+            notes: 'Workhorse tool. Returns only the fields you ask for, max 100 records per call.',
+        },
+        get_entity_schema_tool: {
+            template: 'read', label: 'Get entity schema', sublabel: 'get_entity_schema_tool',
+            description: 'Returns fields, filters, relationships, and custom fields for an entity type.',
+            notes: 'Needed before most queries so field names are correct.',
+        },
+        summarize_user_activity_tool: {
+            template: 'read', label: 'Summarize user activity', sublabel: 'summarize_user_activity_tool',
+            description: 'Digest of one person’s recent activity (issues, comments, action plans, tasks, risks, exception requests) over up to 90 days.',
+            notes: 'Good for “what have I worked on lately”.',
+        },
+        get_file_for_entity_tool: {
+            template: 'read', label: 'Get file for entity', sublabel: 'get_file_for_entity_tool',
+            description: 'Reads the file attached to a record (policy, narrative, issue, control, test, etc.).',
+            notes: 'Extracts text from PDF, Word, Excel, PowerPoint, HTML, CSV; shows images.',
+        },
+        get_file_content_by_id_tool: {
+            template: 'read', label: 'Get file content by ID', sublabel: 'get_file_content_by_id_tool',
+            description: 'Reads a specific file by its ID.',
+            notes: 'Same formats; used when a record has multiple files.',
+        },
+        get_issue_intake_form_tool: {
+            template: 'read', label: 'Get issue intake form', sublabel: 'get_issue_intake_form_tool',
+            description: 'Shows which fields your tenant’s issue intake form requires for a given category.',
+            notes: 'Used before creating issues so nothing required is missed.',
+        },
+        aigov_tool: {
+            template: 'read', label: 'AI Governance', sublabel: 'aigov_tool',
+            description: 'Reads data from the AI Governance (FairNow) module.',
+            notes: 'Read-only.',
+        },
+
+        // ── Write tools ──────────────────────────────────────────
+        create_issue_tool: {
+            template: 'write', label: 'Create issue', sublabel: 'create_issue_tool',
+            enabled: true, availability: true, confirm: true,
+            description: 'Creates a new issue (title, category, rating, owners, description, status, etc.).',
+            notes: 'Preview shows valid categories and ratings before committing.',
+            roles: [perm('Admin'), perm('Audit Manager')],
+            teams: [perm('Internal Audit')],
+        },
+        link_issue_entities_tool: {
+            template: 'write', label: 'Link issue entities', sublabel: 'link_issue_entities_tool',
+            enabled: false, availability: false, confirm: false,
+            description: 'Links controls, risks, auditable entities, or framework items to an issue.',
+            notes: 'No confirmation gate; additive only.',
+            roles: [], teams: [],
+        },
+        submit_write: {
+            template: 'write', label: 'Generic create / edit', sublabel: 'submit_write',
+            enabled: false, availability: false, confirm: true,
+            description: 'Creates or edits action plans, controls, issues (edit only), and ops audits.',
+            notes: 'General-purpose write tool.',
+            roles: [], teams: [],
+        },
         post_comment_tool: {
-            label: 'Post comment', sublabel: 'post_comment_tool',
-            tag: { label: 'Standard action', tone: 'gray' },
-            enabled: true, availability: true,
-            description: 'Post a comment on a record the user can already see. Attributed to the acting user, and never edits or removes an existing comment.',
+            template: 'write', label: 'Post comment', sublabel: 'post_comment_tool',
+            enabled: true, availability: true, confirm: true,
+            description: 'Posts a comment on an issue, risk, control, test, policy, and others.',
+            notes: 'Shows exact text before posting.',
             roles: [perm('Admin'), perm('Audit Manager'), perm('Contributor')],
             teams: [perm('Internal Audit')],
         },
         attach_file_tool: {
-            label: 'Upload file', sublabel: 'attach_file_tool',
-            tag: { label: 'Standard action', tone: 'gray' },
-            enabled: true, availability: true,
-            description: 'Attach a file to an existing record. Additive only — it cannot replace or delete an attachment that is already on the record.',
+            template: 'write', label: 'Attach file', sublabel: 'attach_file_tool',
+            enabled: true, availability: true, confirm: true,
+            description: 'Uploads a file to a record.',
+            notes: 'Inline uploads capped around 150 KB.',
             roles: [perm('Admin'), perm('Audit Manager')],
-            teams: [perm('Internal Audit')],
+            teams: [perm('Internal Audit'), perm('Compliance')],
         },
-        create_issue_tool: {
-            label: 'Create issue', sublabel: 'create_issue_tool',
-            tag: { label: 'Elevated action', tone: 'orange' },
-            enabled: true, availability: true,
-            description: 'Create an issue and populate its details. Asks the user to confirm a preview before writing.',
-            includes: {
-                label: 'Link issue entities',
-                sublabel: 'link_issue_entities_tool',
-                desc: 'Adds impact links — controls, risks, auditable entities, framework items — to an existing issue. Additive only, never removes a link, and unlike Create issue it does not ask the user to confirm first.',
-                note: 'Turned on and restricted together with this tool. It has no switch or role list of its own.',
-            },
-            roles: [perm('Admin'), perm('Audit Manager')],
-            teams: [perm('Internal Audit')],
-        },
-        submit_write: {
-            label: 'Generic create / edit', sublabel: 'submit_write',
-            tag: { label: 'Elevated action', tone: 'orange' },
-            enabled: false, availability: false,
-            description: 'Create or edit any record type the user has write access to. Broad surface — scope it to a narrow role list before enabling.',
+        post_answer_tool: {
+            template: 'write', label: 'Post answer', sublabel: 'post_answer_tool',
+            enabled: false, availability: false, confirm: true,
+            description: 'Answers a Workstream questionnaire question (free text, yes/no, multiple choice, “no change”).',
+            notes: 'Cannot record a proposed change; that has to happen in the Optro UI.',
             roles: [], teams: [],
         },
         submit_task_tool: {
-            label: 'Workstream responses', sublabel: 'submit_task_tool',
-            tag: { label: 'Elevated action', tone: 'orange' },
-            enabled: false, availability: false,
-            description: 'Answer and submit Workstream tasks on the user’s behalf, including evidence requests routed to them.',
+            template: 'write', label: 'Submit task', sublabel: 'submit_task_tool',
+            enabled: false, availability: false, confirm: true,
+            description: 'Submits a completed Workstream task for review.',
+            notes: 'Locks answers; reopening requires a reviewer.',
             roles: [], teams: [],
         },
     };
@@ -22142,32 +22213,74 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             title: 'MCP Settings',
             kind: 'master-detail',
             headerAction: { label: 'How MCP works' },
-            banner: 'Read tools are always available to anyone whose role grants mcp:access, and are not listed here. The write tools below are off until an admin enables them, then limited to the roles and teams listed on each tool.',
+            banner: 'Read tools are available to anyone whose role grants mcp:access and cannot be switched off individually. Write tools are off until an admin enables them, and are then limited to the roles and teams listed on each tool.',
             listTitle: 'MCP Tools',
-            countNoun: 'actions',
+            countNoun: 'write tools',
+            itemNoun: 'tool',
             items: MCP_TOOLS,
             groups: [
-                { title: 'Standard actions', items: ['post_comment_tool', 'attach_file_tool'] },
-                { title: 'Elevated actions', items: ['create_issue_tool', 'submit_write', 'submit_task_tool'] },
+                { title: 'Read tools', note: 'Always available via mcp:access.',
+                  items: ['fetch_records_tool', 'get_entity_schema_tool', 'summarize_user_activity_tool',
+                          'get_file_for_entity_tool', 'get_file_content_by_id_tool', 'get_issue_intake_form_tool', 'aigov_tool'] },
+                { title: 'Write tools', note: 'Off until enabled. All except linking require a preview and your confirmation.',
+                  items: ['create_issue_tool', 'link_issue_entities_tool', 'submit_write', 'post_comment_tool',
+                          'attach_file_tool', 'post_answer_tool', 'submit_task_tool'] },
             ],
-            // Detail template — applies to every item in the pane. Rows
-            // whose backing data is absent on an item are skipped, so a
-            // tool without `includes` simply renders one row fewer.
-            detailSections: [
-                { kind: 'fields', title: 'General', rows: [
-                    { key: 'description',  label: 'Description',  type: 'text' },
-                    { key: 'includes',     label: 'Includes',     type: 'includes' },
-                    { key: 'availability', label: 'Availability', type: 'switch',
-                      switchLabel: 'Available on this site',
-                      help: 'When off, the tool is listed in the MCP client but every call is refused — regardless of the role and team settings below.' },
-                ]},
-                { kind: 'permissions', key: 'roles', title: 'Role Permissions', addLabel: 'Add role',
-                  help: 'Members of these roles may call this tool.',
-                  options: ['Allowed', 'Denied'], emptyLabel: 'No roles yet — this tool is unreachable until one is added.' },
-                { kind: 'permissions', key: 'teams', title: 'Team Permissions', addLabel: 'Add team',
-                  help: 'Members of these teams may call this tool.',
-                  options: ['Allowed', 'Denied'], emptyLabel: 'No teams yet.' },
-            ],
+            // Who holds mcp:access. Read tools inherit this wholesale, so
+            // it lives once on the pane rather than being copied onto all
+            // seven of them — the read template's permission sections pull
+            // from here via `scope: 'pane'`.
+            accessRoles: [perm('Admin'), perm('Audit Manager'), perm('Contributor'), perm('Reviewer'), perm('Read Only')],
+            accessTeams: [perm('Internal Audit'), perm('Security'), perm('Compliance'), perm('Procurement')],
+            // Per-kind detail templates. An item's `template` key selects
+            // one. `countable` marks which tools the header's "N of M"
+            // tally counts — read tools have no on/off state, so they are
+            // excluded from it.
+            itemTemplates: {
+                read: {
+                    countable: false,
+                    badge: () => `<span class="luna-badge teal weak" data-component="Badge">Always on</span>`,
+                    sections: [
+                        { kind: 'fields', title: 'General', rows: [
+                            { key: 'description', label: 'What it does', type: 'text' },
+                            { key: 'notes',       label: 'Notes',        type: 'muted' },
+                            { key: '_access',     label: 'Access',       type: 'locked', virtual: true,
+                              pill: 'Always on',
+                              help: 'Reachable by anyone whose role grants mcp:access. Read tools return data the user can already see in Optro and have no per-tool switch.' },
+                        ]},
+                        { kind: 'permissions', scope: 'pane', key: 'accessRoles', readOnly: true,
+                          title: 'Role Access', help: 'Roles that hold mcp:access.',
+                          note: 'Inherited from the mcp:access permission — these roles can call every read tool. Change it in Roles & Permissions, not here.' },
+                        { kind: 'permissions', scope: 'pane', key: 'accessTeams', readOnly: true,
+                          title: 'Team Access', help: 'Teams that hold mcp:access.',
+                          note: 'Inherited the same way. Read access is granted once, centrally, rather than tool by tool.' },
+                    ],
+                },
+                write: {
+                    countable: true,
+                    badge: (item) => {
+                        if (!item.enabled) return `<span class="luna-badge gray weak" data-component="Badge">Off</span>`;
+                        const n = (item.roles || []).length;
+                        return `<span class="luna-badge green weak" data-component="Badge">On · ${n} role${n === 1 ? '' : 's'}</span>`;
+                    },
+                    sections: [
+                        { kind: 'fields', title: 'General', rows: [
+                            { key: 'description',  label: 'What it does',  type: 'text' },
+                            { key: 'notes',        label: 'Notes',         type: 'muted' },
+                            { key: 'confirm',      label: 'Confirmation',  type: 'confirm' },
+                            { key: 'availability', label: 'Availability',  type: 'switch',
+                              switchLabel: 'Available on this site',
+                              help: 'When off, the tool is listed in the MCP client but every call is refused — regardless of the role and team settings below.' },
+                        ]},
+                        { kind: 'permissions', key: 'roles', title: 'Role Permissions', addLabel: 'Add role',
+                          help: 'Members of these roles may call this tool.',
+                          options: ['Allowed', 'Denied'], emptyLabel: 'No roles yet — this tool is unreachable until one is added.' },
+                        { kind: 'permissions', key: 'teams', title: 'Team Permissions', addLabel: 'Add team',
+                          help: 'Members of these teams may call this tool.',
+                          options: ['Allowed', 'Denied'], emptyLabel: 'No teams yet.' },
+                    ],
+                },
+            },
         },
     };
 
@@ -22197,13 +22310,26 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
     }
 
     // ── Derived values ───────────────────────────────────────────
-    function settingsItemBadge(item) {
-        if (!item.enabled) return `<span class="luna-badge gray weak" data-component="Badge">Off</span>`;
-        const n = (item.roles || []).length;
-        return `<span class="luna-badge green weak" data-component="Badge">On · ${n} role${n === 1 ? '' : 's'}</span>`;
+    // Resolve an item's detail/badge template. Panes without templates
+    // fall back to a single implicit one built from `detailSections`,
+    // so a simple pane needn't declare the template layer at all.
+    function settingsTemplate(pane, item) {
+        if (pane.itemTemplates) return pane.itemTemplates[item && item.template] || null;
+        return { countable: true, sections: pane.detailSections || [] };
     }
+    function settingsItemBadge(pane, item) {
+        const t = settingsTemplate(pane, item);
+        if (t && typeof t.badge === 'function') return t.badge(item);
+        return '';
+    }
+    // Only templates flagged `countable` feed the header tally — read
+    // tools have no on/off state and would otherwise skew the count.
     function settingsPaneMeta(pane) {
-        const ids = (pane.groups || []).flatMap(g => g.items);
+        const ids = (pane.groups || []).flatMap(g => g.items)
+            .filter((id) => {
+                const t = settingsTemplate(pane, pane.items[id]);
+                return t && t.countable;
+            });
         const on = ids.filter(id => pane.items[id] && pane.items[id].enabled).length;
         return `${on} of ${ids.length} ${pane.countNoun || 'items'} enabled`;
     }
@@ -22211,11 +22337,22 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
     // ── Field-row renderers ──────────────────────────────────────
     const SETTINGS_FIELD_KINDS = {
         text: (row, val) => `<div class="setx-field-value">${esc(val)}</div>`,
-        includes: (row, val) => `<div class="setx-field-value">
-            <div class="setx-field-strong">${esc(val.label)}</div>
-            <div class="setx-field-mono">${esc(val.sublabel)}</div>
-            <div class="setx-field-note">${esc(val.desc)}</div>
-            ${val.note ? `<div class="setx-field-note">${esc(val.note)}</div>` : ''}
+        muted: (row, val) => `<div class="setx-field-value setx-field-muted">${esc(val)}</div>`,
+        // Write tools: whether the call is gated on a preview + explicit
+        // confirmation. Rendered from the boolean so the copy stays in
+        // one place rather than being written out on every tool.
+        confirm: (row, val) => `<div class="setx-field-value">${val
+            ? 'Shows a preview, then waits for the user’s explicit confirmation before writing.'
+            : 'No confirmation gate — the call is applied as soon as it is made.'}</div>`,
+        // Read tools: the structural counterpart to `switch`. Occupies the
+        // same row position but presents a locked pill instead of a
+        // control, so "this is not switchable" reads at a glance.
+        locked: (row, val, ctx, item) => `<div class="setx-field-value">
+            <span class="setx-locked">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.25" y="7" width="9.5" height="6.25" rx="1.25"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>
+                ${esc(row.pill || 'Always on')}
+            </span>
+            ${row.help ? `<div class="setx-field-help">${esc(row.help)}</div>` : ''}
         </div>`,
         switch: (row, val, ctx) => `<div class="setx-field-value">
             <button type="button" class="setx-switch${val ? ' on' : ''}" role="switch" aria-checked="${!!val}"
@@ -22233,12 +22370,15 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             const rows = (sec.rows || []).map((row) => {
                 const val = item[row.key];
                 // Skip rows with no backing data (undefined/null), but keep
-                // `false` — a switch that is off is still a row worth showing.
-                if (val === undefined || val === null) return '';
+                // `false` — a switch that is off, or a tool with no
+                // confirmation gate, is still a row worth showing. Rows
+                // marked `virtual` carry no item data at all (they render
+                // purely from the descriptor) and always paint.
+                if (!row.virtual && (val === undefined || val === null)) return '';
                 const render = SETTINGS_FIELD_KINDS[row.type] || SETTINGS_FIELD_KINDS.text;
                 return `<div class="setx-field">
                     <div class="setx-field-label">${esc(row.label)}</div>
-                    ${render(row, val, ctx)}
+                    ${render(row, val, ctx, item)}
                 </div>`;
             }).join('');
             if (!rows) return '';
@@ -22247,27 +22387,38 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 ${rows}
             </section>`;
         },
+        // Handles both shapes of permission list:
+        //   • per-item + editable (write tools) — select + delete + Add
+        //   • pane-scoped + read-only (read tools) — names only, since
+        //     access is inherited from mcp:access and is not per-tool
         permissions: (sec, item, ctx) => {
-            const list = item[sec.key] || [];
+            const source = sec.scope === 'pane' ? ctx.pane : item;
+            const list = (source && source[sec.key]) || [];
             const opts = sec.options || ['Allowed', 'Denied'];
-            const rows = list.map((p, i) => `<div class="setx-perm-row">
-                <div class="setx-perm-name">${esc(p.name)}</div>
-                <select class="luna-select" data-component="Select" data-action="settings-perm-change"
-                        data-pane="${esc(ctx.paneId)}" data-item="${esc(ctx.itemId)}" data-key="${esc(sec.key)}" data-idx="${i}">
-                    ${opts.map(o => `<option value="${esc(o)}"${p.value === o ? ' selected' : ''}>${esc(o)}</option>`).join('')}
-                </select>
-                <button type="button" class="setx-perm-del" aria-label="Remove ${esc(p.name)}"
-                        data-action="settings-perm-delete" data-pane="${esc(ctx.paneId)}" data-item="${esc(ctx.itemId)}" data-key="${esc(sec.key)}" data-idx="${i}">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h10"/><path d="M5.5 4V3a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1"/><path d="M4.5 4l.5 8.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1L11.5 4"/></svg>
-                </button>
-            </div>`).join('');
+            const rows = list.map((p, i) => sec.readOnly
+                ? `<div class="setx-perm-row is-inherited">
+                    <div class="setx-perm-name">${esc(p.name)}</div>
+                    <span class="setx-perm-inherit">via mcp:access</span>
+                </div>`
+                : `<div class="setx-perm-row">
+                    <div class="setx-perm-name">${esc(p.name)}</div>
+                    <select class="luna-select" data-component="Select" data-action="settings-perm-change"
+                            data-pane="${esc(ctx.paneId)}" data-item="${esc(ctx.itemId)}" data-key="${esc(sec.key)}" data-idx="${i}">
+                        ${opts.map(o => `<option value="${esc(o)}"${p.value === o ? ' selected' : ''}>${esc(o)}</option>`).join('')}
+                    </select>
+                    <button type="button" class="setx-perm-del" aria-label="Remove ${esc(p.name)}"
+                            data-action="settings-perm-delete" data-pane="${esc(ctx.paneId)}" data-item="${esc(ctx.itemId)}" data-key="${esc(sec.key)}" data-idx="${i}">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h10"/><path d="M5.5 4V3a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1"/><path d="M4.5 4l.5 8.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1L11.5 4"/></svg>
+                    </button>
+                </div>`).join('');
             return `<section class="setx-section">
                 <div class="setx-section-head">
                     <div class="setx-section-title">${esc(sec.title)}</div>
                     ${sec.help ? `<span class="setx-help" data-tooltip="${esc(sec.help)}">?</span>` : ''}
-                    <button type="button" class="luna-btn setx-section-action" data-size="sm" data-component="Button"
-                            data-action="settings-perm-add" data-pane="${esc(ctx.paneId)}" data-item="${esc(ctx.itemId)}" data-key="${esc(sec.key)}">${esc(sec.addLabel)}</button>
+                    ${sec.readOnly ? '' : `<button type="button" class="luna-btn setx-section-action" data-size="sm" data-component="Button"
+                            data-action="settings-perm-add" data-pane="${esc(ctx.paneId)}" data-item="${esc(ctx.itemId)}" data-key="${esc(sec.key)}">${esc(sec.addLabel)}</button>`}
                 </div>
+                ${sec.note ? `<div class="setx-section-note">${esc(sec.note)}</div>` : ''}
                 ${rows || `<div class="setx-perm-empty">${esc(sec.emptyLabel || 'Nothing here yet.')}</div>`}
             </section>`;
         },
@@ -22291,6 +22442,7 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             const selId = settingsDetailId(paneId, pane);
             const list = (pane.groups || []).map(g => `
                 <div class="setx-group-title">${esc(g.title)}</div>
+                ${g.note ? `<div class="setx-group-note">${esc(g.note)}</div>` : ''}
                 ${g.items.map((id) => {
                     const it = pane.items[id];
                     if (!it) return '';
@@ -22300,25 +22452,28 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                             <span class="setx-item-label">${esc(it.label)}</span>
                             <span class="setx-item-sub">${esc(it.sublabel || '')}</span>
                         </span>
-                        ${settingsItemBadge(it)}
+                        ${settingsItemBadge(pane, it)}
                     </button>`;
                 }).join('')}`).join('');
             const sel = selId && pane.items[selId];
+            // Detail sections come from the item's template, so read and
+            // write tools render different bodies with no branching here.
+            const tpl = sel ? settingsTemplate(pane, sel) : null;
             const detail = !sel
-                ? `<div class="setx-detail-empty">Select an ${esc((pane.countNoun || 'item').replace(/s$/, ''))} to configure it.</div>`
+                ? `<div class="setx-detail-empty">Select a ${esc(pane.itemNoun || 'item')} to view its details.</div>`
                 : `<div class="setx-detail-head">
                         <div class="setx-detail-titles">
                             <div class="setx-detail-title">${esc(sel.label)}</div>
                             <div class="setx-detail-sub">${esc(sel.sublabel || '')}</div>
                         </div>
-                        ${sel.tag ? `<span class="luna-badge ${esc(sel.tag.tone)} weak" data-component="Badge">${esc(sel.tag.label)}</span>` : ''}
+                        ${settingsItemBadge(pane, sel)}
                         <button type="button" class="setx-detail-close" aria-label="Close" data-action="settings-close-detail" data-pane="${esc(paneId)}">
                             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
                         </button>
                     </div>
-                    ${(pane.detailSections || []).map((s) => {
+                    ${((tpl && tpl.sections) || []).map((s) => {
                         const fn = SETTINGS_SECTION_KINDS[s.kind];
-                        return fn ? fn(s, sel, { paneId, itemId: selId }) : '';
+                        return fn ? fn(s, sel, { paneId, itemId: selId, pane }) : '';
                     }).join('')}`;
             return `<div class="setx-md">
                 <div class="setx-list">
