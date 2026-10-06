@@ -11969,6 +11969,27 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .set-scope-check { width: 13px; flex: none; text-align: center; color: #0e5371;
             font-size: 0.75rem; line-height: 1; opacity: 0; }
         .set-scope-opt[aria-checked="true"] .set-scope-check { opacity: 1; }
+        .set-scope-empty { padding: 0.4375rem 0.5rem; font-size: 0.8125rem; color: #94a3b8; }
+
+        /* Collapsed state. The shared collapse rules are scoped to
+           `.sidebar-header`; this pane uses `.set-nav-head`, so without
+           these the eyebrow + scope button stayed full-width inside the
+           2.75rem rail and pushed the collapse toggle out of reach —
+           the panel could be collapsed but never re-opened. */
+        body.sidebar-collapsed .set-nav-head {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.625rem; padding: 0.875rem 0; justify-content: flex-start;
+        }
+        body.sidebar-collapsed .set-nav-head .set-nav-eyebrow,
+        body.sidebar-collapsed .set-nav-head .set-nav-scope { display: none; }
+        body.sidebar-collapsed .set-nav-head .set-nav-scope-row { margin: 0; }
+        body.sidebar-collapsed .set-nav-head .sidebar-collapse-btn { margin-left: 0; }
+        body.sidebar-collapsed .set-nav-head .sidebar-collapsed-label {
+            display: inline-block;
+            writing-mode: vertical-lr; text-orientation: upright;
+            font-size: 0.6875rem; letter-spacing: 0.08em; font-weight: 600;
+            color: #475569; text-transform: uppercase; margin-top: 0.25rem;
+        }
 
         /* Pane shell — header band + optional banner + body. */
         .setx-pane { display: flex; flex-direction: column; height: 100%; min-height: 0; }
@@ -12008,6 +12029,13 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .setx-item-sub { display: block; font-size: 0.75rem; color: #94a3b8; margin-top: 0.0625rem;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .setx-item .luna-badge { flex: none; }
+        /* Status dot — replaces the text pill in the list. One shape for
+           every tool kind so the column scans as a single signal; the
+           native title carries the specifics (Always on / On · N roles / Off). */
+        .setx-dot { display: inline-block; flex: none; width: 0.5rem; height: 0.5rem;
+            border-radius: 50%; }
+        .setx-dot.is-on  { background: #36844a; box-shadow: 0 0 0 2px rgba(54, 132, 74, 0.16); }
+        .setx-dot.is-off { background: #cbd5e1; box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.16); }
 
         /* Detail column. */
         .setx-detail { padding: 1.25rem 1.5rem 3rem; min-width: 0; overflow-y: auto; }
@@ -12017,11 +12045,6 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
         .setx-detail-title { font-size: 1.0625rem; font-weight: 600; color: #0f172a; letter-spacing: -0.01em; }
         .setx-detail-sub { font-size: 0.75rem; color: #94a3b8; margin-top: 0.0625rem; }
         .setx-detail-head .luna-badge { flex: none; margin-top: 0.1875rem; }
-        .setx-detail-close { flex: none; display: inline-flex; align-items: center; justify-content: center;
-            width: 1.5rem; height: 1.5rem; margin-top: 0.0625rem; border-radius: 5px;
-            border: 0; background: transparent; color: #94a3b8; cursor: pointer; }
-        .setx-detail-close:hover { background: #f1f5f9; color: #0f172a; }
-        .setx-detail-close svg { width: 12px; height: 12px; display: block; }
         .setx-detail-empty { padding: 3rem 1rem; text-align: center; color: #94a3b8; font-size: 0.8125rem; }
 
         /* Detail sections. */
@@ -12033,6 +12056,14 @@ window.__ASSISTANT_CONTENT__.tprm = {"meta":{"id":"tprm","name":"TPRM \u2014 Thi
             width: 0.875rem; height: 0.875rem; border-radius: 50%; background: #e2e8f0;
             color: #64748b; font-size: 0.5625rem; font-weight: 700; cursor: help; flex: none; }
         .setx-section-action { margin-left: auto; }
+        /* Add-role / Add-team trigger — icon-only, opens a picker of the
+           options the tool does not already list. */
+        .setx-add-btn { display: inline-flex; align-items: center; justify-content: center;
+            width: 1.5rem; height: 1.5rem; flex: none; padding: 0;
+            border: 1px solid #cbd5e1; border-radius: 5px; background: #fff;
+            color: #475569; cursor: pointer; transition: background 140ms, border-color 140ms, color 140ms; }
+        .setx-add-btn:hover { background: #f1f5f9; border-color: #94a3b8; color: #0f172a; }
+        .setx-add-btn svg { width: 11px; height: 11px; display: block; }
 
         /* Field rows — label column + value column. */
         .setx-field { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr);
@@ -22212,20 +22243,22 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         'mcp-settings': {
             title: 'MCP Settings',
             kind: 'master-detail',
-            headerAction: { label: 'How MCP works' },
-            banner: 'Read tools are available to anyone whose role grants mcp:access and cannot be switched off individually. Write tools are off until an admin enables them, and are then limited to the roles and teams listed on each tool.',
-            listTitle: 'MCP Tools',
-            countNoun: 'write tools',
+            listTitle: 'Tools',
             itemNoun: 'tool',
             items: MCP_TOOLS,
             groups: [
-                { title: 'Read tools', note: 'Always available via mcp:access.',
+                { title: 'Read',
                   items: ['fetch_records_tool', 'get_entity_schema_tool', 'summarize_user_activity_tool',
                           'get_file_for_entity_tool', 'get_file_content_by_id_tool', 'get_issue_intake_form_tool', 'aigov_tool'] },
-                { title: 'Write tools', note: 'Off until enabled. All except linking require a preview and your confirmation.',
+                { title: 'Write',
                   items: ['create_issue_tool', 'link_issue_entities_tool', 'submit_write', 'post_comment_tool',
                           'attach_file_tool', 'post_answer_tool', 'submit_task_tool'] },
             ],
+            // Candidate pools for the Add-role / Add-team pickers. The
+            // picker offers whatever is not already on the tool, so the
+            // pools live here as data rather than in the click handler.
+            rolePool: ['Admin', 'Audit Manager', 'Contributor', 'Reviewer', 'Read Only', 'Vendor Manager'],
+            teamPool: ['Internal Audit', 'Security', 'Compliance', 'Procurement', 'Finance', 'IT Operations'],
             // Who holds mcp:access. Read tools inherit this wholesale, so
             // it lives once on the pane rather than being copied onto all
             // seven of them — the read template's permission sections pull
@@ -22239,14 +22272,17 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
             itemTemplates: {
                 read: {
                     countable: false,
-                    badge: () => `<span class="luna-badge teal weak" data-component="Badge">Always on</span>`,
+                    // Status reads as a dot in the list rather than a text
+                    // pill — same shape for read and write so the column
+                    // scans as one signal. The title carries the detail.
+                    badge: () => `<span class="setx-dot is-on" title="Always on"></span>`,
                     sections: [
                         { kind: 'fields', title: 'General', rows: [
                             { key: 'description', label: 'What it does', type: 'text' },
                             { key: 'notes',       label: 'Notes',        type: 'muted' },
                             { key: '_access',     label: 'Access',       type: 'locked', virtual: true,
                               pill: 'Always on',
-                              help: 'Reachable by anyone whose role grants mcp:access. Read tools return data the user can already see in Optro and have no per-tool switch.' },
+                              help: 'Reachable by anyone whose role grants mcp:access.' },
                         ]},
                         { kind: 'permissions', scope: 'pane', key: 'accessRoles', readOnly: true,
                           title: 'Role Access', help: 'Roles that hold mcp:access.',
@@ -22259,9 +22295,9 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 write: {
                     countable: true,
                     badge: (item) => {
-                        if (!item.enabled) return `<span class="luna-badge gray weak" data-component="Badge">Off</span>`;
+                        if (!item.enabled) return `<span class="setx-dot is-off" title="Off"></span>`;
                         const n = (item.roles || []).length;
-                        return `<span class="luna-badge green weak" data-component="Badge">On · ${n} role${n === 1 ? '' : 's'}</span>`;
+                        return `<span class="setx-dot is-on" title="On · ${n} role${n === 1 ? '' : 's'}"></span>`;
                     },
                     sections: [
                         { kind: 'fields', title: 'General', rows: [
@@ -22270,13 +22306,13 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                             { key: 'confirm',      label: 'Confirmation',  type: 'confirm' },
                             { key: 'availability', label: 'Availability',  type: 'switch',
                               switchLabel: 'Available on this site',
-                              help: 'When off, the tool is listed in the MCP client but every call is refused — regardless of the role and team settings below.' },
+                              help: 'When off, the tool is listed in the MCP client but every call is refused.' },
                         ]},
-                        { kind: 'permissions', key: 'roles', title: 'Role Permissions', addLabel: 'Add role',
-                          help: 'Members of these roles may call this tool.',
+                        { kind: 'permissions', key: 'roles', title: 'Role Permissions', pool: 'rolePool',
+                          addLabel: 'Add role', help: 'Members of these roles may call this tool.',
                           options: ['Allowed', 'Denied'], emptyLabel: 'No roles yet — this tool is unreachable until one is added.' },
-                        { kind: 'permissions', key: 'teams', title: 'Team Permissions', addLabel: 'Add team',
-                          help: 'Members of these teams may call this tool.',
+                        { kind: 'permissions', key: 'teams', title: 'Team Permissions', pool: 'teamPool',
+                          addLabel: 'Add team', help: 'Members of these teams may call this tool.',
                           options: ['Allowed', 'Denied'], emptyLabel: 'No teams yet.' },
                     ],
                 },
@@ -22415,8 +22451,11 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 <div class="setx-section-head">
                     <div class="setx-section-title">${esc(sec.title)}</div>
                     ${sec.help ? `<span class="setx-help" data-tooltip="${esc(sec.help)}">?</span>` : ''}
-                    ${sec.readOnly ? '' : `<button type="button" class="luna-btn setx-section-action" data-size="sm" data-component="Button"
-                            data-action="settings-perm-add" data-pane="${esc(ctx.paneId)}" data-item="${esc(ctx.itemId)}" data-key="${esc(sec.key)}">${esc(sec.addLabel)}</button>`}
+                    ${sec.readOnly ? '' : `<button type="button" class="setx-add-btn setx-section-action"
+                            aria-label="${esc(sec.addLabel)}" title="${esc(sec.addLabel)}"
+                            data-action="settings-perm-add" data-pane="${esc(ctx.paneId)}" data-item="${esc(ctx.itemId)}" data-key="${esc(sec.key)}" data-pool="${esc(sec.pool || '')}">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg>
+                    </button>`}
                 </div>
                 ${sec.note ? `<div class="setx-section-note">${esc(sec.note)}</div>` : ''}
                 ${rows || `<div class="setx-perm-empty">${esc(sec.emptyLabel || 'Nothing here yet.')}</div>`}
@@ -22466,10 +22505,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                             <div class="setx-detail-title">${esc(sel.label)}</div>
                             <div class="setx-detail-sub">${esc(sel.sublabel || '')}</div>
                         </div>
-                        ${settingsItemBadge(pane, sel)}
-                        <button type="button" class="setx-detail-close" aria-label="Close" data-action="settings-close-detail" data-pane="${esc(paneId)}">
-                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
-                        </button>
                     </div>
                     ${((tpl && tpl.sections) || []).map((s) => {
                         const fn = SETTINGS_SECTION_KINDS[s.kind];
@@ -22490,7 +22525,10 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         const pane = SETTINGS_PANES[paneId];
         if (!pane) return `<div class="tprm-scroll"></div>`;
         const body = (SETTINGS_PANE_KINDS[pane.kind] || SETTINGS_PANE_KINDS.placeholder)(pane, paneId);
-        const showMeta = pane.kind === 'master-detail';
+        // Header meta / action / banner are all opt-in per pane: declare
+        // `countNoun`, `headerAction`, or `banner` to surface them. MCP
+        // Settings declares none, so its header is just the title.
+        const showMeta = !!pane.countNoun;
         return `<div class="setx-pane">
             <div class="setx-head">
                 <h1 class="setx-title" data-component="Heading">${esc(pane.title)}</h1>
@@ -22514,28 +22552,37 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
     function settingsToast(msg) {
         if (window.LunaToast) window.LunaToast.info('Settings', msg);
     }
-    // Scope switcher menu. Mounted body-level at #overlay-root with
-    // position:fixed + coords computed from the trigger rect, because
-    // the sidebar is overflow-y:auto and would clip an absolutely
-    // positioned child (menu-clipping-guard Pattern D).
-    function openSettingsScopeMenu(trigger) {
-        closeSettingsScopeMenu();
+    // Shared floating-menu primitive for the settings surface. Mounted
+    // body-level at #overlay-root with position:fixed + coords computed
+    // from the trigger rect, because both of its callers sit inside
+    // overflow:auto containers — the scope switcher inside `.sidebar`,
+    // the Add-role/team pickers inside `.setx-detail` — which would clip
+    // an absolutely positioned child (menu-clipping-guard Pattern D).
+    //
+    //   items: [{ id, label, checked? }]  — `checked` opts into radio semantics
+    //   opts:  { align: 'left' | 'right', emptyLabel }
+    function openSettingsMenu(trigger, items, onPick, opts) {
+        opts = opts || {};
+        closeSettingsMenu();
         const host = document.getElementById('overlay-root') || document.body;
         const r = trigger.getBoundingClientRect();
         const menu = document.createElement('div');
         menu.className = 'set-scope-menu';
-        menu.id = 'set-scope-menu';
+        menu.id = 'set-floating-menu';
         menu.setAttribute('role', 'menu');
-        menu.innerHTML = SETTINGS_SCOPES.map(s => `
-            <button type="button" class="set-scope-opt" role="menuitemradio"
-                    aria-checked="${s.id === state.settingsScope}" data-scope="${esc(s.id)}">
-                <span class="set-scope-check">&#10003;</span><span>${esc(s.label)}</span>
-            </button>`).join('');
+        menu.innerHTML = items.length
+            ? items.map(i => `
+                <button type="button" class="set-scope-opt" data-mid="${esc(i.id)}"
+                        role="${i.checked == null ? 'menuitem' : 'menuitemradio'}"${i.checked == null ? '' : ` aria-checked="${!!i.checked}"`}>
+                    ${i.checked == null ? '' : '<span class="set-scope-check">&#10003;</span>'}<span>${esc(i.label)}</span>
+                </button>`).join('')
+            : `<div class="set-scope-empty">${esc(opts.emptyLabel || 'Nothing to add')}</div>`;
         menu.style.visibility = 'hidden';
         host.appendChild(menu);
         // Measure, then clamp so the menu never runs off the viewport.
         const mr = menu.getBoundingClientRect();
-        const left = Math.max(8, Math.min(r.left, window.innerWidth - mr.width - 8));
+        const anchorLeft = opts.align === 'right' ? r.right - mr.width : r.left;
+        const left = Math.max(8, Math.min(anchorLeft, window.innerWidth - mr.width - 8));
         const below = r.bottom + 6;
         const top = (below + mr.height > window.innerHeight - 8)
             ? Math.max(8, r.top - mr.height - 6)   // flip above when short on room
@@ -22544,18 +22591,22 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
         menu.style.top = top + 'px';
         menu.style.visibility = '';
         menu.addEventListener('click', (ev) => {
-            const opt = ev.target.closest('[data-scope]');
+            const opt = ev.target.closest('[data-mid]');
             if (!opt) return;
             ev.stopPropagation();
-            state.settingsScope = opt.dataset.scope;
-            closeSettingsScopeMenu();
-            render();
+            closeSettingsMenu();
+            onPick(opt.dataset.mid);
         });
-        window.setTimeout(() => document.addEventListener('click', closeSettingsScopeMenu, { once: true }), 0);
+        window.setTimeout(() => document.addEventListener('click', closeSettingsMenu, { once: true }), 0);
     }
-    function closeSettingsScopeMenu() {
-        const el = document.getElementById('set-scope-menu');
+    function closeSettingsMenu() {
+        const el = document.getElementById('set-floating-menu');
         if (el) el.remove();
+    }
+    function openSettingsScopeMenu(trigger) {
+        openSettingsMenu(trigger,
+            SETTINGS_SCOPES.map(s => ({ id: s.id, label: s.label, checked: s.id === state.settingsScope })),
+            (id) => { state.settingsScope = id; render(); });
     }
 
     function renderAssistantAbilitiesPage() {
@@ -34885,12 +34936,6 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 state.settingsDetail[trigger.dataset.pane] = trigger.dataset.item;
                 return render();
             }
-            case 'settings-close-detail': {
-                e.preventDefault();
-                state.settingsDetail = state.settingsDetail || {};
-                state.settingsDetail[trigger.dataset.pane] = null;
-                return render();
-            }
             case 'settings-toggle-field': {
                 e.preventDefault();
                 const it = settingsItemFromEvent(trigger);
@@ -34910,20 +34955,25 @@ window.__ASSISTANT_CONTENT__ = Object.assign(window.__ASSISTANT_CONTENT__ || {},
                 if (Array.isArray(list)) list.splice(Number(trigger.dataset.idx), 1);
                 return render();
             }
+            // Opens a picker of whatever the tool does not already list,
+            // sourced from the pane's candidate pool. Right-aligned to the
+            // "+" so it hangs under the button rather than off to the side.
             case 'settings-perm-add': {
                 e.preventDefault();
+                e.stopPropagation();
+                const pane = SETTINGS_PANES[trigger.dataset.pane];
                 const it = settingsItemFromEvent(trigger);
-                if (!it) return;
+                if (!pane || !it) return;
                 const key = trigger.dataset.key;
-                it[key] = it[key] || [];
-                const pool = key === 'roles'
-                    ? ['Admin', 'Audit Manager', 'Contributor', 'Reviewer', 'Read Only']
-                    : ['Internal Audit', 'Security', 'Compliance', 'Procurement', 'Finance'];
-                const taken = new Set(it[key].map(p => p.name));
-                const next = pool.find(n => !taken.has(n));
-                if (!next) { settingsToast('Every available option is already listed.'); return; }
-                it[key].push(perm(next));
-                return render();
+                const pool = pane[trigger.dataset.pool] || [];
+                const taken = new Set((it[key] || []).map(p => p.name));
+                const remaining = pool.filter(n => !taken.has(n)).map(n => ({ id: n, label: n }));
+                openSettingsMenu(trigger, remaining, (name) => {
+                    it[key] = it[key] || [];
+                    it[key].push(perm(name));
+                    render();
+                }, { align: 'right', emptyLabel: 'All options already added' });
+                return;
             }
             case 'settings-header-action': {
                 e.preventDefault();
